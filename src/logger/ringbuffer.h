@@ -1,17 +1,23 @@
 #ifndef RINGBUFFER_H
 #define RINGBUFFER_H
 
-#define BUFFER_SIZE 20
-
+#ifdef _WIN32
+#include <windows.h>
+#define MUTEX CRITICAL_SECTION
+#define CONDITION CONDITION_VARIABLE
+#else
 #include <pthread.h>
+#define MUTEX pthread_mutex_t
+#define CONDITION pthread_cond_t
+#endif
 
 typedef struct {
     char** messages;
     int head;
     int tail;
     int count;
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
+    MUTEX mutex;
+    CONDITION cond;
 } ring_buffer_t;
 
 /**

@@ -5,6 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BUFFER_SIZE 20
+
+#ifdef _WIN32
+#define INIT_MUTEX(mutex) InitializeCriticalSection(mutex)
+#define INIT_COND(cond) InitializeConditionVariable(cond)
+
+#define MUTEX_LOCK(mutex) EnterCriticalSection(mutex)
+#define MUTEX_UNLOCK(mutex) LeaveCriticalSection(mutex)
+#define SIGNAL_COND(cond) WakeConditionVariable(cond)
+#define SIGNAL_WAIT(cond, mutex) SleepConditionVariableCS(cond, mutex, INFINITE)
+#else
 #define INIT_MUTEX(mutex) pthread_mutex_init(mutex, NULL)
 #define INIT_COND(cond) pthread_cond_init(cond, NULL)
 
@@ -12,6 +23,7 @@
 #define MUTEX_UNLOCK(mutex) pthread_mutex_unlock(mutex)
 #define SIGNAL_COND(cond) pthread_cond_signal(cond)
 #define SIGNAL_WAIT(cond, mutex) pthread_cond_wait(cond, mutex)
+#endif
 
 int init_ringbuffer(ring_buffer_t* buffer) {
     buffer->head = 0;
