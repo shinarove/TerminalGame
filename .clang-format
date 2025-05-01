@@ -1,0 +1,90 @@
+# Generated from CLion C/C++ Code Style settings
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: None
+AlignOperands: Align
+AllowAllArgumentsOnNextLine: false
+# AllowAllConstructorInitializersOnNextLine: false # deprecated
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
+# AlwaysBreakAfterReturnType: None # renamed to BreakAfterReturnType
+# AlwaysBreakTemplateDeclarations: Yes # renamed to BreakTemplateDeclarations
+BreakAfterReturnType: Automatic
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: true
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+BreakTemplateDeclarations: Yes
+ColumnLimit: 0
+CompactNamespaces: false
+ContinuationIndentWidth: 8
+IncludeBlocks: Regroup
+IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
+IndentWidth: 4
+# KeepEmptyLinesAtTheStartOfBlocks: true # deprecated
+
+# Key not found?
+KeepEmptyLines:
+  AtEndOfFile: false
+  AtStartOfFile: false
+  AtStartOfBlock: false
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: All
+ObjCSpaceAfterProperty: false
+ObjCSpaceBeforeProtocolList: true
+PackConstructorInitializers: Never
+PointerAlignment: Left
+ReflowComments: false
+SortIncludes: CaseInsensitive
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatementsExceptControlMacros
+#SpacesInParensOptions:
+#    AfterControlStatement: true
+#    AfterFunctionDeclarationName: false
+#    AfterFunctionDefinitionName: false
+#    AfterIfStatement: false
+#    AfterWhileStatement: false
+#    BeforeCatch: false
+#    BeforeElse: false
+#    BeforeLambdaBody: false
+#    BeforeParameter: false
+#    BeforeRangeBasedForLoopColon: false
+#    BeforeSquareBracket: false
+#    InConditionalStatements: false
+SpaceBeforeRangeBasedForLoopColon: false
+# SpaceInEmptyParentheses: false # deprecated
+SpacesBeforeTrailingComments: 0
+SpacesInAngles: false
+# SpacesInCStyleCastParentheses: false # deprecated
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+TabWidth: 4
+UseTab: Never
