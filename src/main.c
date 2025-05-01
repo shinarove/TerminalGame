@@ -1,6 +1,6 @@
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
-#include "termbox2/termbox2.h"
+#include "../termbox2/termbox2.h"
 
 void init();
 void shutdown();

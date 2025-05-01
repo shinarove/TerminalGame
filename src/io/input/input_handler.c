@@ -1,7 +1,7 @@
 #include "input_handler.h"
 
 #include "../../logger/logger.h"
-#include "../../termbox2/termbox2.h"
+#include "../../../termbox2/termbox2.h"
 #include "../../thread/thread_handler.h"
 
 #define INPUT_BUFFER_SIZE 16

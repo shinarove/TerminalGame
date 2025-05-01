@@ -2,7 +2,7 @@ project('TerminalGame', 'c',
         version : '1.0.0',
         default_options : ['warning_level=3', 'c_std=gnu2x'])
 
-termbox_file = files('src/termbox2/termbox2.c')
+termbox_file = files('termbox2/termbox2.c')
 
 src_files = files('src/main.c')
 
