@@ -4,14 +4,29 @@
 #include "logger_config.h"
 #include "ringbuffer.h"
 
-#include <dirent.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <time.h>
 
-#define PATH_MAX 4096
+#ifdef _WIN32
+#include <direct.h>
+
+#define STAT_STRUCT struct _stat
+#define STAT_FUNC _stat
+#define MKDIR(path) _mkdir(path)
+#define PATH_SEP "\\"
+#else
+#include <dirent.h>
+
+#define STAT_STRUCT struct stat
+#define STAT_FUNC stat
+#define MKDIR(path) mkdir(path, 0755)
+#define PATH_SEP "/"
+#endif
+
+#define MAX_PATH_SIZE 4096
 
 // relative directory from the project root
 #define LOG_DIRECTORY "log"
@@ -19,8 +34,6 @@
 
 #define TIMESTAMP_FORMAT "%Y-%m-%d %H:%M:%S"
 #define MSG_FORMAT "[%s] [%s] [%s] : %s\n"
-
-#define MAX_HEADER_SIZE 256
 
 const char* log_level_str[] = {"DEBUG", "FINE", "INFO", "WARNING", "ERROR"};
 
@@ -84,10 +97,10 @@ bool logger_is_running = false;
 int file_id = 0;
 
 int ensure_log_dir(void) {
-    struct stat st;
+    STAT_STRUCT st;
 
-    if (stat(LOG_DIRECTORY, &st) == -1) {
-        if (mkdir(LOG_DIRECTORY, 0755) == -1) {
+    if (STAT_FUNC(LOG_DIRECTORY, &st) == -1) {
+        if (MKDIR(LOG_DIRECTORY) == -1) {
             return 1;
         }
     }
@@ -99,7 +112,7 @@ int open_log_file(void) {
     snprintf(name, sizeof(name), LOG_FILE_FORMAT, file_id);
 
     char filename[256];
-    snprintf(filename, sizeof(filename), "%s/%s", LOG_DIRECTORY, name);
+    snprintf(filename, sizeof(filename), "%s" PATH_SEP "%s", LOG_DIRECTORY, name);
 
     // Check if the file already exists
     FILE* existing_file = fopen(filename, "r");
@@ -159,7 +172,7 @@ int get_latest_file_id(void) {
         struct stat file_stat;
 
         if (sscanf(entry->d_name, LOG_FILE_FORMAT, &id) == 1 && id >= 0 && id < MAX_N_FILES) {
-            char filepath[PATH_MAX];
+            char filepath[MAX_PATH_SIZE];
             snprintf(filepath, sizeof(filepath), "%s/%s", LOG_DIRECTORY, entry->d_name);
 
             if (stat(filepath, &file_stat) == 0) {
