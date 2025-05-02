@@ -22,6 +22,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     int map_count = 0;
 
     while (running) {
+        usleep(10000); // Sleep for 10 millisecond to avoid busy waiting
         const input_t input = get_next_input();
 
         switch (current) {
