@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "../../../termbox2/termbox2.h"
+#include "../../io/colors.h"
 
 typedef enum {
     WALL,
@@ -43,20 +43,20 @@ static const vector2d_t directions[4] = {
 static struct {
     map_tile_t tile;
     char symbol;
-    uintattr_t foreground_color;
-    uintattr_t background_color;
+    color_t foreground_color;
+    color_t background_color;
 } tiles_mapping[] = {
-    {WALL, '#', TB_BLUE, TB_BLUE},
-    {FLOOR, ' ', TB_WHITE, TB_BLACK},
-    {START_DOOR, '#', TB_GREEN, TB_BLACK},
-    {EXIT_DOOR, '#', TB_YELLOW, TB_BLACK},
-    {DOOR_KEY, '$', TB_YELLOW, TB_BLACK},
-    {LIFE_FOUNTAIN, '+', TB_RED, TB_BLACK},
-    {MANA_FOUNTAIN, '+', TB_BLUE, TB_BLACK},
-    {STAMINA_FOUNTAIN, '+', TB_GREEN, TB_BLACK},
-    {PLAYER, '@', TB_RED, TB_BLACK},
-    {ENEMY, '!', TB_WHITE, TB_RED},
-    {HIDDEN, ' ', TB_WHITE, TB_WHITE}
+    {WALL, '#', BLUE, BLUE},
+    {FLOOR, ' ', WHITE, BLACK},
+    {START_DOOR, '#', GREEN, BLACK},
+    {EXIT_DOOR, '#', YELLOW, BLACK},
+    {DOOR_KEY, '$', YELLOW, BLACK},
+    {LIFE_FOUNTAIN, '+', RED, BLACK},
+    {MANA_FOUNTAIN, '+', BLUE, BLACK},
+    {STAMINA_FOUNTAIN, '+', GREEN, BLACK},
+    {PLAYER, '@', RED, BLACK},
+    {ENEMY, '!', WHITE, RED},
+    {HIDDEN, ' ', WHITE, WHITE}
 };
 
 #endif //MAP_H
