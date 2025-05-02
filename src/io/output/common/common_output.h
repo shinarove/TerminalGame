@@ -5,11 +5,16 @@
 
 typedef struct {
     char* title;
-    char** options;
+    char* options[];
     int option_count;
     int selected_index;
     char* tailing_text;
 } menu_t;
+
+/**
+ * Clears the terminal screen by invoking the termbox clear functionality.
+ */
+void clear_screen(void);
 
 /**
  * Prints a text string at the specified position on the terminal with the specified foreground and background colors.

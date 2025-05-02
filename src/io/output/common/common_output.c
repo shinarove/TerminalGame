@@ -3,6 +3,10 @@
 #include "../../../logger/logger.h"
 #include "../../../../termbox2/termbox2.h"
 
+void clear_screen() {
+    tb_clear();
+}
+
 void print_text(int x, int y, const color_t fg, const color_t bg, const char* text) {
     RETURN_WHEN_NULL(text, , "Common Output", "print_text: Text is NULL");
 
