@@ -10,6 +10,6 @@
  * @param anchor The starting position (x, y) on the console where the map will begin drawing.
  * @param map A pointer to the parsed map tile structure containing the tile symbols and their associated colors.
  */
-void print_map(vector2d_t anchor, const parsed_map_tile_t* map);
+void print_map(vector2d_t anchor, const parsed_map_t* map);
 
 #endif //MAP_OUTPUT_H
