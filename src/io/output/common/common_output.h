@@ -1,0 +1,4 @@
+#ifndef COMMON_OUTPUT_H
+#define COMMON_OUTPUT_H
+
+#endif //COMMON_OUTPUT_H
