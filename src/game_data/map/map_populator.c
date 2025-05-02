@@ -57,7 +57,7 @@ int is_close_to_enemy(int x, int y, const map_t* map_to_check);
 
 int populate_map(map_t* map_to_populate) {
     RETURN_WHEN_NULL(map_to_populate, 1, "Map Populator", "Map to populate is NULL");
-    RETURN_WHEN_FALSE(map_to_populate->hidden_tiles == NULL, 1, "Map Populator", "Map to populate is not initialized");
+    RETURN_WHEN_NULL(map_to_populate->hidden_tiles, 1, "Map Populator", "Map to populate is not initialized");
 
     place_key(map_to_populate);
     place_enemy(map_to_populate);
