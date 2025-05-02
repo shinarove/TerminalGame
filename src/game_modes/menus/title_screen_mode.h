@@ -18,4 +18,4 @@
  */
 state_t update_title_screen(input_t input);
 
-#endif //TITLE_SCREEN_MODE_H
+#endif//TITLE_SCREEN_MODE_H

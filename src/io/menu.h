@@ -1,8 +1,8 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "output/common/common_output.h"
 #include "input/input_handler.h"
+#include "output/common/common_output.h"
 
 /**
  * Handles the user's menu input and updates the provided menu accordingly.
@@ -23,4 +23,4 @@
  */
 int handle_menu(input_t input, int x, int y, menu_t* menu_to_handle);
 
-#endif //MENU_H
+#endif//MENU_H

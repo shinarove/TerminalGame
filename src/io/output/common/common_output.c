@@ -1,7 +1,7 @@
 #include "common_output.h"
 
-#include "../../../logger/logger.h"
 #include "../../../../termbox2/termbox2.h"
+#include "../../../logger/logger.h"
 
 void clear_screen() {
     tb_clear();

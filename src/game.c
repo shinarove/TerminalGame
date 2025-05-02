@@ -18,11 +18,11 @@ void start_game_loop(const memory_pool_t* used_pool) {
 
     bool running = true;
     state_t current = TITLE_SCREEN;
-    int active_map_index = -1; //-1 means no map is active
+    int active_map_index = -1;//-1 means no map is active
     int map_count = 0;
 
     while (running) {
-        usleep(10000); // Sleep for 10 millisecond to avoid busy waiting
+        usleep(10000);// Sleep for 10 millisecond to avoid busy waiting
         const input_t input = get_next_input();
 
         switch (current) {

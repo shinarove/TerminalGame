@@ -1,8 +1,8 @@
 #include "../termbox2/termbox2.h"
+#include "game.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
-#include "game.h"
 
 #include <stdlib.h>
 #include <time.h>

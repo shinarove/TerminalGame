@@ -17,4 +17,4 @@ typedef enum {
 
 void start_game_loop(const memory_pool_t* used_pool);
 
-#endif //DUNGEON_CRAWL_H
+#endif//DUNGEON_CRAWL_H
