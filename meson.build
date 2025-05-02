@@ -13,6 +13,8 @@ thread_files = files('src/thread/thread_handler.c')
 logger_files = files('src/logger/logger.c',
                      'src/logger/ringbuffer.c')
 
+io_files = files('src/io/menu.c')
+
 input_files = files('src/io/input/input_handler.c')
 
 output_files = files('src/io/output/common/common_output.c',
@@ -30,6 +32,7 @@ TerminalGame = executable('TerminalGame',
                           memory_files,
                           thread_files,
                           logger_files,
+                          io_files,
                           input_files,
                           output_files,
                           map_files,
