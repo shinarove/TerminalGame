@@ -19,4 +19,4 @@
  */
 int reveal_map(const map_t* map_to_reveal, int light_radius);
 
-#endif //MAP_REVEALER_H
+#endif//MAP_REVEALER_H

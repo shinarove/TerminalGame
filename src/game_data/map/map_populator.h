@@ -14,4 +14,4 @@
  */
 int populate_map(map_t* map_to_populate);
 
-#endif //MAP_POPULATOR_H
+#endif//MAP_POPULATOR_H

@@ -27,4 +27,4 @@ typedef struct {
  */
 parsed_map_t* parse_map(int width, int height, const map_tile_t* map_to_parse, vector2d_t player_pos);
 
-#endif //MAP_PARSER_H
+#endif//MAP_PARSER_H

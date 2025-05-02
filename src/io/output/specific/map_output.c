@@ -1,8 +1,8 @@
 #include "map_output.h"
 
-#include "../../colors.h"
-#include "../../../logger/logger.h"
 #include "../../../../termbox2/termbox2.h"
+#include "../../../logger/logger.h"
+#include "../../colors.h"
 
 void print_map(const vector2d_t anchor, const parsed_map_t* map) {
     RETURN_WHEN_NULL(map, , "Map Output", "Map is NULL");

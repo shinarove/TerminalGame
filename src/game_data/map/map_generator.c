@@ -138,7 +138,7 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         }
 
         if (!found) {
-            top--; // backtracking
+            top--;// backtracking
         }
     }
 
@@ -219,7 +219,7 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
 
     map_to_generate->hidden_tiles[exit_x * height + exit_y] = EXIT_DOOR;
 
-    RETURN_WHEN_TRUE(populate_map(map_to_generate) , 1, "Map Generator", "Failed to populate map");
+    RETURN_WHEN_TRUE(populate_map(map_to_generate), 1, "Map Generator", "Failed to populate map");
 
     return 0;
 }

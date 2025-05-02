@@ -2,13 +2,13 @@
 #define RINGBUFFER_H
 
 #ifdef _WIN32
-#include <windows.h>
-#define MUTEX CRITICAL_SECTION
-#define CONDITION CONDITION_VARIABLE
+    #include <windows.h>
+    #define MUTEX CRITICAL_SECTION
+    #define CONDITION CONDITION_VARIABLE
 #else
-#include <pthread.h>
-#define MUTEX pthread_mutex_t
-#define CONDITION pthread_cond_t
+    #include <pthread.h>
+    #define MUTEX pthread_mutex_t
+    #define CONDITION pthread_cond_t
 #endif
 
 typedef struct {

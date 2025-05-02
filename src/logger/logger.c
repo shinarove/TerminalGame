@@ -11,19 +11,19 @@
 #include <time.h>
 
 #ifdef _WIN32
-#include <direct.h>
+    #include <direct.h>
 
-#define STAT_STRUCT struct _stat
-#define STAT_FUNC _stat
-#define MKDIR(path) _mkdir(path)
-#define PATH_SEP "\\"
+    #define STAT_STRUCT struct _stat
+    #define STAT_FUNC _stat
+    #define MKDIR(path) _mkdir(path)
+    #define PATH_SEP "\\"
 #else
-#include <dirent.h>
+    #include <dirent.h>
 
-#define STAT_STRUCT struct stat
-#define STAT_FUNC stat
-#define MKDIR(path) mkdir(path, 0755)
-#define PATH_SEP "/"
+    #define STAT_STRUCT struct stat
+    #define STAT_FUNC stat
+    #define MKDIR(path) mkdir(path, 0755)
+    #define PATH_SEP "/"
 #endif
 
 #define MAX_PATH_SIZE 4096

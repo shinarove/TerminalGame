@@ -3,10 +3,10 @@
 #include "../../logger/logger.h"
 
 static const vector2d_t check_vectors[4][2] = {
-    {{1, 1}, {1, 0}},   // for up
-    {{-1, -1}, {-1, 0}},// for down
-    {{1, -1}, {0, -1}}, // for left
-    {{-1, 1}, {0, 1}},  // for right
+        {{1, 1}, {1, 0}},   // for up
+        {{-1, -1}, {-1, 0}},// for down
+        {{1, -1}, {0, -1}}, // for left
+        {{-1, 1}, {0, 1}},  // for right
 };
 
 /**
@@ -148,5 +148,3 @@ int need_loop_break(const int x, const int y, const vector2d_t dir, const int j,
     }
     return 0;
 }
-
-

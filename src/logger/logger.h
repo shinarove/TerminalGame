@@ -8,9 +8,9 @@
     }
 
 #define RETURN_WHEN_TRUE(expr, ret, modul, format, ...) \
-    if (expr) {                                          \
-        log_msg(ERROR, modul, format);                   \
-        return ret;                                      \
+    if (expr) {                                         \
+        log_msg(ERROR, modul, format);                  \
+        return ret;                                     \
     }
 
 typedef enum {

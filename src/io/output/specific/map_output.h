@@ -12,4 +12,4 @@
  */
 void print_map(vector2d_t anchor, const parsed_map_t* map);
 
-#endif //MAP_OUTPUT_H
+#endif//MAP_OUTPUT_H
