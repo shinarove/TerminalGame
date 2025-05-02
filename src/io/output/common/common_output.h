@@ -5,7 +5,7 @@
 
 typedef struct {
     char* title;
-    char* options[];
+    char** options;
     int option_count;
     int selected_index;
     char* tailing_text;

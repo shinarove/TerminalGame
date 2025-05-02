@@ -5,9 +5,15 @@
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
 
+static const char* menu_options[] = {
+    "New Game",
+    "Load Game",
+    "Exit"
+};
+
 static menu_t title_screen_menu = {
     .title = " ",
-    .options = {"New Game", "Load Game", "Exit"},
+    .options = (char**) menu_options,
     .option_count = 3,
     .selected_index = 0,
     .tailing_text = " "
@@ -31,7 +37,7 @@ state_t update_title_screen(input_t input) {
             break;
         case -1:
             //ESC was pressed, but we are in the title screen, so nothing will change
-        case title_screen_menu.option_count:
+        case 3: // count of options
             //does nothing
             break;
         default:
