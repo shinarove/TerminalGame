@@ -37,7 +37,8 @@ void input_handler_thread() {
     bool running = true;
     while (running) {
         struct tb_event event;
-        const int ret = tb_peek_event(&event, 10);
+        // wait for an event (blocking)
+        const int ret = tb_poll_event(&event);
 
         input_t input = NO_INPUT;
         if (ret == TB_OK) {
