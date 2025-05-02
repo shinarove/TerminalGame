@@ -15,6 +15,9 @@ logger_files = files('src/logger/logger.c',
 
 input_files = files('src/io/input/input_handler.c')
 
+map_files = files('src/game_data/map/map_generator.c',
+                  'src/game_data/map/map_populator.c',)
+
 TerminalGame = executable('TerminalGame',
                           termbox_file,
                           src_files,
@@ -22,5 +25,6 @@ TerminalGame = executable('TerminalGame',
                           thread_files,
                           logger_files,
                           input_files,
+                          map_files,
                           install : true)
 
