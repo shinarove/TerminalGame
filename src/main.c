@@ -28,7 +28,6 @@ int main(void) {
     memory_pool_t* pool = init_memory_pool(STANDARD_MEMORY_POOL_SIZE);
     //the memory pool doesn't need to be checked here, as it will be checked in start_game_loop()
 
-    log_msg(FINE, "Main", "This is a test log message");
     start_game_loop(pool);
 
     shutdown_memory_pool(pool);
