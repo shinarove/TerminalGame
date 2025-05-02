@@ -1,0 +1,4 @@
+#ifndef INVENTORY_MODE_H
+#define INVENTORY_MODE_H
+
+#endif //INVENTORY_MODE_H
