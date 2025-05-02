@@ -4,20 +4,24 @@
 
 #include <stdlib.h>
 
-parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map_to_parse) {
+parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map_to_parse, const vector2d_t player_pos) {
     RETURN_WHEN_NULL(map_to_parse, NULL, "Map Parser", "Map to parse is NULL");
     RETURN_WHEN_TRUE(width <= 0, NULL, "Map Parser", "Width must be greater than 0");
     RETURN_WHEN_TRUE(height <= 0, NULL, "Map Parser", "Height must be greater than 0");
 
     // allocate memory for the string, including space for newlines and null terminator
-    const int parsed_map_size = width * height * sizeof(parsed_map_t) + height * sizeof(parsed_map_t);
+    const unsigned int parsed_map_size = sizeof(parsed_map_t) * width * height + height * sizeof(parsed_map_t);
     parsed_map_t* parsed_map = (parsed_map_t*) malloc(parsed_map_size);
     RETURN_WHEN_NULL(parsed_map, NULL, "Map Parser", "Failed to allocate memory for map string");
 
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             // get the tile type
-            const map_tile_t tile = map_to_parse[x * height + y];
+            map_tile_t tile = map_to_parse[x * height + y];
+            if (x == player_pos.dx && y == player_pos.dy) {
+                // if the tile is the player's position, set it to PLAYER
+                tile = PLAYER;
+            }
 
             const char symbol = tiles_mapping[tile].symbol;
             const color_t foreground_color = tiles_mapping[tile].foreground_color;
