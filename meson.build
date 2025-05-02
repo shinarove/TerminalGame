@@ -4,7 +4,8 @@ project('TerminalGame', 'c',
 
 termbox_file = files('termbox2/termbox2.c')
 
-src_files = files('src/main.c')
+src_files = files('src/main.c',
+                  'src/game.c',)
 
 memory_files = files('src/memory/mem_mgmt.c')
 
