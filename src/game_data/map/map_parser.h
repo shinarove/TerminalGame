@@ -7,8 +7,13 @@ typedef struct {
     char symbol;
     color_t foreground_color;
     color_t background_color;
-} parsed_map_t;
+} parsed_map_tile_t;
 
+typedef struct {
+    int width;
+    int height;
+    parsed_map_tile_t* tiles;
+} parsed_map_t;
 
 /**
  * Parses a 2D map representation based on specified dimensions and player position.
