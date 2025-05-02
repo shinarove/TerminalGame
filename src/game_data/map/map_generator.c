@@ -1,6 +1,7 @@
-#include "map_generator.h"
+#include "../../game_data/map/map_generator.h"
 
 #include "../../logger/logger.h"
+#include "map_populator.h"
 
 #include <stdlib.h>
 
@@ -217,6 +218,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     } while (!valid_exit);
 
     map_to_generate->hidden_tiles[exit_x * height + exit_y] = EXIT_DOOR;
+
+    populate_map(map_to_generate);
 
     return 0;
 }

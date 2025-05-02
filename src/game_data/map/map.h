@@ -27,6 +27,7 @@ typedef struct {
     int id;
     int width;
     int height;
+    int enemy_count;
     vector2d_t player_pos;
     map_tile_t* hidden_tiles; //the total size being height * width
     map_tile_t* revealed_tiles; //the total size being height * width
