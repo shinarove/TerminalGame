@@ -10,7 +10,7 @@ void print_map(const int x, const int y, const parsed_map_t* map) {
     int anchor_x = x;
     int anchor_y = y;
     if (x < 0 || y < 0) {
-        log_msg(ERROR, "Map Output", "Invalid anchor position: (%d, %d), set to (0, 0)", x, y);
+        log_msg(WARNING, "Map Output", "Invalid anchor position: (%d, %d), set to (0, 0)", x, y);
         anchor_x = 0;
         anchor_y = 0;
     }
