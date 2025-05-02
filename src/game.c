@@ -1,25 +1,53 @@
 #include "game.h"
 
 #include "game_data/map/map_generator.h"
+#include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
+#define MAP_HEIGHT 19
+#define MAP_WIDTH 39
+#define ENEMY_COUNT 4
 
 void start_game_loop(const memory_pool_t* used_pool) {
     RETURN_WHEN_NULL(used_pool, , "Game", "Memory pool is NULL");
 
     //allocate maps in the memory pool, with max number of maps == 16
     map_t** maps = memory_pool_alloc(used_pool, 16 * sizeof(map_t*));
+    RETURN_WHEN_NULL(maps, , "Game", "Failed to allocate memory for maps");
 
     bool running = true;
     state_t current = TITLE_SCREEN;
+    int active_map_index = -1; //-1 means no map is active
+    int map_count = 0;
 
     while (running) {
-        input_t input = get_next_input();
+        const input_t input = get_next_input();
 
         switch (current) {
             case TITLE_SCREEN:
-            case MAP_GENERATION:
+                current = update_title_screen(input);
+                break;
+            case MAP_GENERATION: {
+                active_map_index++;
+                map_count++;
+                maps[active_map_index] = memory_pool_alloc(used_pool, sizeof(map_t));
+                if (maps[active_map_index] == NULL) {
+                    log_msg(ERROR, "Game", "Failed to allocate memory for map");
+                    running = false;
+                }
+                //initialize the map
+                maps[active_map_index]->id = active_map_index;
+                maps[active_map_index]->width = MAP_WIDTH;
+                maps[active_map_index]->height = MAP_HEIGHT;
+                maps[active_map_index]->enemy_count = ENEMY_COUNT;
+
+                if (generate_map(used_pool, maps[active_map_index]) != 0) {
+                    log_msg(ERROR, "Game", "Failed to generate map");
+                    running = false;
+                }
+                break;
+            }
             case MAP_MODE:
             case COMBAT_MODE:
             case INVENTORY_MODE:
@@ -32,5 +60,8 @@ void start_game_loop(const memory_pool_t* used_pool) {
         }
     }
 
+    for (int i = 0; i < map_count; i++) {
+        memory_pool_free(used_pool, maps[i]);
+    }
     memory_pool_free(used_pool, maps);
 }
