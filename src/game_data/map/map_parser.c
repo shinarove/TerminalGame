@@ -13,9 +13,8 @@ parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map
     parsed_map_t* parsed_map = (parsed_map_t*) malloc(sizeof(parsed_map_t));
     RETURN_WHEN_NULL(parsed_map, NULL, "Map Parser", "Failed to allocate memory for parsed map");
 
-    // allocate memory for the map-tiles, including space for newlines and null terminator
-    const unsigned int parsed_map_size = sizeof(parsed_map_tile_t) * width * height + height * sizeof(parsed_map_tile_t);
-    parsed_map_tile_t* parsed_map_tile = (parsed_map_tile_t*) malloc(parsed_map_size);
+    // allocate memory for the map-tiles
+    parsed_map_tile_t* parsed_map_tile = (parsed_map_tile_t*) malloc(sizeof(parsed_map_tile_t) * width * height);
     if (parsed_map_tile == NULL) {
         log_msg(ERROR, "Map Parser", "Failed to allocate memory for parsed map");
         free(parsed_map);
@@ -40,20 +39,10 @@ parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map
             const color_t background_color = tiles_mapping[tile].background_color;
 
             // set the symbol and colors
-            parsed_map->tiles[x * (height + 1) + y].symbol = symbol;
-            parsed_map->tiles[x * (height + 1) + y].foreground_color = foreground_color;
-            parsed_map->tiles[x * (height + 1) + y].background_color = background_color;
+            parsed_map->tiles[x * height + y].symbol = symbol;
+            parsed_map->tiles[x * height + y].foreground_color = foreground_color;
+            parsed_map->tiles[x * height + y].background_color = background_color;
         }
-        // add a newline character at the end of each row
-        // if the last row, set the symbol to '\0'
-        if (x != width - 1) {
-            parsed_map->tiles[x * (height + 1) + height].symbol = '\n';
-        } else {
-            parsed_map->tiles[x * (height + 1) + height].symbol = '\0';
-        }
-        parsed_map->tiles[x * (height + 1) + height].foreground_color = DEFAULT;
-        parsed_map->tiles[x * (height + 1) + height].background_color = DEFAULT;
-
     }
 
     return parsed_map;
