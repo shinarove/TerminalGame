@@ -60,12 +60,13 @@ void input_handler_thread() {
                 input = QUIT;
 
             if (input != NO_INPUT) {
-                input_buffer[buffer_head] = input;
-                buffer_head = (buffer_head + 1) % INPUT_BUFFER_SIZE;
                 if ((buffer_tail - 1) % INPUT_BUFFER_SIZE == buffer_head) {
                     // buffer is full
-                    log_msg(WARNING, "Input Handler", "Input buffer is full, next input will overwrite the oldest input");
+                    log_msg(INFO, "Input Handler", "Input buffer is full");
+                    buffer_tail = (buffer_tail + 1) % INPUT_BUFFER_SIZE;
                 }
+                input_buffer[buffer_head] = input;
+                buffer_head = (buffer_head + 1) % INPUT_BUFFER_SIZE;
             }
         }
 
