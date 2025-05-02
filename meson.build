@@ -18,7 +18,8 @@ input_files = files('src/io/input/input_handler.c')
 map_files = files('src/game_modes/map/map_mode.c',
                   'src/game_data/map/map_generator.c',
                   'src/game_data/map/map_populator.c',
-                  'src/game_data/map/map_parser.c',)
+                  'src/game_data/map/map_parser.c',
+                  'src/game_data/map/map_revealer.c',)
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
