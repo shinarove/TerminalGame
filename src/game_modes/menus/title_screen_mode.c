@@ -25,7 +25,7 @@ state_t update_title_screen(input_t input) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, "Terminal Game");
     switch (handle_menu(input, 5, 5, &title_screen_menu)) {
         case 0:
-            next_state = GENERAT_MAP;
+            next_state = GENERATE_MAP;
             break;
         case 1:
             //TODO: add load functionality

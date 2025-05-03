@@ -30,7 +30,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case TITLE_SCREEN:
                 current = update_title_screen(input);
                 break;
-            case GENERAT_MAP: {
+            case GENERATE_MAP: {
                 active_map_index = active_map_index == -1 ? 0 : (active_map_index + 1) % MAX_MAP_COUNT;
                 map_count = map_count == MAX_MAP_COUNT ? MAX_MAP_COUNT : map_count + 1;
                 maps[active_map_index] = memory_pool_alloc(used_pool, sizeof(map_t));
