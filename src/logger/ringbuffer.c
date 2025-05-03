@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BUFFER_SIZE 20
+#define BUFFER_SIZE 40
 
 #ifdef _WIN32
     #define INIT_MUTEX(mutex) InitializeCriticalSection(mutex)

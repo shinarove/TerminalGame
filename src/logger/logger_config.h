@@ -4,7 +4,7 @@
 #define MAX_N_FILES 5
 #define MAX_FILE_SIZE (100 * 1024)// max size = 100 kB
 
-#define MAX_HEADER_SIZE 256
-#define MAX_MSG_SIZE (512 + MAX_HEADER_SIZE)
+#define MAX_HEADER_SIZE 128
+#define MAX_MSG_SIZE (256 + MAX_HEADER_SIZE)
 
 #endif//LOGGER_CONFIG_H
