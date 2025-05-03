@@ -51,9 +51,10 @@ int ensure_log_dir(void);
  * If the file already exists, it will be first removed and then created.
  * If no file is found, create a new file corresponding to fopen(...).
  *
+ * @param is_init if 0, no existing file will be removed
  * @return 0 if successfully opened, 1 if failed
  */
-int open_log_file(void);
+int open_log_file(int is_init);
 
 /**
  * This function should be called whenever a new log msg must be written.
@@ -107,21 +108,23 @@ int ensure_log_dir(void) {
     return 0;
 }
 
-int open_log_file(void) {
+int open_log_file(const int is_init) {
     char name[16];
     snprintf(name, sizeof(name), LOG_FILE_FORMAT, file_id);
 
     char filename[256];
     snprintf(filename, sizeof(filename), "%s" PATH_SEP "%s", LOG_DIRECTORY, name);
 
-    // Check if the file already exists
-    FILE* existing_file = fopen(filename, "r");
-    if (existing_file) {
-        fclose(existing_file);
+    if (is_init) {
+        // Check if the file already exists
+        FILE* existing_file = fopen(filename, "r");
+        if (existing_file) {
+            fclose(existing_file);
 
-        // If the file already exists, remove it
-        if (remove(filename) != 0) {
-            return 1;
+            // If the file already exists, remove it
+            if (remove(filename) != 0) {
+                return 1;
+            }
         }
     }
 
@@ -141,7 +144,7 @@ int check_log_file(void) {
             file_id = (file_id + 1) % MAX_N_FILES;
 
             // open a new file
-            if (open_log_file() != 0) {
+            if (open_log_file(1) != 0) {
                 // failed to open a new file
                 return 1;
             }
@@ -225,7 +228,7 @@ void init_logger(void) {
     if (log_file == NULL) {
         if (init_ringbuffer(&log_buffer) == 0) {
             file_id = get_latest_file_id();
-            if (file_id == -1 || open_log_file() != 0) {
+            if (file_id == -1 || open_log_file(0) != 0) {
                 fclose(log_file);
             } else {
                 start_log_writer_thread();
