@@ -19,4 +19,6 @@ void print_map(int x, int y, const parsed_map_t* map) {
             tb_printf(x + i, y + j, tile.foreground_color, tile.background_color, "%c", tile.symbol);
         }
     }
+
+    tb_present();
 }

@@ -59,7 +59,7 @@ void input_handler_thread() {
                 input = ENTER;
             else if (event.key == TB_KEY_ESC)
                 input = ESCAPE;
-            else if (event.key == TB_KEY_CTRL_Q)
+            else if (event.key == TB_KEY_CTRL_C)
                 input = QUIT;
 
             if (input != NO_INPUT) {
