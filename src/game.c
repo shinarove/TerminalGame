@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include "game_data/map/map_generator.h"
+#include "game_modes/map/map_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
@@ -51,11 +52,14 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             }
             case MAP_MODE:
+                current = update_map_mode(input, maps[active_map_index]);
+                break;
             case COMBAT_MODE:
             case INVENTORY_MODE:
             case CHARACTER_MODE:
             case SETTINGS:
             case GAME_OVER:
+                log_msg(ERROR, "Game", "Unsupported state: %d", current);
             case EXIT_GAME:
                 running = false;
                 break;
