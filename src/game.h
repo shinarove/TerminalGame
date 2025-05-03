@@ -5,7 +5,7 @@
 
 typedef enum {
     TITLE_SCREEN,
-    MAP_GENERATION,
+    GENERAT_MAP,
     MAP_MODE,
     COMBAT_MODE,
     INVENTORY_MODE,

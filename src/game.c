@@ -5,6 +5,7 @@
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
+#define MAX_MAP_COUNT 16
 #define MAP_HEIGHT 19
 #define MAP_WIDTH 39
 #define ENEMY_COUNT 4
@@ -12,26 +13,26 @@
 void start_game_loop(const memory_pool_t* used_pool) {
     RETURN_WHEN_NULL(used_pool, , "Game", "Memory pool is NULL");
 
-    //allocate maps in the memory pool, with max number of maps == 16
-    map_t** maps = memory_pool_alloc(used_pool, 16 * sizeof(map_t*));
+    //allocate maps in the memory pool, with max number of maps
+    map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
     RETURN_WHEN_NULL(maps, , "Game", "Failed to allocate memory for maps");
 
     bool running = true;
     state_t current = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int map_count = 0;
+    int map_count = 0;// number of maps that have been generated
 
     while (running) {
-        usleep(10000);// Sleep for 10 millisecond to avoid busy waiting
+        usleep(10000);// sleep for 10 millisecond to avoid busy waiting
         const input_t input = get_next_input();
 
         switch (current) {
             case TITLE_SCREEN:
                 current = update_title_screen(input);
                 break;
-            case MAP_GENERATION: {
-                active_map_index++;
-                map_count++;
+            case GENERAT_MAP: {
+                active_map_index = active_map_index == -1 ? 0 : (active_map_index + 1) % MAX_MAP_COUNT;
+                map_count = map_count == MAX_MAP_COUNT ? MAX_MAP_COUNT : map_count + 1;
                 maps[active_map_index] = memory_pool_alloc(used_pool, sizeof(map_t));
                 if (maps[active_map_index] == NULL) {
                     log_msg(ERROR, "Game", "Failed to allocate memory for map");
