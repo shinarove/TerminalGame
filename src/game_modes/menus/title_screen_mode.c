@@ -17,8 +17,11 @@ static menu_t title_screen_menu = {
         .selected_index = 0,
         .tailing_text = " "};
 
-state_t update_title_screen(input_t input) {
+state_t update_title_screen(const input_t input) {
     state_t next_state = TITLE_SCREEN;
+
+    clear_screen();
+    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, "Terminal Game");
 
     switch (handle_menu(input, 5, 5, &title_screen_menu)) {
         case 0:
@@ -39,9 +42,6 @@ state_t update_title_screen(input_t input) {
             log_msg(WARNING, "Title Screen Mode", "Invalid option returned in handle_menu: %d", title_screen_menu.selected_index);
             break;
     }
-
-    clear_screen();
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, "Terminal Game");
 
     return next_state;
 }
