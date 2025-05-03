@@ -50,9 +50,11 @@ void input_handler_thread() {
             else if (event.key == TB_KEY_ARROW_RIGHT || event.ch == 'd')
                 input = RIGHT;
             else if (event.key == 'm')
-                input = MENU;
+                input = M;
             else if (event.key == 'i')
-                input = INVENTORY;
+                input = I;
+            else if (event.key == 'c')
+                input = C;
             else if (event.key == TB_KEY_ENTER)
                 input = ENTER;
             else if (event.key == TB_KEY_ESC)
