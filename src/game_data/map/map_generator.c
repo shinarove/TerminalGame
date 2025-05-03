@@ -13,14 +13,54 @@
 #define STANDARD_MAP_HEIGHT 19
 #define STANDARD_MAP_WIDTH 39
 
-void shuffle(vector2d_t* dir, const int n) {
-    for (int i = n - 1; i > 0; i--) {
-        const int j = rand() % (i + 1);
-        const vector2d_t tmp = dir[j];
-        dir[j] = dir[i];
-        dir[i] = tmp;
-    }
-}
+/**
+ * Recursively carves passages in the map using a random depth-first search algorithm.
+ *
+ * This function starts at the given (x, y) coordinates, marks the tile as visited,
+ * and sets it as a floor in the map. It then shuffles the possible movement directions,
+ * randomly chooses one, and attempts to continue carving passages. For each chosen
+ * direction, the function checks if the target cell is within bounds and unvisited.
+ * If the conditions are met, the wall between the current cell and the target cell is
+ * turned into a floor and the function recursively calls itself to continue carving.
+ *
+ * @param x The x-coordinate of the starting cell.
+ * @param y The y-coordinate of the starting cell.
+ * @param map A pointer to the map being generated. It contains the dimensions, tiles,
+ * and other metadata required for maze generation.
+ * @param visited A pointer to the array used to track which cells have already been
+ * visited (1 for visited, 0 for unvisited). The size matches the total map area.
+ */
+void carve_passage(int x, int y, map_t* map, int* visited);
+
+/**
+ * Randomly shuffles an array of 2D directional vectors in place.
+ *
+ * This function rearranges the elements of the given array `dir` randomly using
+ * the Fisher-Yates shuffle algorithm. It ensures that the order of directions
+ * in the array is different after the function call. This is essential for
+ * algorithms that require random directional decisions, such as maze generation.
+ *
+ * @param dir A pointer to the array of `vector2d_t` objects representing the
+ * possible directions.
+ * @param n The number of elements in the `dir` array to be shuffled.
+ */
+void shuffle(vector2d_t* dir, int n);
+
+/**
+ * Checks if the given coordinates are within the bounds of the map.
+ *
+ * This function verifies whether the specified (x, y) coordinates are
+ * inside the valid area of the map. The bounds are determined by
+ * the width and height of the map. It returns a boolean-like integer
+ * indicating if the coordinates are valid.
+ *
+ * @param x The x-coordinate of the position to check.
+ * @param y The y-coordinate of the position to check.
+ * @param map A pointer to the map structure containing the width and
+ * height of the map.
+ * @return 1 if the coordinates are within bounds, 0 otherwise.
+ */
+int is_in_bounds(int x, int y, const map_t* map);
 
 int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     RETURN_WHEN_NULL(pool, 1, "Map Generator", "Memory pool is NULL");
@@ -39,6 +79,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     //get the dimensions of the map for easier access
     const int width = map_to_generate->width;
     const int height = map_to_generate->height;
+
+    DEBUG_LOG("Map Generator", "Generating map with dimensions %d x %d", width, height);
 
     //allocates memory for the maps
     map_to_generate->hidden_tiles = (map_tile_t*) memory_pool_alloc(pool, height * width * sizeof(map_tile_t));
@@ -90,57 +132,82 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         log_msg(WARNING, "Map Generator", "Player position Y was even, should not be possible");
         map_to_generate->player_pos.dy += 1;
     }
+
+    // for (int i = 0; i < height; i++) {
+    //     char line_buffer[width + 1];
+    //     for (int j = 0; j < width; j++) {
+    //         line_buffer[j] = map_to_generate->hidden_tiles[j * height + i] == WALL ? '#' : '.';
+    //     }
+    //     line_buffer[width] = '\0';
+    //     DEBUG_LOG("Special", "%s", line_buffer);
+    // }
+
     //get the start position
     const int start_x = map_to_generate->player_pos.dx;
     const int start_y = map_to_generate->player_pos.dy;
 
-    //prepare the stack for the dfs
-    vector2d_t stack[width * height];
-    int top = 0;
+    // //prepare the stack for the dfs
+    // vector2d_t stack[width * height];
+    // int top = 0;
 
-    //add start condition
-    stack[top++] = (vector2d_t) {start_x, start_y};
-    visited[start_x][start_y] = 1;
-    map_to_generate->hidden_tiles[start_x * height + start_y] = FLOOR;
+    // //add start condition
+    // stack[top++] = (vector2d_t) {start_x, start_y};
+    // visited[start_x][start_y] = 1;
+    // map_to_generate->hidden_tiles[start_x * height + start_y] = FLOOR;
 
-    //dfs loop
-    while (top > 0) {
-        const vector2d_t current = stack[top - 1];
-        const int x = current.dx;
-        const int y = current.dy;
+    carve_passage(start_x, start_y, map_to_generate, visited);
 
-        vector2d_t shuffled_dirs[4];
-        for (int i = 0; i < 4; i++) {
-            shuffled_dirs[i] = directions[i];
+    for (int i = 0; i < height; i++) {
+        char line_buffer1[width + 1];
+        char line_buffer2[width + 1];
+        for (int j = 0; j < width; j++) {
+            line_buffer1[j] = map_to_generate->hidden_tiles[j * height + i] == WALL ? '#' : ' ';
+            line_buffer2[j] = visited[j][i] == 1 ? '#' : ' ';
         }
-        shuffle(shuffled_dirs, 4);
-
-        int found = 0;
-
-        for (int i = 0; i < 4; i++) {
-            const int nx = x + shuffled_dirs[i].dx * 2;
-            const int ny = y + shuffled_dirs[i].dy * 2;
-
-            const bool is_in_bounds = nx >= 0 && nx < width && ny >= 0 && ny < height;
-            const bool is_valid_cell = is_in_bounds && !visited[nx][ny];
-            if (is_valid_cell) {
-                const int wall_x = x + shuffled_dirs[i].dx;
-                const int wall_y = y + shuffled_dirs[i].dy;
-
-                map_to_generate->hidden_tiles[wall_x * height + wall_y] = FLOOR;
-                map_to_generate->hidden_tiles[nx * height + ny] = FLOOR;
-                visited[nx][ny] = 1;
-
-                stack[top++] = (vector2d_t) {nx, ny};
-                found = 1;
-                break;
-            }
-        }
-
-        if (!found) {
-            top--;// backtracking
-        }
+        line_buffer1[width] = '\0';
+        line_buffer2[width] = '\0';
+        usleep(100);
+        DEBUG_LOG("Special", "%s | %s", line_buffer1, line_buffer2);
     }
+
+    // //dfs loop
+    // while (top > 0) {
+    //     const vector2d_t current = stack[top - 1];
+    //     const int x = current.dx;
+    //     const int y = current.dy;
+    //
+    //     vector2d_t shuffled_dirs[4];
+    //     for (int i = 0; i < 4; i++) {
+    //         shuffled_dirs[i] = directions[i];
+    //     }
+    //     shuffle(shuffled_dirs, 4);
+    //
+    //     int found = 0;
+    //
+    //     for (int i = 0; i < 4; i++) {
+    //         const int nx = x + shuffled_dirs[i].dx * 2;
+    //         const int ny = y + shuffled_dirs[i].dy * 2;
+    //
+    //         const bool is_in_bounds = nx >= 0 && nx < width && ny >= 0 && ny < height;
+    //         const bool is_valid_cell = is_in_bounds && !visited[nx][ny];
+    //         if (is_valid_cell) {
+    //             const int wall_x = x + shuffled_dirs[i].dx;
+    //             const int wall_y = y + shuffled_dirs[i].dy;
+    //
+    //             map_to_generate->hidden_tiles[wall_x * height + wall_y] = FLOOR;
+    //             map_to_generate->hidden_tiles[nx * height + ny] = FLOOR;
+    //             visited[nx][ny] = 1;
+    //
+    //             stack[top++] = (vector2d_t) {nx, ny};
+    //             found = 1;
+    //             break;
+    //         }
+    //     }
+    //
+    //     if (!found) {
+    //         top--;// backtracking
+    //     }
+    // }
 
     DEBUG_LOG("Map Generator", "Finished DFS");
 
@@ -228,4 +295,46 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     RETURN_WHEN_TRUE(populate_map(map_to_generate), 1, "Map Generator", "Failed to populate map");
 
     return 0;
+}
+
+void carve_passage(const int x, const int y, map_t* map, int* visited) {
+    const int idx = x * map->height + y;
+    visited[idx] = 1;
+    map->hidden_tiles[idx] = FLOOR;
+
+    vector2d_t shuffled_dirs[4];
+    for (int i = 0; i < 4; i++) {
+        shuffled_dirs[i] = directions[i];
+    }
+    shuffle(shuffled_dirs, 4);
+
+    for (int i = 0; i < 4; i++) {
+        const int nx = x + shuffled_dirs[i].dx * 2;
+        const int ny = y + shuffled_dirs[i].dy * 2;
+        const int nidx = nx * map->height + ny;
+
+        if (is_in_bounds(nx, ny, map) && visited[nidx] != 1) {
+            const int wall_x = x + shuffled_dirs[i].dx;
+            const int wall_y = y + shuffled_dirs[i].dy;
+            const int wall_idx = wall_x * map->height + wall_y;
+
+            // make the wall a floor and continue the path
+            map->hidden_tiles[wall_idx] = FLOOR;
+            carve_passage(nx, ny, map, visited);
+        }
+
+    }
+}
+
+void shuffle(vector2d_t* dir, const int n) {
+    for (int i = n - 1; i > 0; i--) {
+        const int j = rand() % (i + 1);
+        const vector2d_t tmp = dir[j];
+        dir[j] = dir[i];
+        dir[i] = tmp;
+    }
+}
+
+int is_in_bounds(const int x, const int y, const map_t* map) {
+    return x >= 0 && x < map->width && y >= 0 && y < map->height;
 }

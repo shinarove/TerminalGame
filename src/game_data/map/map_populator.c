@@ -42,7 +42,7 @@ int is_dead_end(int x, int y, const map_t* map_to_check);
  * @param map_to_check the map structure to examine
  * @return 1 if the tile at the specified position is a floor, 0 otherwise
  */
-int is_floor(int x, int y, const map_t* map_to_check);
+int is_not_floor(int x, int y, const map_t* map_to_check);
 
 /**
  * Checks if the given coordinates are within a minimum distance to an enemy
@@ -73,7 +73,7 @@ void place_key(const map_t* map_to_populate) {
     do {
         x = rand() % (map_to_populate->width - 2) + 1;
         y = rand() % (map_to_populate->height - 2) + 1;
-    } while (!is_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
+    } while (is_not_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
 
     map_to_populate->hidden_tiles[x * map_to_populate->height + y] = DOOR_KEY;
     DEBUG_LOG("Map Populator", "Key placed at %d, %d", x, y);
@@ -92,7 +92,7 @@ void place_enemy(map_t* map_to_populate) {
         do {
             x = rand() % (map_to_populate->width - 2) + 1;
             y = rand() % (map_to_populate->height - 2) + 1;
-        } while (!is_floor(x, y, map_to_populate) || is_close_to_enemy(x, y, map_to_populate));
+        } while (is_not_floor(x, y, map_to_populate) || is_close_to_enemy(x, y, map_to_populate));
 
         map_to_populate->hidden_tiles[x * map_to_populate->height + y] = ENEMY;
     }
@@ -113,7 +113,7 @@ void place_fountain(const map_t* map_to_populate) {
     do {
         x = rand() % (map_to_populate->width - 2) + 1;
         y = rand() % (map_to_populate->height - 2) + 1;
-    } while (!is_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
+    } while (is_not_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
 
     map_to_populate->hidden_tiles[x * map_to_populate->height + y] = MANA_FOUNTAIN;
     DEBUG_LOG("Map Populator", "Fountains placed");
@@ -137,11 +137,11 @@ int is_dead_end(const int x, const int y, const map_t* map_to_check) {
     return neighbor_count == 1;
 }
 
-int is_floor(const int x, const int y, const map_t* map_to_check) {
-    return map_to_check->hidden_tiles[x * map_to_check->height + y] == FLOOR;
+int is_not_floor(const int x, const int y, const map_t* map_to_check) {
+    return map_to_check->hidden_tiles[x * map_to_check->height + y] != FLOOR;
 }
 
-int is_close_to_enemy(int x, int y, const map_t* map_to_check) {
+int is_close_to_enemy(const int x, const int y, const map_t* map_to_check) {
     for (int i = -ENEMY_MIN_DISTANCE; i <= ENEMY_MIN_DISTANCE + 1; i++) {
         for (int j = -ENEMY_MIN_DISTANCE; j <= ENEMY_MIN_DISTANCE + 1; j++) {
             const int map_idx = (x + i) * map_to_check->height + (y + j);
