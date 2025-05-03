@@ -14,14 +14,29 @@
 #define STANDARD_MAP_WIDTH 39
 
 /**
- * Recursively carves passages in the map using a random depth-first search algorithm.
+ * Initializes the game map by setting all tiles to a specified initial state
+ * and resetting the visited array. Updates the map's hidden and revealed tile configurations.
  *
- * This function starts at the given (x, y) coordinates, marks the tile as visited,
- * and sets it as a floor in the map. It then shuffles the possible movement directions,
- * randomly chooses one, and attempts to continue carving passages. For each chosen
- * direction, the function checks if the target cell is within bounds and unvisited.
- * If the conditions are met, the wall between the current cell and the target cell is
- * turned into a floor and the function recursively calls itself to continue carving.
+ * @param map A constant pointer to the map structure containing dimensions and tile data
+ * for the map to be initialized.
+ * @param visited An array representing the visited state of each tile, which will be
+ * reset during initialization. Its size should match the total number of tiles in the map.
+ */
+void init_maps(const map_t* map, int* visited);
+
+/**
+ * Initializes the starting position of the player and designates an entry point
+ * in the map along one of the edges (top, bottom, left, or right).
+ *
+ * @param map A pointer to the map structure containing information about the map's
+ * dimensions, tiles, and player position.
+ * @return The index of the start edge used (TOP, BOTTOM, LEFT, or RIGHT) if successful,
+ * or -1 if an error occurs.
+ */
+int init_start_position(map_t* map);
+
+/**
+ * Recursively carves passages in the map using a random depth-first search algorithm.
  *
  * @param x The x-coordinate of the starting cell.
  * @param y The y-coordinate of the starting cell.
@@ -35,11 +50,6 @@ void carve_passage(int x, int y, map_t* map, int* visited);
 /**
  * Randomly shuffles an array of 2D directional vectors in place.
  *
- * This function rearranges the elements of the given array `dir` randomly using
- * the Fisher-Yates shuffle algorithm. It ensures that the order of directions
- * in the array is different after the function call. This is essential for
- * algorithms that require random directional decisions, such as maze generation.
- *
  * @param dir A pointer to the array of `vector2d_t` objects representing the
  * possible directions.
  * @param n The number of elements in the `dir` array to be shuffled.
@@ -48,11 +58,6 @@ void shuffle(vector2d_t* dir, int n);
 
 /**
  * Checks if the given coordinates are within the bounds of the map.
- *
- * This function verifies whether the specified (x, y) coordinates are
- * inside the valid area of the map. The bounds are determined by
- * the width and height of the map. It returns a boolean-like integer
- * indicating if the coordinates are valid.
  *
  * @param x The x-coordinate of the position to check.
  * @param y The y-coordinate of the position to check.
@@ -80,49 +85,18 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     const int width = map_to_generate->width;
     const int height = map_to_generate->height;
 
-    DEBUG_LOG("Map Generator", "Generating map with dimensions %d x %d", width, height);
-
     //allocates memory for the maps
     map_to_generate->hidden_tiles = (map_tile_t*) memory_pool_alloc(pool, height * width * sizeof(map_tile_t));
     RETURN_WHEN_NULL(map_to_generate->hidden_tiles, 1, "Map Generator", "Failed to allocate memory for hidden tiles");
     map_to_generate->revealed_tiles = (map_tile_t*) memory_pool_alloc(pool, height * width * sizeof(map_tile_t));
     RETURN_WHEN_NULL(map_to_generate->revealed_tiles, 1, "Map Generator", "Failed to allocate memory for revealed tiles");
 
-    //iterate through each tile and set it to WALL / HIDDEN
-    for (int i = 0; i < height * width; i++) {
-        map_to_generate->hidden_tiles[i] = WALL;
-        map_to_generate->revealed_tiles[i] = HIDDEN;
-    }
-    //get random start edge
-    const int start_edge = rand() % 4;
-
-    //set the start position
-    switch (start_edge) {
-        case TOP:
-            map_to_generate->player_pos.dx = 3 + 2 * (rand() % ((width - 5) / 2));
-            map_to_generate->player_pos.dy = 1;
-            map_to_generate->hidden_tiles[map_to_generate->player_pos.dx * height + 0] = START_DOOR;
-            break;
-        case BOTTOM:
-            map_to_generate->player_pos.dx = 3 + 2 * (rand() % ((width - 5) / 2));
-            map_to_generate->player_pos.dy = height - 2;
-            map_to_generate->hidden_tiles[map_to_generate->player_pos.dx * height + (height - 1)] = START_DOOR;
-            break;
-        case LEFT:
-            map_to_generate->player_pos.dx = 1;
-            map_to_generate->player_pos.dy = 3 + 2 * (rand() % ((height - 5) / 2));
-            map_to_generate->hidden_tiles[0 * height + map_to_generate->player_pos.dy] = START_DOOR;
-            break;
-        case RIGHT:
-            map_to_generate->player_pos.dx = width - 2;
-            map_to_generate->player_pos.dy = 3 + 2 * (rand() % ((height - 5) / 2));
-            map_to_generate->hidden_tiles[(width - 1) * height + map_to_generate->player_pos.dy] = START_DOOR;
-            break;
-        default:
-            log_msg(ERROR, "Map Generator", "Invalid start edge");
-    }
     //initialize visited map copy for the dfs
-    int visited[width][height];
+    int visited[width * height];
+    init_maps(map_to_generate, visited);
+
+    const int start_edge = init_start_position(map_to_generate);
+    RETURN_WHEN_TRUE(start_edge == -1, 1, "Map Generator", "Failed to initialize start position");
 
     //check if the start position is valid for dfs (odd coordinates)
     if (map_to_generate->player_pos.dx % 2 == 0) {
@@ -132,15 +106,6 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         log_msg(WARNING, "Map Generator", "Player position Y was even, should not be possible");
         map_to_generate->player_pos.dy += 1;
     }
-
-    // for (int i = 0; i < height; i++) {
-    //     char line_buffer[width + 1];
-    //     for (int j = 0; j < width; j++) {
-    //         line_buffer[j] = map_to_generate->hidden_tiles[j * height + i] == WALL ? '#' : '.';
-    //     }
-    //     line_buffer[width] = '\0';
-    //     DEBUG_LOG("Special", "%s", line_buffer);
-    // }
 
     //get the start position
     const int start_x = map_to_generate->player_pos.dx;
@@ -157,18 +122,18 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
 
     carve_passage(start_x, start_y, map_to_generate, visited);
 
-    for (int i = 0; i < height; i++) {
-        char line_buffer1[width + 1];
-        char line_buffer2[width + 1];
-        for (int j = 0; j < width; j++) {
-            line_buffer1[j] = map_to_generate->hidden_tiles[j * height + i] == WALL ? '#' : ' ';
-            line_buffer2[j] = visited[j][i] == 1 ? '#' : ' ';
-        }
-        line_buffer1[width] = '\0';
-        line_buffer2[width] = '\0';
-        usleep(100);
-        DEBUG_LOG("Special", "%s | %s", line_buffer1, line_buffer2);
-    }
+    // for (int i = 0; i < height; i++) {
+    //     char line_buffer1[width + 1];
+    //     char line_buffer2[width + 1];
+    //     for (int j = 0; j < width; j++) {
+    //         line_buffer1[j] = map_to_generate->hidden_tiles[j * height + i] == WALL ? '#' : ' ';
+    //         line_buffer2[j] = visited[j * height + i] == 1 ? '#' : ' ';
+    //     }
+    //     line_buffer1[width] = '\0';
+    //     line_buffer2[width] = '\0';
+    //     usleep(100);
+    //     DEBUG_LOG("Special", "%s | %s", line_buffer1, line_buffer2);
+    // }
 
     // //dfs loop
     // while (top > 0) {
@@ -208,8 +173,6 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     //         top--;// backtracking
     //     }
     // }
-
-    DEBUG_LOG("Map Generator", "Finished DFS");
 
     const int num_loops = (width * height) / 100 + 1;
 
@@ -297,16 +260,63 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     return 0;
 }
 
+void init_maps(const map_t* map, int* visited) {
+    //iterate through each tile and set it to WALL / HIDDEN / 0
+    for (int i = 0; i < map->width * map->height; i++) {
+        map->hidden_tiles[i] = WALL;
+        map->revealed_tiles[i] = HIDDEN;
+        visited[i] = 0;
+    }
+}
+
+int init_start_position(map_t* map) {
+    const int width = map->width;
+    const int height = map->height;
+
+    //get random start edge
+    const int start_edge = rand() % 4;
+
+    //set the start position
+    switch (start_edge) {
+        case TOP:
+            map->player_pos.dx = 3 + 2 * (rand() % ((width - 5) / 2));
+            map->player_pos.dy = 1;
+            map->hidden_tiles[map->player_pos.dx * height + 0] = START_DOOR;
+            break;
+        case BOTTOM:
+            map->player_pos.dx = 3 + 2 * (rand() % ((width - 5) / 2));
+            map->player_pos.dy = height - 2;
+            map->hidden_tiles[map->player_pos.dx * height + (height - 1)] = START_DOOR;
+            break;
+        case LEFT:
+            map->player_pos.dx = 1;
+            map->player_pos.dy = 3 + 2 * (rand() % ((height - 5) / 2));
+            map->hidden_tiles[0 * height + map->player_pos.dy] = START_DOOR;
+            break;
+        case RIGHT:
+            map->player_pos.dx = width - 2;
+            map->player_pos.dy = 3 + 2 * (rand() % ((height - 5) / 2));
+            map->hidden_tiles[(width - 1) * height + map->player_pos.dy] = START_DOOR;
+            break;
+        default:
+            log_msg(ERROR, "Map Generator", "Invalid start edge");
+            return -1;
+    }
+
+    return start_edge;
+}
+
 void carve_passage(const int x, const int y, map_t* map, int* visited) {
     const int idx = x * map->height + y;
     visited[idx] = 1;
     map->hidden_tiles[idx] = FLOOR;
 
+    // Create a copy of directions
     vector2d_t shuffled_dirs[4];
     for (int i = 0; i < 4; i++) {
         shuffled_dirs[i] = directions[i];
     }
-    shuffle(shuffled_dirs, 4);
+    shuffle(shuffled_dirs, 4); // shuffle the directions
 
     for (int i = 0; i < 4; i++) {
         const int nx = x + shuffled_dirs[i].dx * 2;
@@ -329,7 +339,7 @@ void carve_passage(const int x, const int y, map_t* map, int* visited) {
 void shuffle(vector2d_t* dir, const int n) {
     for (int i = n - 1; i > 0; i--) {
         const int j = rand() % (i + 1);
-        const vector2d_t tmp = dir[j];
+        vector2d_t tmp = dir[j];
         dir[j] = dir[i];
         dir[i] = tmp;
     }
