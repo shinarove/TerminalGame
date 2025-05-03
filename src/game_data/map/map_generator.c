@@ -142,6 +142,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         }
     }
 
+    DEBUG_LOG("Map Generator", "Finished DFS");
+
     const int num_loops = (width * height) / 100 + 1;
 
     int count = 0;
@@ -179,6 +181,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
 
         max_attempts--;
     }
+
+    DEBUG_LOG("Map Generator", "Finished adding loops");
 
     int exit_x = 0;
     int exit_y = 0;
@@ -218,6 +222,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
     } while (!valid_exit);
 
     map_to_generate->hidden_tiles[exit_x * height + exit_y] = EXIT_DOOR;
+
+    DEBUG_LOG("Map Generator", "Finished generating map, now populating it ...");
 
     RETURN_WHEN_TRUE(populate_map(map_to_generate), 1, "Map Generator", "Failed to populate map");
 

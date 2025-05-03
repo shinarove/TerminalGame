@@ -76,6 +76,7 @@ void place_key(const map_t* map_to_populate) {
     } while (!is_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
 
     map_to_populate->hidden_tiles[x * map_to_populate->height + y] = DOOR_KEY;
+    DEBUG_LOG("Map Populator", "Key placed at %d, %d", x, y);
 }
 
 void place_enemy(map_t* map_to_populate) {
@@ -95,6 +96,7 @@ void place_enemy(map_t* map_to_populate) {
 
         map_to_populate->hidden_tiles[x * map_to_populate->height + y] = ENEMY;
     }
+    DEBUG_LOG("Map Populator", "Enemies placed");
 }
 
 void place_fountain(const map_t* map_to_populate) {
@@ -114,6 +116,7 @@ void place_fountain(const map_t* map_to_populate) {
     } while (!is_floor(x, y, map_to_populate) && !is_dead_end(x, y, map_to_populate));
 
     map_to_populate->hidden_tiles[x * map_to_populate->height + y] = MANA_FOUNTAIN;
+    DEBUG_LOG("Map Populator", "Fountains placed");
 }
 
 int is_dead_end(const int x, const int y, const map_t* map_to_check) {

@@ -45,5 +45,6 @@ parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map
         }
     }
 
+    DEBUG_LOG("Map Parser", "Successfully parsed map");
     return parsed_map;
 }

@@ -45,10 +45,14 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 maps[active_map_index]->height = MAP_HEIGHT;
                 maps[active_map_index]->enemy_count = ENEMY_COUNT;
 
+                DEBUG_LOG("Game", "Generating map %d", active_map_index);
+
                 if (generate_map(used_pool, maps[active_map_index]) != 0) {
                     log_msg(ERROR, "Game", "Failed to generate map");
                     running = false;
                 }
+                current = MAP_MODE;
+                DEBUG_LOG("Game", "Map generated, change to MAP_MODE");
                 break;
             }
             case MAP_MODE:

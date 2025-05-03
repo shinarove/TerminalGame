@@ -131,6 +131,8 @@ int reveal_map(const map_t* map_to_reveal, const int light_radius) {
             correction++;
         }
     }
+
+    DEBUG_LOG("Map Revealer", "Map revealed");
     return 0;
 }
 
