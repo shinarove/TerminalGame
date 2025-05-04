@@ -6,10 +6,17 @@
 #include "../../logger/logger.h"
 #include "../../io/local/local_handler.h"
 
+#define NEW_GAME 0
+#define LOAD_GAME 1
+#define CHANGE_LANGUAGE 2
+#define EXIT_GAME 3
+#define NUM_OF_OPTIONS 4
+
 enum title_screen_index {
     GAME_TITEL,
     OPTION_NEW_GAME,
     OPTION_LOAD_GAME,
+    OPTION_CHANGE_LANGUAGE,
     OPTION_EXIT_GAME,
     MAX_TITLE_SCREEN_INDEX
 };
@@ -31,7 +38,7 @@ int init_title_screen() {
 
     title_screen_menu.title = " ";
     title_screen_menu.options = &title_screen_strings[OPTION_NEW_GAME]; // only the first option address is needed
-    title_screen_menu.option_count = 3;
+    title_screen_menu.option_count = NUM_OF_OPTIONS;
     title_screen_menu.selected_index = 0;
     title_screen_menu.tailing_text = " ";
 
@@ -49,18 +56,21 @@ state_t update_title_screen(const input_t input) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
     switch (handle_menu(input, 5, 5, &title_screen_menu)) {
-        case 0:
+        case NEW_GAME:
             next_state = GENERATE_MAP;
             break;
-        case 1:
+        case LOAD_GAME:
             //TODO: add load functionality
             break;
-        case 2:
+        case CHANGE_LANGUAGE:
+            //TODO: add change language functionality
+            break;
+        case EXIT_GAME:
             next_state = EXIT_GAME;
             break;
         case -1:
             //ESC was pressed, but we are in the title screen, so nothing will change
-        case 3:// count of options
+        case NUM_OF_OPTIONS:
             //does nothing
             break;
         default:
@@ -96,5 +106,6 @@ void update_title_screen_local() {
     title_screen_strings[GAME_TITEL] = get_local_string("GAME.TITLE");
     title_screen_strings[OPTION_NEW_GAME] = get_local_string("OPTION.NEW_GAME");
     title_screen_strings[OPTION_LOAD_GAME] = get_local_string("OPTION.LOAD_GAME");
+    title_screen_strings[OPTION_CHANGE_LANGUAGE] = get_local_string("OPTION.CHANGE_LANGUAGE");
     title_screen_strings[OPTION_EXIT_GAME] = get_local_string("OPTION.EXIT_GAME");
 }

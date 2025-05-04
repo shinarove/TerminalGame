@@ -1,4 +1,5 @@
 GAME.TITLE="Terminal Game"
 OPTION.NEW_GAME="Neues Spiel"
 OPTION.LOAD_GAME="Lade Spiel"
+OPTION:CHANGE_LANGUAGE="Sprache ändern"
 OPTION.EXIT_GAME="Spiel beenden"
