@@ -28,6 +28,7 @@ menu_files = files('src/game_modes/menus/title_screen_mode.c',
                    'src/game_modes/menus/change_language_mode.c',)
 
 map_files = files('src/game_modes/map/map_mode.c',
+                  'src/game_modes/map/map_event_handler.c',
                   'src/game_data/map/map_generator.c',
                   'src/game_data/map/map_populator.c',
                   'src/game_data/map/map_parser.c',

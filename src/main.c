@@ -1,5 +1,6 @@
 #include "../termbox2/termbox2.h"
 #include "game.h"
+#include "game_data/character/character.h"
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/change_language_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
@@ -52,11 +53,12 @@ int main(void) {
     memory_pool_t* pool = NULL;
     const int exit_code = init(&pool);
 
-    if (exit_code == 0) {
-        start_game_loop(pool);
+    character_t* player = create_base_character(pool, 1, "Hero");
 
-        shutdown_memory_pool(pool);
+    if (exit_code == 0) {
+        start_game_loop(pool, player);
     }
+    shutdown_memory_pool(pool);
     shutdown();
     return exit_code;
 }

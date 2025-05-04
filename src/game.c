@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include "game_data/map/map_generator.h"
+#include "game_data/map/map_revealer.h"
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/change_language_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
@@ -13,12 +14,9 @@
 #define MAP_WIDTH 39
 #define ENEMY_COUNT 4
 
-void start_game_loop(const memory_pool_t* used_pool) {
-    RETURN_WHEN_NULL(used_pool, , "Game", "Memory pool is NULL");
-
+void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
-    RETURN_WHEN_NULL(maps, , "Game", "Failed to allocate memory for maps");
 
     bool running = true;
     state_t current = TITLE_SCREEN;
@@ -53,11 +51,14 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     log_msg(ERROR, "Game", "Failed to generate map");
                     running = false;
                 }
+
+                // reveal the map around the player starting position
+                reveal_map(maps[active_map_index], 3);
                 current = MAP_MODE;
                 break;
             }
             case MAP_MODE:
-                current = update_map_mode(input, maps[active_map_index]);
+                current = update_map_mode(input, maps[active_map_index], player);
                 break;
             case COMBAT_MODE:
             case INVENTORY_MODE:
@@ -81,4 +82,5 @@ void start_game_loop(const memory_pool_t* used_pool) {
         memory_pool_free(used_pool, maps[i]);
     }
     memory_pool_free(used_pool, maps);
+    memory_pool_free(used_pool, player);
 }

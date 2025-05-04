@@ -11,7 +11,7 @@ typedef enum {
     DOOR_KEY,
     LIFE_FOUNTAIN,
     MANA_FOUNTAIN,
-    STAMINA_FOUNTAIN,
+    STAMINA_FOUNTAIN,//currently unused
     PLAYER,
     ENEMY,
     HIDDEN,

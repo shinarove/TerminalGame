@@ -6,6 +6,7 @@
 #include "../../io/output/common/common_output.h"
 #include "../../io/output/specific/map_output.h"
 #include "../../logger/logger.h"
+#include "map_event_handler.h"
 
 enum map_mode_index {
     GAME_TITLE,
@@ -30,7 +31,7 @@ int init_map_mode() {
     return 0;
 }
 
-state_t update_map_mode(const input_t input, map_t* map) {
+state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     state_t next_state = MAP_MODE;
 
     const int player_on_map_idx = map->player_pos.dx * map->height + map->player_pos.dy;
@@ -73,7 +74,10 @@ state_t update_map_mode(const input_t input, map_t* map) {
             //does nothing
             break;
     }
-    reveal_map(map, 3);
+    if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
+        reveal_map(map, 3);
+        handle_map_event(map, player);
+    }
 
     clear_screen();
     parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
