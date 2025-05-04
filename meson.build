@@ -33,7 +33,8 @@ map_files = files('src/game_modes/map/map_mode.c',
                   'src/game_data/map/map_parser.c',
                   'src/game_data/map/map_revealer.c',)
 
-character_files = files('src/game_data/character/character.c',)
+character_files = files('src/game_data/character/character.c',
+                        'src/game_data/character/character_parser.c',)
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
