@@ -1,0 +1,4 @@
+GAME.TITLE="Terminal Game"
+OPTION.NEW_GAME="Neues Spiel"
+OPTION.LOAD_GAME="Lade Spiel"
+OPTION.EXIT_GAME="Spiel beenden"

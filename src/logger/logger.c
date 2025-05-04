@@ -234,6 +234,7 @@ void init_logger(void) {
                 start_log_writer_thread();
             }
         }
+        // else: the logger was not started, but the program remains running
     }
 }
 

@@ -39,6 +39,9 @@ int init_local_handler(const local_lang_t lang) {
     local_file = fopen(rel_path, "r");
     RETURN_WHEN_NULL(local_file, 1, "Local", "Failed to open local file.");
 
+    observer_list = malloc(sizeof(observer_node_t));
+    RETURN_WHEN_NULL(observer_list, 1, "Local", "Failed to allocate memory for observer list.");
+
     observer_list->update_func = NULL;
     observer_list->next = NULL;
     return 0;
@@ -124,5 +127,6 @@ void shutdown_local_handler(void) {
         free(current);
         current = next;
     }
-    fclose(local_file);
+
+    if (local_file != NULL) fclose(local_file);
 }

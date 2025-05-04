@@ -4,24 +4,49 @@
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
+#include "../../io/local/local_handler.h"
 
-static const char* menu_options[] = {
-        "New Game",
-        "Load Game",
-        "Exit"};
+enum title_screen_index {
+    GAME_TITEL,
+    OPTION_NEW_GAME,
+    OPTION_LOAD_GAME,
+    OPTION_EXIT_GAME,
+    MAX_TITLE_SCREEN_INDEX
+};
 
-static menu_t title_screen_menu = {
-        .title = " ",
-        .options = (char**) menu_options,
-        .option_count = 3,
-        .selected_index = 0,
-        .tailing_text = " "};
+char** title_screen_strings = NULL;
+
+menu_t title_screen_menu;
+
+void update_title_screen_local(void);
+
+int init_title_screen() {
+    // allocate memory for the local strings
+    title_screen_strings = (char**) malloc(sizeof(char*) * MAX_TITLE_SCREEN_INDEX);
+    RETURN_WHEN_NULL(title_screen_strings, 1, "Title Screen Mode", "Failed to allocate memory for title screen strings.");
+
+    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+        title_screen_strings[i] = NULL;
+    }
+
+    title_screen_menu.title = " ";
+    title_screen_menu.options = &title_screen_strings[OPTION_NEW_GAME]; // only the first option address is needed
+    title_screen_menu.option_count = 3;
+    title_screen_menu.selected_index = 0;
+    title_screen_menu.tailing_text = " ";
+
+    update_title_screen_local();
+
+    observe_local(update_title_screen_local);
+    return 0;
+}
 
 state_t update_title_screen(const input_t input) {
+    RETURN_WHEN_NULL(title_screen_strings, EXIT_GAME, "Title Screen Mode", "Title screen mode was not initialized.");
     state_t next_state = TITLE_SCREEN;
 
     clear_screen();
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, "Terminal Game");
+    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
     switch (handle_menu(input, 5, 5, &title_screen_menu)) {
         case 0:
@@ -44,4 +69,32 @@ state_t update_title_screen(const input_t input) {
     }
 
     return next_state;
+}
+
+void shutdown_title_screen() {
+    if (title_screen_strings == NULL) return;
+
+    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+        if (title_screen_strings[i] != NULL) {
+            //only free the strings that were allocated
+            free(title_screen_strings[i]);
+        }
+    }
+    free(title_screen_strings);
+}
+
+void update_title_screen_local() {
+    if (title_screen_strings == NULL) return;
+
+    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+        if (title_screen_strings[i] != NULL)  {
+            //only free the strings that were allocated
+            free(title_screen_strings[i]);
+        }
+    }
+
+    title_screen_strings[GAME_TITEL] = get_local_string("GAME.TITLE");
+    title_screen_strings[OPTION_NEW_GAME] = get_local_string("OPTION.NEW_GAME");
+    title_screen_strings[OPTION_LOAD_GAME] = get_local_string("OPTION.LOAD_GAME");
+    title_screen_strings[OPTION_EXIT_GAME] = get_local_string("OPTION.EXIT_GAME");
 }

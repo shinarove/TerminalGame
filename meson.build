@@ -21,6 +21,8 @@ input_files = files('src/io/input/input_handler.c')
 output_files = files('src/io/output/common/common_output.c',
                      'src/io/output/specific/map_output.c',)
 
+local_files = files('src/io/local/local_handler.c',)
+
 menu_files = files('src/game_modes/menus/title_screen_mode.c',)
 
 map_files = files('src/game_modes/map/map_mode.c',
@@ -38,6 +40,7 @@ TerminalGame = executable('TerminalGame',
                           io_files,
                           input_files,
                           output_files,
+                          local_files,
                           menu_files,
                           map_files,
                           install : true)
