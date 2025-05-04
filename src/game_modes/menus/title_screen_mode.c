@@ -6,10 +6,6 @@
 #include "../../logger/logger.h"
 #include "../../io/local/local_handler.h"
 
-#define NEW_GAME 0
-#define LOAD_GAME 1
-#define CHANGE_LANGUAGE 2
-#define EXIT_GAME 3
 #define NUM_OF_OPTIONS 4
 
 enum title_screen_index {
@@ -56,16 +52,16 @@ state_t update_title_screen(const input_t input) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
     switch (handle_menu(input, 5, 5, &title_screen_menu)) {
-        case NEW_GAME:
+        case 0:
             next_state = GENERATE_MAP;
             break;
-        case LOAD_GAME:
+        case 1:
             //TODO: add load functionality
             break;
-        case CHANGE_LANGUAGE:
+        case 2:
             //TODO: add change language functionality
             break;
-        case EXIT_GAME:
+        case 3:
             next_state = EXIT_GAME;
             break;
         case -1:
