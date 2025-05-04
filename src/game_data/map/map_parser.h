@@ -26,6 +26,6 @@ typedef struct {
  * @return A pointer to the parsed map structure, or NULL if an error occurs (e.g., invalid input or memory allocation failure).
  * @note The caller is responsible for freeing the allocated memory for the parsed map.
  */
-parsed_map_t* parse_map(int width, int height, const map_tile_t* map_to_parse, vector2d_t player_pos);
+parsed_map_t* create_parsed_map(int width, int height, const map_tile_t* map_to_parse, vector2d_t player_pos);
 
 #endif//MAP_PARSER_H

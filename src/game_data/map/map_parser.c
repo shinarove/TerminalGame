@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-parsed_map_t* parse_map(const int width, const int height, const map_tile_t* map_to_parse, const vector2d_t player_pos) {
+parsed_map_t* create_parsed_map(const int width, const int height, const map_tile_t* map_to_parse, const vector2d_t player_pos) {
     RETURN_WHEN_NULL(map_to_parse, NULL, "Map Parser", "Map to parse is NULL");
     RETURN_WHEN_TRUE(width <= 0, NULL, "Map Parser", "Width must be greater than 0");
     RETURN_WHEN_TRUE(height <= 0, NULL, "Map Parser", "Height must be greater than 0");
