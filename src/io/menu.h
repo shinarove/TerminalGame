@@ -5,21 +5,18 @@
 #include "output/common/common_output.h"
 
 /**
- * Handles the user's menu input and updates the provided menu accordingly.
- * Depending on the user's input, the function can update the selected menu option,
- * close the menu, or return the currently selected option.
+ * Handles the user input for navigating and interacting with a menu. Depending on the input,
+ * the menu selection is updated, or a specific action is triggered (e.g., closing the menu or quitting the game).
  *
- * @param input The user's input, represented by an input_t value,
- *              such as UP, DOWN, ENTER, or ESCAPE.
- * @param x The x-coordinate where the menu will be displayed.
- * @param y The y-coordinate where the menu will be displayed.
- * @param menu_to_handle A pointer to the menu_t structure representing the menu to be handled.
- *                       This must be a non-NULL pointer.
- * @return An integer indicating the outcome:
- *         - The index of the selected option if the ENTER input is received.
- *         - -1 if the ESCAPE input is received, indicating the menu was closed.
- *         - The number of options in the menu when the input does not directly select or close the menu.
- *         - -1 if the provided menu_to_handle pointer is NULL.
+ * @param input The user input that affects the menu (e.g., UP, DOWN, ENTER, ESCAPE, etc.).
+ * @param x The x-coordinate of where the menu should be displayed.
+ * @param y The y-coordinate of where the menu should be displayed.
+ * @param menu_to_handle A pointer to the menu structure to be handled and updated.
+ * @return Returns:
+ *         - The selected menu index if the ENTER key was pressed.
+ *         - -1 if the ESCAPE key was pressed to indicate the menu was closed.
+ *         - -2 if the QUIT key was pressed to indicate quitting the game.
+ *         - The total number of options in the menu if the input did not lead to any specific action.
  */
 int handle_menu(input_t input, int x, int y, menu_t* menu_to_handle);
 
