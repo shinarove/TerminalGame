@@ -11,6 +11,7 @@ typedef enum {
     INVENTORY_MODE,
     CHARACTER_MODE,
     SETTINGS,
+    CHANGE_LANGUAGE,
     GAME_OVER,
     EXIT_GAME
 } state_t;

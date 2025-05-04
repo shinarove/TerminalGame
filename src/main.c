@@ -1,6 +1,7 @@
 #include "../termbox2/termbox2.h"
 #include "game.h"
 #include "game_modes/menus/title_screen_mode.h"
+#include "game_modes/menus/change_language_mode.h"
 #include "io/input/input_handler.h"
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
@@ -18,6 +19,7 @@ int init() {
     init_input_handler();
     if (init_local_handler(LANGE_EN) != 0) return 1;
     if (init_title_screen() != 0) return 2;
+    if (init_change_language() != 0) return 3;
 
     // Seed the random number generator with a combination of time, process ID, and stack variable address
     unsigned int seed = (unsigned int) time(NULL);// Use current time as seed
@@ -46,6 +48,7 @@ int main(void) {
 }
 
 void shutdown() {
+    shutdown_change_language();
     shutdown_title_screen();
     shutdown_local_handler();
     shutdown_input_handler();

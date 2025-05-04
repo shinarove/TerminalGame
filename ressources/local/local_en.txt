@@ -1,5 +1,0 @@
-GAME.TITLE="Terminal Game"
-OPTION.NEW_GAME="New Game"
-OPTION.LOAD_GAME="Load Game"
-OPTION.CHANGE_LANGUAGE="Change Language"
-OPTION.EXIT_GAME="Exit Game"

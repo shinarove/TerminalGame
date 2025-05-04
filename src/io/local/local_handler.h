@@ -11,8 +11,8 @@ static const struct {
     local_lang_t lang;
     char* file_name;
 } local_file_mapping[] = {
-        {LANGE_EN, "local_en.txt"},
-        {LANGE_DE, "local_de.txt"}
+        {LANGE_EN, "local_en.properties"},
+        {LANGE_DE, "local_de.properties"}
 };
 
 /**
@@ -50,6 +50,17 @@ char* get_local_string(const char* key);
  *         is not initialized or the language is invalid
  */
 int set_language(local_lang_t lang);
+
+
+/**
+ * Retrieve the currently set language of the local handler.
+ *
+ * This function returns the current language configured for the local handler.
+ * If the local handler is not initialized, it logs a warning message and defaults the language to English.
+ *
+ * @return the current language as a value of local_lang_t, or LANGE_EN if the handler is not initialized
+ */
+local_lang_t get_language(void);
 
 /**
  * Registers an observer function to be notified of updates from the local handler.

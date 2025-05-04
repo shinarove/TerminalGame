@@ -55,6 +55,9 @@ char* get_local_string(const char* key) {
     rewind(local_file);
 
     while (fgets(line, sizeof(line), local_file)) {
+        //if the line is empty or a comment, skip it
+        if (line[0] == '\n' || line[0] == '#') continue;
+
         if (line[key_len] == '=') {
             if (strncmp(line, key, key_len) == 0) {
                 // get the starting position
@@ -88,7 +91,10 @@ int set_language(const local_lang_t lang) {
     }
     current_lang = lang;
     fclose(local_file);
-    local_file = fopen(local_file_mapping[lang].file_name, "r");
+
+    char rel_path[128];
+    snprintf(rel_path, sizeof(rel_path), "%s" PATH_SEP "%s", LOCAL_DIRECTORY, local_file_mapping[lang].file_name);
+    local_file = fopen(rel_path, "r");
     RETURN_WHEN_NULL(local_file, 1, "Local", "Failed to open local file.");
 
     // go through the observer list
@@ -101,6 +107,14 @@ int set_language(const local_lang_t lang) {
     }
 
     return 0;
+}
+
+local_lang_t get_language(void) {
+    if (local_file == NULL) {
+        log_msg(WARNING, "Local", "Local handler is not initialized.");
+        return LANGE_EN; // default to English if not initialized
+    }
+    return current_lang;
 }
 
 void observe_local(void (*update_func)(void)) {
