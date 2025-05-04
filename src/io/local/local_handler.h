@@ -31,7 +31,8 @@ int init_local_handler(local_lang_t lang);
  * Get the localized string for the given key.
  *
  * @param key the key for the localized string
- * @return the localized string, if the key is not found, return the key itself
+ * @return the localized string, if the key is not found, returns the key itself
+ * @note The caller must free the returned string.
  */
 char* get_local_string(const char* key);
 
