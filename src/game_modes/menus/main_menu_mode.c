@@ -54,7 +54,7 @@ state_t update_main_menu(const input_t input) {
 
     switch (handle_menu(input, 5, 4, &main_menu)) {
         case 0: // Continue was selected
-        case -1: // Esc was pressed, return to map mode
+        case -1:// Esc was pressed, return to map mode
             next_state = MAP_MODE;
             break;
         case 1:
@@ -67,7 +67,7 @@ state_t update_main_menu(const input_t input) {
         case 4:
             next_state = CHANGE_LANGUAGE;
             break;
-        case 5: // Exit game was selected
+        case 5:// Exit game was selected
         case -2:
             next_state = EXIT_GAME;
             break;

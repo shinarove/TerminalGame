@@ -58,7 +58,7 @@ state_t update_map_mode(const input_t input, map_t* map) {
             break;
         case M:
         case ESCAPE:
-            next_state = MAIN_MENU; //open the main menu
+            next_state = MAIN_MENU;//open the main menu
             break;
         case I:
             next_state = INVENTORY_MODE;// open inventory

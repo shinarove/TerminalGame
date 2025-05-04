@@ -10,4 +10,4 @@ state_t update_main_menu(input_t input);
 
 void shutdown_main_menu(void);
 
-#endif //MAIN_MENU_MODE_H
+#endif//MAIN_MENU_MODE_H

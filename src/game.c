@@ -2,8 +2,8 @@
 
 #include "game_data/map/map_generator.h"
 #include "game_modes/map/map_mode.h"
-#include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/change_language_mode.h"
+#include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
