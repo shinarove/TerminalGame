@@ -4,10 +4,40 @@
 
 #include <stdio.h>
 
+/**
+ * Writes the resource values into a CSV format string, starting from the specified offset.
+ * Each resource value (health, stamina, mana) is appended to the CSV line followed by a delimiter.
+ *
+ * @param csv_line A pointer to the character array where the CSV data will be written.
+ * @param csv_offset A pointer to an integer representing the current offset in the csv_line array.
+ *                   The function updates this offset as it appends data.
+ * @param resources A resources_t structure containing the health, stamina, and mana values to be written into the CSV line.
+ */
 void put_resources_in_csv(char* csv_line, const int* csv_offset, resources_t resources);
 
+/**
+ * Appends the attribute values into a CSV format string, starting from the specified offset.
+ * Each attribute value (strength, intelligence, agility, endurance, luck) is written into the CSV line,
+ * separated by a delimiter.
+ *
+ * @param csv_line A pointer to the character array where the CSV data will be appended.
+ * @param csv_offset A pointer to an integer representing the current offset in the csv_line array.
+ *                   The function updates this offset as it appends the attribute values.
+ * @param attributes An attributes_t structure containing the strength, intelligence, agility, endurance,
+ *                   and luck values to be written into the CSV line.
+ */
 void put_attributes_in_csv(char* csv_line, const int* csv_offset, attributes_t attributes);
 
+/**
+ * Appends an integer value to a CSV format string at the specified offset.
+ * Converts the integer value into a string representation and adds it to the
+ * CSV string, followed by a delimiter.
+ *
+ * @param csv_line A pointer to the character array where the CSV data will be written.
+ * @param csv_offset A pointer to an integer representing the current offset in the csv_line array.
+ *                   The function updates this offset as it appends data.
+ * @param value The integer value to be appended to the CSV line.
+ */
 void put_int_in_csv(char* csv_line, const int* csv_offset, int value);
 
 char* character_to_csv(const character_t* character) {
