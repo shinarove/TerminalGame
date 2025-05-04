@@ -4,9 +4,9 @@
 
 #include <stdio.h>
 
-void put_resources_in_csv(char* csv_line, int* csv_offset, resources_t resources);
+void put_resources_in_csv(char* csv_line, const int* csv_offset, resources_t resources);
 
-void put_attributes_in_csv(char* csv_line, int* csv_offset, attributes_t attributes);
+void put_attributes_in_csv(char* csv_line, const int* csv_offset, attributes_t attributes);
 
 void put_int_in_csv(char* csv_line, const int* csv_offset, int value);
 
