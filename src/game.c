@@ -2,6 +2,7 @@
 
 #include "game_data/map/map_generator.h"
 #include "game_modes/map/map_mode.h"
+#include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/change_language_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
@@ -62,6 +63,9 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case INVENTORY_MODE:
             case CHARACTER_MODE:
             case MAIN_MENU:
+                current = update_main_menu(input);
+                if (current == CHANGE_LANGUAGE) return_to = MAIN_MENU;
+                break;
             case CHANGE_LANGUAGE:
                 current = update_change_language(input, return_to);
                 break;

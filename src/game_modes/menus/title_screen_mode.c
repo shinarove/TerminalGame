@@ -63,7 +63,7 @@ state_t update_title_screen(const input_t input) {
         case 3:
             // Exit game was selected
         case -1:
-            //ESC was pressed
+            // ESC was pressed
         case -2:
             next_state = EXIT_GAME;
             break;
