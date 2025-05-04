@@ -316,7 +316,7 @@ void carve_passage(const int x, const int y, map_t* map, int* visited) {
     for (int i = 0; i < 4; i++) {
         shuffled_dirs[i] = directions[i];
     }
-    shuffle(shuffled_dirs, 4); // shuffle the directions
+    shuffle(shuffled_dirs, 4);// shuffle the directions
 
     for (int i = 0; i < 4; i++) {
         const int nx = x + shuffled_dirs[i].dx * 2;
@@ -332,7 +332,6 @@ void carve_passage(const int x, const int y, map_t* map, int* visited) {
             map->hidden_tiles[wall_idx] = FLOOR;
             carve_passage(nx, ny, map, visited);
         }
-
     }
 }
 

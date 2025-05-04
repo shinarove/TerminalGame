@@ -2,9 +2,9 @@
 
 #include "../../game_data/map/map_parser.h"
 #include "../../game_data/map/map_revealer.h"
+#include "../../io/local/local_handler.h"
 #include "../../io/output/common/common_output.h"
 #include "../../io/output/specific/map_output.h"
-#include "../../io/local/local_handler.h"
 #include "../../logger/logger.h"
 
 enum map_mode_index {
@@ -59,16 +59,16 @@ state_t update_map_mode(const input_t input, map_t* map) {
         case M:
             //no break needed
         case ESCAPE:
-            next_state = MAIN_MENU; //open settings
+            next_state = MAIN_MENU;//open settings
             break;
         case I:
-            next_state = INVENTORY_MODE; // open inventory
+            next_state = INVENTORY_MODE;// open inventory
             break;
         case C:
-            next_state = CHARACTER_MODE; // open character screen
+            next_state = CHARACTER_MODE;// open character screen
             break;
         case QUIT:
-            next_state = EXIT_GAME; // exit game
+            next_state = EXIT_GAME;// exit game
             break;
         default:
             //does nothing
@@ -104,7 +104,7 @@ void update_map_mode_local() {
     if (map_mode_strings == NULL) return;
 
     for (int i = 0; i < MAX_MAP_MODE_INDEX; i++) {
-        if (map_mode_strings[i] != NULL)  {
+        if (map_mode_strings[i] != NULL) {
             //only free the strings that were allocated
             free(map_mode_strings[i]);
         }

@@ -2,8 +2,8 @@
 
 #include "game_data/map/map_generator.h"
 #include "game_modes/map/map_mode.h"
-#include "game_modes/menus/title_screen_mode.h"
 #include "game_modes/menus/change_language_mode.h"
+#include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
@@ -23,7 +23,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t current = TITLE_SCREEN;
     state_t return_to = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int map_count = 0;// number of maps that have been generated
+    int map_count = 0;        // number of maps that have been generated
 
     while (running) {
         usleep(10000);// sleep for 10 millisecond to avoid busy waiting

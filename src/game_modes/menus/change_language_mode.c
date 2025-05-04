@@ -1,10 +1,10 @@
 #include "change_language_mode.h"
 
 #include "../../io/colors.h"
+#include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
-#include "../../io/local/local_handler.h"
 
 #define MAX_LANGUAGES 2
 
@@ -32,7 +32,7 @@ int init_change_language() {
         change_language_strings[i] = NULL;
     }
 
-    change_language_menu.options = &change_language_strings[OPTION_ENGLISH]; // only the first option address is needed
+    change_language_menu.options = &change_language_strings[OPTION_ENGLISH];// only the first option address is needed
     change_language_menu.option_count = MAX_LANGUAGES;
     change_language_menu.selected_index = 0;
 
@@ -47,7 +47,6 @@ state_t update_change_language(const input_t input, const state_t called_from) {
 
     clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, change_language_strings[GAME_TITEL]);
-
 
 
     int local_res = 0;
@@ -99,7 +98,7 @@ void update_change_language_local() {
     if (change_language_strings == NULL) return;
 
     for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
-        if (change_language_strings[i] != NULL)  {
+        if (change_language_strings[i] != NULL) {
             // only free the strings that were allocated
             free(change_language_strings[i]);
         }

@@ -1,10 +1,10 @@
 #include "title_screen_mode.h"
 
 #include "../../io/colors.h"
+#include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
-#include "../../io/local/local_handler.h"
 
 #define MAX_TISC_OPTION 4
 
@@ -33,7 +33,7 @@ int init_title_screen() {
     }
 
     title_screen_menu.title = " ";
-    title_screen_menu.options = &title_screen_strings[OPTION_NEW_GAME]; // only the first option address is needed
+    title_screen_menu.options = &title_screen_strings[OPTION_NEW_GAME];// only the first option address is needed
     title_screen_menu.option_count = MAX_TISC_OPTION;
     title_screen_menu.selected_index = 0;
     title_screen_menu.tailing_text = " ";
@@ -94,7 +94,7 @@ void update_title_screen_local() {
     if (title_screen_strings == NULL) return;
 
     for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
-        if (title_screen_strings[i] != NULL)  {
+        if (title_screen_strings[i] != NULL) {
             //only free the strings that were allocated
             free(title_screen_strings[i]);
         }

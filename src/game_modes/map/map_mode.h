@@ -2,8 +2,8 @@
 #define MAP_MODE_H
 
 #include "../../game.h"
-#include "../../io/input/input_handler.h"
 #include "../../game_data/map/map.h"
+#include "../../io/input/input_handler.h"
 
 int init_map_mode(void);
 

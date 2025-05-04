@@ -12,8 +12,7 @@ static const struct {
     char* file_name;
 } local_file_mapping[] = {
         {LANGE_EN, "local_en.properties"},
-        {LANGE_DE, "local_de.properties"}
-};
+        {LANGE_DE, "local_de.properties"}};
 
 /**
  * Initialize the local language handler by setting up the language and opening the corresponding resource file.
@@ -86,4 +85,4 @@ void observe_local(void (*update_func)(void));
  */
 void shutdown_local_handler(void);
 
-#endif //LOCAL_HANDLER_H
+#endif//LOCAL_HANDLER_H

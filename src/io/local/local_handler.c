@@ -2,16 +2,16 @@
 
 #include "../../logger/logger.h"
 
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef _WIN32
-#define PATH_SEP "\\"
-#define LOCAL_DIRECTORY "ressources\\local"
+    #define PATH_SEP "\\"
+    #define LOCAL_DIRECTORY "ressources\\local"
 #else
-#define PATH_SEP "/"
-#define LOCAL_DIRECTORY "ressources/local"
+    #define PATH_SEP "/"
+    #define LOCAL_DIRECTORY "ressources/local"
 #endif//_WIN32
 
 typedef struct observer_node observer_node_t;
@@ -101,7 +101,7 @@ int set_language(const local_lang_t lang) {
     const observer_node_t* current = observer_list;
     while (current != NULL) {
         if (current->update_func != NULL) {
-            current->update_func(); //call the observer function
+            current->update_func();//call the observer function
         }
         current = current->next;
     }
@@ -112,7 +112,7 @@ int set_language(const local_lang_t lang) {
 local_lang_t get_language(void) {
     if (local_file == NULL) {
         log_msg(WARNING, "Local", "Local handler is not initialized.");
-        return LANGE_EN; // default to English if not initialized
+        return LANGE_EN;// default to English if not initialized
     }
     return current_lang;
 }
