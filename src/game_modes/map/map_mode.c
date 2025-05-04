@@ -79,10 +79,10 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
         handle_map_event(map, player);
     }
 
-    clear_screen();
     parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
     RETURN_WHEN_NULL(parsed_map, EXIT_GAME, "Map Mode", "Failed to parse map");
 
+    clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, map_mode_strings[GAME_TITLE]);
     print_map(5, 4, parsed_map);
 
