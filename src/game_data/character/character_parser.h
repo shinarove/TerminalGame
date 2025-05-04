@@ -15,4 +15,4 @@
  */
 char* character_to_csv(const character_t* character);
 
-#endif //CHARACTER_PARSER_H
+#endif//CHARACTER_PARSER_H

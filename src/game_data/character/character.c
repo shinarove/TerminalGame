@@ -50,3 +50,34 @@ character_t* create_character(const memory_pool_t* pool, const int id, const cha
 void destroy_character(const memory_pool_t* pool, character_t* character) {
     memory_pool_free(pool, character);
 }
+
+void add_resources_c(character_t* character, unsigned int health, unsigned int stamina, unsigned int mana) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+
+    const resources_t cur_res = character->current_resources;
+    const resources_t max_res = character->max_resources;
+
+    character->current_resources.health = cur_res.health + health > max_res.health ? max_res.health : cur_res.health + health;
+    character->current_resources.stamina = cur_res.stamina + stamina > max_res.stamina ? max_res.stamina : cur_res.stamina + stamina;
+    character->current_resources.mana = cur_res.mana + mana > max_res.mana ? max_res.mana : cur_res.mana + mana;
+}
+
+void reset_resources_c(character_t* character) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    character->current_resources = character->max_resources;
+}
+
+void reset_health_c(character_t* character) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    character->current_resources.health = character->max_resources.health;
+}
+
+void reset_stamina_c(character_t* character) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    character->current_resources.stamina = character->max_resources.stamina;
+}
+
+void reset_mana_c(character_t* character) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    character->current_resources.mana = character->max_resources.mana;
+}

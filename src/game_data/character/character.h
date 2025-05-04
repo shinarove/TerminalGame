@@ -21,13 +21,13 @@ typedef struct character {
     unsigned int id;
     char name[64];
 
-    resources_t base_resources; // base = character without gear
-    resources_t max_resources; // max = base + buffs from gear
-    resources_t current_resources; // current usable resources, current <= max
+    resources_t base_resources;   // base = character without gear
+    resources_t max_resources;    // max = base + buffs from gear
+    resources_t current_resources;// current usable resources, current <= max
 
-    attributes_t base_attributes; // base = character without gear
-    attributes_t max_attributes; // max = base + buffs from gear
-    attributes_t current_attributes; // current = max +- temporary buffs / debuffs
+    attributes_t base_attributes;   // base = character without gear
+    attributes_t max_attributes;    // max = base + buffs from gear
+    attributes_t current_attributes;// current = max +- temporary buffs / debuffs
 } character_t;
 
 /**
@@ -53,7 +53,7 @@ character_t* create_base_character(const memory_pool_t* pool, int id, const char
  * @param base_attr The initial base attributes of the character (e.g., strength, intelligence, agility, etc.).
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
  */
-character_t* create_character(const memory_pool_t* pool, int id, const char* name, const resources_t base_res, const attributes_t base_attr);
+character_t* create_character(const memory_pool_t* pool, int id, const char* name, resources_t base_res, attributes_t base_attr);
 
 /**
  * Destroys a character object by freeing its allocated memory.
@@ -63,4 +63,43 @@ character_t* create_character(const memory_pool_t* pool, int id, const char* nam
  */
 void destroy_character(const memory_pool_t* pool, character_t* character);
 
-#endif //CHARACTER_H
+/**
+ * Adds resource values (health, stamina, and mana) to a character, ensuring that
+ * current resources do not exceed their respective maximum values.
+ *
+ * @param character A pointer to the character whose resources are to be modified. Must not be NULL.
+ * @param health The amount of health to add to the character. Values are clamped so that the total does not exceed max health.
+ * @param stamina The amount of stamina to add to the character. Values are clamped so that the total does not exceed max stamina.
+ * @param mana The amount of mana to add to the character. Values are clamped so that the total does not exceed max mana.
+ */
+void add_resources_c(character_t* character, unsigned int health, unsigned int stamina, unsigned int mana);
+
+/**
+ * Resets the resources of the specified character to their maximum values.
+ *
+ * @param character A pointer to the character whose resources are to be reset. Must not be NULL.
+ */
+void reset_resources_c(character_t* character);
+
+/**
+ * Resets the health of the specified character to its maximum value.
+ *
+ * @param character A pointer to the character whose health needs to be reset. Must not be NULL.
+ */
+void reset_health_c(character_t* character);
+
+/**
+ * Resets the stamina of the specified character to its maximum value.
+ *
+ * @param character A pointer to the character whose stamina is to be reset. Must not be NULL.
+ */
+void reset_stamina_c(character_t* character);
+
+/**
+ * Resets the mana of the specified character to its maximum value.
+ *
+ * @param character A pointer to the character whose mana is to be reset. Must not be NULL.
+ */
+void reset_mana_c(character_t* character);
+
+#endif//CHARACTER_H

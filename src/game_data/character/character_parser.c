@@ -68,7 +68,7 @@ char* character_to_csv(const character_t* character) {
     put_attributes_in_csv(csv_line, &csv_offset, character->max_attributes);
     put_attributes_in_csv(csv_line, &csv_offset, character->current_attributes);
 
-    csv_line[csv_offset] = '\0'; // Null-terminate the string
+    csv_line[csv_offset] = '\0';// Null-terminate the string
 
     return csv_line;
 }
