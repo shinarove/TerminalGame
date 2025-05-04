@@ -14,6 +14,7 @@
 
 enum exit_codes {
     SUCCESS,
+    ERROR_MEMORY_POOL_INIT,
     ERROR_LOCAL_INIT,
     ERROR_MAP_MODE_INIT,
     ERROR_TITLE_SCREEN_INIT,
@@ -21,13 +22,16 @@ enum exit_codes {
     ERROR_CHANGE_LANGUAGE_INIT,
 };
 
-int init();
+int init(memory_pool_t** pool);
 void shutdown();
 
-int init() {
+int init(memory_pool_t** pool) {
     tb_init();
     init_logger();
     init_input_handler();
+    *pool = init_memory_pool(2 * STANDARD_MEMORY_POOL_SIZE);
+    if (*pool == NULL) return ERROR_MEMORY_POOL_INIT;
+
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
     if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
     if (init_title_screen() != 0) return ERROR_TITLE_SCREEN_INIT;
@@ -45,13 +49,10 @@ int init() {
 }
 
 int main(void) {
-    const int exit_code = init();
+    memory_pool_t* pool = NULL;
+    const int exit_code = init(&pool);
 
     if (exit_code == 0) {
-        memory_pool_t* pool = init_memory_pool(2 * STANDARD_MEMORY_POOL_SIZE);// 16 MB
-        //the memory pool doesn't need to be checked here, as it will be checked in start_game_loop()
-
-        DEBUG_LOG("Main", "Starting game loop");
         start_game_loop(pool);
 
         shutdown_memory_pool(pool);
