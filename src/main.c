@@ -2,6 +2,7 @@
 #include "game.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "game_modes/menus/change_language_mode.h"
+#include "game_modes/map/map_mode.h"
 #include "io/input/input_handler.h"
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
@@ -10,6 +11,14 @@
 #include <stdlib.h>
 #include <time.h>
 
+enum exit_codes {
+    SUCCESS,
+    ERROR_LOCAL_INIT,
+    ERROR_MAP_MODE_INIT,
+    ERROR_TITLE_SCREEN_INIT,
+    ERROR_CHANGE_LANGUAGE_INIT,
+};
+
 int init();
 void shutdown();
 
@@ -17,9 +26,10 @@ int init() {
     tb_init();
     init_logger();
     init_input_handler();
-    if (init_local_handler(LANGE_EN) != 0) return 1;
-    if (init_title_screen() != 0) return 2;
-    if (init_change_language() != 0) return 3;
+    if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
+    if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
+    if (init_title_screen() != 0) return ERROR_TITLE_SCREEN_INIT;
+    if (init_change_language() != 0) return ERROR_CHANGE_LANGUAGE_INIT;
 
     // Seed the random number generator with a combination of time, process ID, and stack variable address
     unsigned int seed = (unsigned int) time(NULL);// Use current time as seed
@@ -28,7 +38,7 @@ int init() {
     seed ^= (unsigned int) &stack_var;// XOR with the address of a stack variable
     srand(seed);                      // Seed the random number generator
 
-    return 0;
+    return SUCCESS;
 }
 
 int main(void) {
@@ -50,6 +60,7 @@ int main(void) {
 void shutdown() {
     shutdown_change_language();
     shutdown_title_screen();
+    shutdown_map_mode();
     shutdown_local_handler();
     shutdown_input_handler();
     shutdown_logger();

@@ -61,7 +61,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case COMBAT_MODE:
             case INVENTORY_MODE:
             case CHARACTER_MODE:
-            case SETTINGS:
+            case MAIN_MENU:
             case CHANGE_LANGUAGE:
                 current = update_change_language(input, return_to);
                 break;

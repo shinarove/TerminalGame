@@ -24,6 +24,7 @@ typedef struct {
  * @param map_to_parse A pointer to the array of map tiles to be parsed.
  * @param player_pos The position of the player on the map as a 2D vector.
  * @return A pointer to the parsed map structure, or NULL if an error occurs (e.g., invalid input or memory allocation failure).
+ * @note The caller is responsible for freeing the allocated memory for the parsed map.
  */
 parsed_map_t* parse_map(int width, int height, const map_tile_t* map_to_parse, vector2d_t player_pos);
 

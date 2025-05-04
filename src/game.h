@@ -10,7 +10,7 @@ typedef enum {
     COMBAT_MODE,
     INVENTORY_MODE,
     CHARACTER_MODE,
-    SETTINGS,
+    MAIN_MENU,
     CHANGE_LANGUAGE,
     GAME_OVER,
     EXIT_GAME

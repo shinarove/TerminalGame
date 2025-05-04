@@ -5,6 +5,8 @@
 #include "../../io/input/input_handler.h"
 #include "../../game_data/map/map.h"
 
+int init_map_mode(void);
+
 /**
  * Updates the game state and map based on player input during map mode.
  *
@@ -18,5 +20,7 @@
  * @return The next state of the game, determined by the player's input.
  */
 state_t update_map_mode(input_t input, map_t* map);
+
+void shutdown_map_mode(void);
 
 #endif//MAP_MODE_H
