@@ -9,6 +9,8 @@
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
+#define FRAMES_PER_SECONDS 10
+
 #define MAX_MAP_COUNT 16
 #define MAP_HEIGHT 19
 #define MAP_WIDTH 39
@@ -25,7 +27,7 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
     int map_count = 0;        // number of maps that have been generated
 
     while (running) {
-        usleep(10000);// sleep for 10 millisecond to avoid busy waiting
+        usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0)); // wait for 1 frame
         const input_t input = get_next_input();
 
         switch (current) {
