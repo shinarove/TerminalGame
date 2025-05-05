@@ -1,4 +1,5 @@
 #include "../termbox2/termbox2.h"
+#include "../refterm/fast_pipe.h"
 #include "game.h"
 #include "game_data/character/character.h"
 #include "game_modes/map/map_mode.h"
@@ -50,6 +51,9 @@ int init(memory_pool_t** pool) {
 }
 
 int main(void) {
+    //only available for win
+    USE_FAST_PIPE_IF_AVAILABLE();
+
     memory_pool_t* pool = NULL;
     const int exit_code = init(&pool);
 
