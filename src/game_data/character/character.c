@@ -4,15 +4,16 @@
 
 #include <stdio.h>
 
-character_t* create_base_character(const memory_pool_t* pool, const int id, const char* name) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL");
-    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL");
+character_t* create_base_character(const memory_pool_t* pool, const unsigned int id, const char* name) {
+    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
+    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
 
     character_t* character = (character_t*) memory_pool_alloc(pool, sizeof(character_t));
-    RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character");
+    RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = id;
     snprintf(character->name, sizeof(character->name), "%s", name);
+    character->level = 1;
 
     const resources_t char_res = {10, 10, 10};
     character->base_resources = char_res;
@@ -27,14 +28,15 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     return character;
 }
 
-character_t* create_character(const memory_pool_t* pool, const int id, const char* name, const resources_t base_res, const attributes_t base_attr) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL");
-    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL");
+character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name, const int level, const resources_t base_res, const attributes_t base_attr) {
+    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
+    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
 
     character_t* character = (character_t*) memory_pool_alloc(pool, sizeof(character_t));
 
     character->id = id;
     snprintf(character->name, sizeof(character->name), "%s", name);
+    character->level = level < 1 ? 1 : level; // Ensure level is at least 1
 
     character->base_resources = base_res;
     character->max_resources = base_res;
@@ -52,7 +54,7 @@ void destroy_character(const memory_pool_t* pool, character_t* character) {
 }
 
 void add_resources_c(character_t* character, unsigned int health, unsigned int stamina, unsigned int mana) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
 
     const resources_t cur_res = character->current_resources;
     const resources_t max_res = character->max_resources;
@@ -63,21 +65,21 @@ void add_resources_c(character_t* character, unsigned int health, unsigned int s
 }
 
 void reset_resources_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     character->current_resources = character->max_resources;
 }
 
 void reset_health_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     character->current_resources.health = character->max_resources.health;
 }
 
 void reset_stamina_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     character->current_resources.stamina = character->max_resources.stamina;
 }
 
 void reset_mana_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL");
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     character->current_resources.mana = character->max_resources.mana;
 }

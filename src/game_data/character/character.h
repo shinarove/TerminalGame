@@ -19,6 +19,7 @@ typedef struct attributes {
 
 typedef struct character {
     unsigned int id;
+    unsigned int level;
     char name[64];
 
     resources_t base_resources;   // base = character without gear
@@ -39,21 +40,10 @@ typedef struct character {
  * @param name The name of the character. Must not be NULL.
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
  */
-character_t* create_base_character(const memory_pool_t* pool, int id, const char* name);
+character_t* create_base_character(const memory_pool_t* pool, unsigned int id, const char* name);
 
-/**
- * Creates a character with the specified ID, name, base resources, and base attributes
- * using the given memory pool. The character's resources and attributes (base, max, and current)
- * are initialized accordingly.
- *
- * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.
- * @param id The unique identifier for the character.
- * @param name The name of the character. Must not be NULL.
- * @param base_res The initial base resources of the character (e.g., health, stamina, mana).
- * @param base_attr The initial base attributes of the character (e.g., strength, intelligence, agility, etc.).
- * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
- */
-character_t* create_character(const memory_pool_t* pool, int id, const char* name, resources_t base_res, attributes_t base_attr);
+
+character_t* create_character(const memory_pool_t* pool, unsigned int id, const char* name, int level, resources_t base_res, attributes_t base_attr);
 
 /**
  * Destroys a character object by freeing its allocated memory.
