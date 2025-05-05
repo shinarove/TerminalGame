@@ -103,6 +103,6 @@ void update_title_screen_local() {
     title_screen_strings[GAME_TITEL] = get_local_string("GAME.TITLE");
     title_screen_strings[OPTION_NEW_GAME] = get_local_string("NEW_GAME");
     title_screen_strings[OPTION_LOAD_GAME] = get_local_string("LOAD_GAME");
-    title_screen_strings[OPTION_CHANGE_LANGUAGE] = get_local_string("LANGUAGE_MODE");
+    title_screen_strings[OPTION_CHANGE_LANGUAGE] = get_local_string("CHANGE_LANGUAGE");
     title_screen_strings[OPTION_EXIT_GAME] = get_local_string("EXIT_GAME");
 }
