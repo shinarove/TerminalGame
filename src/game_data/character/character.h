@@ -3,6 +3,15 @@
 
 #include "../../memory/mem_mgmt.h"
 
+typedef enum {
+    STRENGTH,
+    INTELLIGENCE,
+    AGILITY,
+    ENDURANCE,
+    LUCK,
+    MAX_ATTRIBUTES
+} attr_identifier_t;
+
 typedef struct resources {
     unsigned short health;
     unsigned short stamina;
@@ -18,7 +27,7 @@ typedef struct attributes {
 } attributes_t;
 
 typedef struct character {
-    unsigned int id;
+    unsigned int id; //currently not in use
     unsigned int level;
     char name[64];
 
@@ -91,5 +100,7 @@ void reset_stamina_c(character_t* character);
  * @param character A pointer to the character whose mana is to be reset. Must not be NULL.
  */
 void reset_mana_c(character_t* character);
+
+void level_up_c(character_t* character, attr_identifier_t attr_to_increase);
 
 #endif//CHARACTER_H
