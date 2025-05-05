@@ -6,7 +6,7 @@
 
 int init_combat_mode(void);
 
-state_t update_combat_mode(input_t input, character_t* player);
+state_t update_combat_mode(input_t input, character_t* player, character_t* enemy);
 
 void shutdown_combat_mode(void);
 

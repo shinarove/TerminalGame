@@ -23,7 +23,7 @@ state_t handle_map_event(const map_t* map, character_t* player) {
             handle_fountain_event(map, reset_mana_c, player);
             break;
         case ENEMY:
-            next_state = COMBAT_MODE;
+            next_state = GENERATE_ENEMY;
             map->hidden_tiles[player_on_map_idx] = FLOOR;
             map->revealed_tiles[player_on_map_idx] = FLOOR;
             break;

@@ -3,7 +3,7 @@
 
 #include "character.h"
 
-const attr_identifier_t lvl_table_goblin[] = {
+constexpr attr_identifier_t lvl_table_goblin[] = {
         STRENGTH,
         STRENGTH,
         ENDURANCE,
