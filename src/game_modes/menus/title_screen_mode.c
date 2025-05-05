@@ -47,17 +47,19 @@ state_t update_title_screen(const input_t input) {
     RETURN_WHEN_NULL(title_screen_strings, EXIT_GAME, "Title Screen Mode", "Title screen mode was not initialized.");
     state_t next_state = TITLE_SCREEN;
 
-    clear_screen();
+    // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
     switch (handle_menu(input, 5, 4, &title_screen_menu)) {
         case 0:
+            clear_screen();
             next_state = GENERATE_MAP;
             break;
         case 1:
             //TODO: add load functionality
             break;
         case 2:
+            clear_screen();
             next_state = LANGUAGE_MODE;
             break;
         case 3:

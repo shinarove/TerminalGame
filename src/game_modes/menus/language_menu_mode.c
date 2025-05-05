@@ -45,9 +45,8 @@ state_t update_change_language(const input_t input, const state_t called_from) {
     RETURN_WHEN_NULL(language_menu_strings, EXIT_GAME, "Change Language Mode", "Change language mode was not initialized.");
     state_t next_state = LANGUAGE_MODE;
 
-    clear_screen();
+    // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, language_menu_strings[GAME_TITEL]);
-
 
     int local_res = 0;
     switch (handle_menu(input, 5, 4, &change_language_menu)) {
@@ -56,6 +55,7 @@ state_t update_change_language(const input_t input, const state_t called_from) {
             if (get_language() != LANGE_EN) {
                 local_res = set_language(LANGE_EN);
             }
+            clear_screen();
             next_state = local_res == 0 ? called_from : EXIT_GAME;
             break;
         case 1:
@@ -63,10 +63,12 @@ state_t update_change_language(const input_t input, const state_t called_from) {
             if (get_language() != LANGE_DE) {
                 local_res = set_language(LANGE_DE);
             }
+            clear_screen();
             next_state = local_res == 0 ? called_from : EXIT_GAME;
             break;
         case -1:
             // go back to the previous menu
+            clear_screen();
             next_state = called_from;
             break;
         case -2:

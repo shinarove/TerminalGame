@@ -18,12 +18,14 @@ typedef enum {
 /**
  * Initializes the input handler and starts the input handler thread.
  */
-void init_input_handler(void);
+void init_input_handler();
+
 
 /**
- * Returns the next input from the input buffer.
- * If there is no input, it will return NO_INPUT.
- * @return the next input
+ * Retrieves the next input from the input buffer. If the buffer is empty,
+ * returns NO_INPUT to indicate no input is available.
+ *
+ * @return The next input of type input_t from the buffer, or NO_INPUT if the buffer is empty.
  */
 input_t get_next_input(void);
 

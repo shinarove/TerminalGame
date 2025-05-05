@@ -10,7 +10,7 @@
 #include "logger/logger.h"
 #include "game_data/character/enemy_generator.h"
 
-#define FRAMES_PER_SECONDS 10
+#define FRAMES_PER_SECONDS 20
 
 #define MAX_MAP_COUNT 16
 #define MAP_HEIGHT 19

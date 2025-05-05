@@ -36,6 +36,15 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
 
     const int player_on_map_idx = map->player_pos.dx * map->height + map->player_pos.dy;
 
+    parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
+    RETURN_WHEN_NULL(parsed_map, EXIT_GAME, "Map Mode", "Failed to parse map");
+
+    // clear_screen();
+    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, map_mode_strings[GAME_TITLE]);
+    print_map(5, 4, parsed_map);
+
+    free(parsed_map);
+
     switch (input) {
         case UP:
             if (map->player_pos.dy > 0 && map->revealed_tiles[player_on_map_idx - 1] != WALL) {
@@ -59,12 +68,15 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
             break;
         case M:
         case ESCAPE:
+            clear_screen();
             next_state = MAIN_MENU;//open the main menu
             break;
         case I:
+            clear_screen();
             next_state = INVENTORY_MODE;// open inventory
             break;
         case C:
+            clear_screen();
             next_state = CHARACTER_MODE;// open character screen
             break;
         case QUIT:
@@ -77,16 +89,8 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
         reveal_map(map, 3);
         next_state = handle_map_event(map, player);
+        if (next_state != MAP_MODE) clear_screen();
     }
-
-    parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
-    RETURN_WHEN_NULL(parsed_map, EXIT_GAME, "Map Mode", "Failed to parse map");
-
-    clear_screen();
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, map_mode_strings[GAME_TITLE]);
-    print_map(5, 4, parsed_map);
-
-    free(parsed_map);
 
     return next_state;
 }

@@ -22,8 +22,8 @@ void input_handler_thread(void);
 
 // === global variables ===
 input_t input_buffer[INPUT_BUFFER_SIZE];
-int buffer_head = 0;
-int buffer_tail = 0;
+volatile int buffer_head = 0;
+volatile int buffer_tail = 0;
 
 bool input_handler_is_running = false;
 
@@ -42,7 +42,8 @@ void input_handler_thread() {
 
         input_t input = NO_INPUT;
         if (ret == TB_OK) {
-            if (event.key == TB_KEY_ARROW_UP || event.ch == 'w') input = UP;
+            if (event.key == TB_KEY_ARROW_UP || event.ch == 'w')
+                input = UP;
             else if (event.key == TB_KEY_ARROW_DOWN || event.ch == 's')
                 input = DOWN;
             else if (event.key == TB_KEY_ARROW_LEFT || event.ch == 'a')
@@ -79,11 +80,11 @@ void input_handler_thread() {
     }
 }
 
-void init_input_handler(void) {
+void init_input_handler() {
     start_input_handler_thread();
 }
 
-input_t get_next_input(void) {
+input_t get_next_input() {
     if (buffer_head == buffer_tail) return NO_INPUT;// no input available
 
     const input_t input = input_buffer[buffer_tail];
@@ -92,5 +93,5 @@ input_t get_next_input(void) {
 }
 
 void shutdown_input_handler(void) {
-    // free resources if needed
+    input_handler_is_running = false;
 }

@@ -49,12 +49,13 @@ state_t update_main_menu(const input_t input) {
     RETURN_WHEN_NULL(main_menu_strings, EXIT_GAME, "Main Menu Mode", "Main menu mode was not initialized.");
     state_t next_state = MAIN_MENU;
 
-    clear_screen();
+    // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, main_menu_strings[GAME_TITLE]);
 
-    switch (handle_menu(input, 5, 4, &main_menu)) {
+    const int res = handle_menu(input, 5, 4, &main_menu);
+    switch (res) {
         case 0: // Continue was selected
-        case -1:// Esc was pressed, return to map mode
+            clear_screen();
             next_state = MAP_MODE;
             break;
         case 1:
@@ -65,14 +66,23 @@ state_t update_main_menu(const input_t input) {
             //TODO: add load functionality
             break;
         case 4:
+            clear_screen();
             next_state = LANGUAGE_MODE;
             break;
         case 5:// Exit game was selected
+            next_state = EXIT_GAME;
+            break;
+        case MAX_MAIN_MENU_OPTIONS:// nothing has changed
+            break;
+        case -1:// Esc was pressed, return to map mode
+            clear_screen();
+            next_state = MAP_MODE;
+            break;
         case -2:
             next_state = EXIT_GAME;
             break;
         default:
-            log_msg(WARNING, "Main Menu Mode", "Invalid option returned in handle_menu: %d", main_menu.selected_index);
+            log_msg(WARNING, "Main Menu Mode", "Invalid option returned in handle_menu: %d", res);
             break;
     }
 
