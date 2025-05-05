@@ -15,18 +15,19 @@
 int init_map_mode(void);
 
 /**
- * Updates the map mode based on player input, processes player movement,
- * handles map events, and transitions to the appropriate game state.
+ * Updates the state of the game in map mode by processing player input, moving
+ * the player character, revealing the map, handling map events, and rendering
+ * the updated map.
  *
- * @param input The player's input to be processed, determining movement,
- *              menu access, or state transitions.
- * @param map A pointer to the map structure containing the current map
- *            state, including the player's position and revealed tiles.
- * @param player A pointer to the character structure representing the player's
- *               character interacting with the map.
- * @return The next game state after processing the input. This could remain
- *         as MAP_MODE or transition to other states such as MAIN_MENU,
- *         INVENTORY_MODE, CHARACTER_MODE, or EXIT_GAME.
+ * @param input The input action performed by the player, such as movement or
+ *              menu initiation.
+ * @param map The current map object containing map details including dimensions,
+ *            revealed tiles, and player position.
+ * @param player The player character whose state may be affected by map events.
+ *
+ * @return The next game state, which can remain in map mode or transition to
+ *         another state such as the main menu, inventory, character screen, or
+ *         exit game.
  */
 state_t update_map_mode(input_t input, map_t* map, character_t* player);
 

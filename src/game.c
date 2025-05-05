@@ -8,6 +8,7 @@
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
+#include "game_data/character/enemy_generator.h"
 
 #define FRAMES_PER_SECONDS 10
 
@@ -19,6 +20,7 @@
 void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
+    character_t* enemy = NULL;
 
     bool running = true;
     state_t current = TITLE_SCREEN;
@@ -52,14 +54,21 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 if (generate_map(used_pool, maps[active_map_index]) != 0) {
                     log_msg(ERROR, "Game", "Failed to generate map");
                     running = false;
+                } else {
+                    // reveal the map around the player starting position
+                    reveal_map(maps[active_map_index], 3);
+                    current = MAP_MODE;
                 }
-
-                // reveal the map around the player starting position
-                reveal_map(maps[active_map_index], 3);
-                current = MAP_MODE;
                 break;
             }
             case GENERATE_ENEMY:
+                enemy = generate_goblin(used_pool, player->level);
+                if (enemy == NULL) {
+                    log_msg(ERROR, "Game", "Failed to generate enemy");
+                    running = false;
+                } else {
+                    current = COMBAT_MODE;
+                }
                 break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);
