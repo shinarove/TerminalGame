@@ -59,6 +59,8 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 current = MAP_MODE;
                 break;
             }
+            case GENERATE_ENEMY:
+                break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);
                 break;
