@@ -65,7 +65,7 @@ state_t update_main_menu(const input_t input) {
             //TODO: add load functionality
             break;
         case 4:
-            next_state = CHANGE_LANGUAGE;
+            next_state = LANGUAGE_MODE;
             break;
         case 5:// Exit game was selected
         case -2:

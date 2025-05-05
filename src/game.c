@@ -3,7 +3,7 @@
 #include "game_data/map/map_generator.h"
 #include "game_data/map/map_revealer.h"
 #include "game_modes/map/map_mode.h"
-#include "game_modes/menus/change_language_mode.h"
+#include "game_modes/menus/language_menu_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
@@ -31,7 +31,7 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
         switch (current) {
             case TITLE_SCREEN:
                 current = update_title_screen(input);
-                if (current == CHANGE_LANGUAGE) return_to = TITLE_SCREEN;
+                if (current == LANGUAGE_MODE) return_to = TITLE_SCREEN;
                 break;
             case GENERATE_MAP: {
                 active_map_index = active_map_index == -1 ? 0 : (active_map_index + 1) % MAX_MAP_COUNT;
@@ -65,9 +65,9 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
             case CHARACTER_MODE:
             case MAIN_MENU:
                 current = update_main_menu(input);
-                if (current == CHANGE_LANGUAGE) return_to = MAIN_MENU;
+                if (current == LANGUAGE_MODE) return_to = MAIN_MENU;
                 break;
-            case CHANGE_LANGUAGE:
+            case LANGUAGE_MODE:
                 current = update_change_language(input, return_to);
                 break;
             case GAME_OVER:

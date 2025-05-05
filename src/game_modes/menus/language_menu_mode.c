@@ -1,4 +1,4 @@
-#include "change_language_mode.h"
+#include "language_menu_mode.h"
 
 #include "../../io/colors.h"
 #include "../../io/local/local_handler.h"
@@ -17,7 +17,7 @@ enum change_language_index {
     MAX_CHANGE_LANGUAGE_INDEX
 };
 
-char** change_language_strings = NULL;
+char** language_menu_strings = NULL;
 
 menu_t change_language_menu;
 
@@ -25,14 +25,14 @@ void update_change_language_local(void);
 
 int init_change_language() {
     // allocate memory for the local strings
-    change_language_strings = (char**) malloc(sizeof(char*) * MAX_CHANGE_LANGUAGE_INDEX);
-    RETURN_WHEN_NULL(change_language_strings, 1, "Change Language Mode", "Failed to allocate memory for change language strings.");
+    language_menu_strings = (char**) malloc(sizeof(char*) * MAX_CHANGE_LANGUAGE_INDEX);
+    RETURN_WHEN_NULL(language_menu_strings, 1, "Change Language Mode", "Failed to allocate memory for change language strings.");
 
     for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
-        change_language_strings[i] = NULL;
+        language_menu_strings[i] = NULL;
     }
 
-    change_language_menu.options = &change_language_strings[OPTION_ENGLISH];// only the first option address is needed
+    change_language_menu.options = &language_menu_strings[OPTION_ENGLISH];// only the first option address is needed
     change_language_menu.option_count = MAX_LANGUAGES;
     change_language_menu.selected_index = 0;
 
@@ -42,11 +42,11 @@ int init_change_language() {
 }
 
 state_t update_change_language(const input_t input, const state_t called_from) {
-    RETURN_WHEN_NULL(change_language_strings, EXIT_GAME, "Change Language Mode", "Change language mode was not initialized.");
-    state_t next_state = CHANGE_LANGUAGE;
+    RETURN_WHEN_NULL(language_menu_strings, EXIT_GAME, "Change Language Mode", "Change language mode was not initialized.");
+    state_t next_state = LANGUAGE_MODE;
 
     clear_screen();
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, change_language_strings[GAME_TITEL]);
+    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, language_menu_strings[GAME_TITEL]);
 
 
     int local_res = 0;
@@ -84,32 +84,32 @@ state_t update_change_language(const input_t input, const state_t called_from) {
 }
 
 void shutdown_change_language() {
-    if (change_language_strings == NULL) return;
+    if (language_menu_strings == NULL) return;
 
     for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
-        if (change_language_strings[i] != NULL) {
-            free(change_language_strings[i]);
+        if (language_menu_strings[i] != NULL) {
+            free(language_menu_strings[i]);
         }
     }
-    free(change_language_strings);
+    free(language_menu_strings);
 }
 
 void update_change_language_local() {
-    if (change_language_strings == NULL) return;
+    if (language_menu_strings == NULL) return;
 
     for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
-        if (change_language_strings[i] != NULL) {
+        if (language_menu_strings[i] != NULL) {
             // only free the strings that were allocated
-            free(change_language_strings[i]);
+            free(language_menu_strings[i]);
         }
     }
 
-    change_language_strings[GAME_TITEL] = get_local_string("GAME.TITLE");
-    change_language_strings[MENU_TITLE] = get_local_string("CHANGE_LANGUAGE.TITLE");
-    change_language_menu.title = change_language_strings[MENU_TITLE];
+    language_menu_strings[GAME_TITEL] = get_local_string("GAME.TITLE");
+    language_menu_strings[MENU_TITLE] = get_local_string("CHANGE_LANGUAGE.TITLE");
+    change_language_menu.title = language_menu_strings[MENU_TITLE];
 
-    change_language_strings[OPTION_ENGLISH] = get_local_string("ENGLISH");
-    change_language_strings[OPTION_GERMAN] = get_local_string("GERMAN");
-    change_language_strings[TAILING_MSG] = get_local_string("PRESS_ESC.RETURN");
-    change_language_menu.tailing_text = change_language_strings[TAILING_MSG];
+    language_menu_strings[OPTION_ENGLISH] = get_local_string("ENGLISH");
+    language_menu_strings[OPTION_GERMAN] = get_local_string("GERMAN");
+    language_menu_strings[TAILING_MSG] = get_local_string("PRESS_ESC.RETURN");
+    change_language_menu.tailing_text = language_menu_strings[TAILING_MSG];
 }

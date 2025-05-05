@@ -1,5 +1,5 @@
-#ifndef CHANGE_LANGUAGE_MODE_H
-#define CHANGE_LANGUAGE_MODE_H
+#ifndef LANGUAGE_MENU_MODE_H
+#define LANGUAGE_MENU_MODE_H
 
 #include "../../game.h"
 #include "../../io/input/input_handler.h"
@@ -29,7 +29,7 @@ int init_change_language(void);
  * @param called_from The state from which the "Change Language" feature was called,
  *                    used to return after successful language selection or user exit.
  * @return The next state to transition to, which may be the calling state, EXIT_GAME
- *         if an error occurred, or CHANGE_LANGUAGE to remain in this state.
+ *         if an error occurred, or LANGUAGE_MODE to remain in this state.
  */
 state_t update_change_language(input_t input, state_t called_from);
 
@@ -43,4 +43,4 @@ state_t update_change_language(input_t input, state_t called_from);
  */
 void shutdown_change_language(void);
 
-#endif//CHANGE_LANGUAGE_MODE_H
+#endif//LANGUAGE_MENU_MODE_H

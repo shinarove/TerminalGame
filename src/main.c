@@ -2,7 +2,7 @@
 #include "game.h"
 #include "game_data/character/character.h"
 #include "game_modes/map/map_mode.h"
-#include "game_modes/menus/change_language_mode.h"
+#include "game_modes/menus/language_menu_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
