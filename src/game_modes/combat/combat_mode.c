@@ -1,7 +1,7 @@
 #include "combat_mode.h"
 
-#include "../../logger/logger.h"
 #include "../../io/local/local_handler.h"
+#include "../../logger/logger.h"
 
 #include <stdlib.h>
 
@@ -28,7 +28,6 @@ int init_combat_mode() {
 }
 
 state_t update_combat_mode(input_t input, character_t* player) {
-
     return COMBAT_MODE;
 }
 
@@ -41,6 +40,4 @@ void shutdown_combat_mode() {
     }
 }
 void update_combat_mode_local(void) {
-
 }
-

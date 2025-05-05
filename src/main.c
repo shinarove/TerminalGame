@@ -1,5 +1,5 @@
-#include "../termbox2/termbox2.h"
 #include "../refterm/fast_pipe.h"
+#include "../termbox2/termbox2.h"
 #include "game.h"
 #include "game_data/character/character.h"
 #include "game_modes/map/map_mode.h"

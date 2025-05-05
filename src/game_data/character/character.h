@@ -27,7 +27,7 @@ typedef struct attributes {
 } attributes_t;
 
 typedef struct character {
-    unsigned int id; //currently not in use
+    unsigned int id;//currently not in use
     unsigned int level;
     char name[64];
 

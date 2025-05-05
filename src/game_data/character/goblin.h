@@ -23,7 +23,6 @@ const attr_identifier_t lvl_table_goblin[] = {
         AGILITY,
         LUCK,
         INTELLIGENCE,
-        STRENGTH
-};
+        STRENGTH};
 
 #endif//GOBLIN_H

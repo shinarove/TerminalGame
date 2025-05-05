@@ -36,7 +36,7 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
 
     character->id = id;
     snprintf(character->name, sizeof(character->name), "%s", name);
-    character->level = (level < 1 ? 1 : level) > 20 ? 20 : level; // level can only be between 1 and 20
+    character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
 
     //assign base resources and attributes
     character->base_resources.health = base_res.health < 1 ? 1 : base_res.health;
