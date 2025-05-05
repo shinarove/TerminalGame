@@ -76,7 +76,7 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     }
     if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
         reveal_map(map, 3);
-        handle_map_event(map, player);
+        next_state = handle_map_event(map, player);
     }
 
     parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
