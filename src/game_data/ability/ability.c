@@ -1,0 +1,91 @@
+#include "ability.h"
+
+#include "../../logger/logger.h"
+#include "../../helper/string_helper.h"
+#include "../../io/local/local_handler.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+#ifdef _WIN32
+#define PATH_SEP "\\"
+#define ABILITY_DIRECTORY "ressources\\game_data\\ability"
+#else
+#define PATH_SEP "/"
+#define ABILITY_DIRECTORY "ressources/game_data/ability"
+#endif //_WIN32
+
+#define ABILITY_FILE_NAME "ability_table.csv"
+
+ability_table_t* singleton_ability_table = NULL;
+
+void update_ability_local(void);
+
+ability_table_t* init_ability_table(const memory_pool_t* pool) {
+    RETURN_WHEN_NULL(pool, NULL, "Ability", "Memory pool is NULL")
+
+    if (singleton_ability_table == NULL) {
+        //make a singleton
+        singleton_ability_table = (ability_table_t*) memory_pool_alloc(pool, sizeof(ability_table_t));
+        singleton_ability_table->count = MAX_ABILITIES;
+
+        char rel_path[64];
+        snprintf(rel_path, sizeof(rel_path), "%s" PATH_SEP "%s", ABILITY_DIRECTORY, ABILITY_FILE_NAME);
+        FILE* ability_file = fopen(rel_path, "r");
+
+        int* id_ref = NULL;
+
+        char line[256];
+        int count = -1;
+        while (fgets(line, sizeof(line), ability_file) && count < MAX_ABILITIES) {
+            if (count == -1) {
+                count++;
+                continue; // skip the header line
+            }
+            id_ref = &singleton_ability_table->abilities[count].id;
+            // read the id, convert it to int, and assign it to the ability
+            const char* token = strtok(line, ",");
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability id at line %d", count + 1);
+            RETURN_WHEN_TRUE(parse_int(token, id_ref) != 0, NULL, "Ability", "Failed to read ability id at line %d", count + 1);
+            // check if the id is valid
+            RETURN_WHEN_TRUE(*id_ref != count, NULL, "Ability", "Invalid ability id %d at line %d, should be %d.", *id_ref, count + 1, count);
+
+            // read the name
+            token = strtok(NULL, ",");
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability name at line %d", count + 1);
+            singleton_ability_table->abilities[count].key_name = strdup(token);
+
+            singleton_ability_table->abilities[count].local_name = get_local_string(token);
+
+            count++;
+        }
+
+        fclose(ability_file);
+        observe_local(update_ability_local);
+    }
+    return singleton_ability_table; //always return the singleton
+}
+
+ability_table_t* get_ability_table() {
+    return singleton_ability_table;
+}
+
+void destroy_ability_table(const memory_pool_t* pool) {
+    RETURN_WHEN_NULL(pool, , "Ability", "Memory pool is NULL")
+
+    for (int i = 0; i < singleton_ability_table->count; i++) {
+        free(singleton_ability_table->abilities[i].key_name);
+    }
+
+    memory_pool_free(pool, singleton_ability_table);
+    singleton_ability_table = NULL;
+}
+
+void update_ability_local() {
+    for (int i = 0; i < singleton_ability_table->count; i++) {
+        free(singleton_ability_table->abilities[i].local_name);
+        singleton_ability_table->abilities[i].local_name = get_local_string(singleton_ability_table->abilities[i].key_name);
+    }
+}

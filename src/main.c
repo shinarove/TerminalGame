@@ -11,6 +11,7 @@
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
 #include "game_modes/combat/combat_mode.h"
+#include "game_data/ability/ability.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -24,24 +25,30 @@ enum exit_codes {
     ERROR_TITLE_SCREEN_INIT,
     ERROR_MAIN_MENU_INIT,
     ERROR_CHANGE_LANGUAGE_INIT,
+    ERROR_ABILITY_TABLE_INIT,
 };
 
 int init(memory_pool_t** pool);
 void shutdown(memory_pool_t** pool);
 
 int init(memory_pool_t** pool) {
+    // init core components
     tb_init();
     init_logger();
     init_input_handler();
     *pool = init_memory_pool(2 * STANDARD_MEMORY_POOL_SIZE);
     if (*pool == NULL) return ERROR_MEMORY_POOL_INIT;
-
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
+
+    // init of the different modes
     if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
     if (init_combat_mode() != 0) return ERROR_COMBAT_MODE_INIT;
     if (init_title_screen() != 0) return ERROR_TITLE_SCREEN_INIT;
     if (init_main_menu() != 0) return ERROR_MAIN_MENU_INIT;
     if (init_change_language() != 0) return ERROR_CHANGE_LANGUAGE_INIT;
+
+    // init game data tables
+    if (init_ability_table(*pool) == NULL) return ERROR_ABILITY_TABLE_INIT;
 
     // Seed the random number generator with a combination of time, process ID, and stack variable address
     unsigned int seed = (unsigned int) time(NULL);// Use current time as seed
@@ -72,11 +79,17 @@ int main(void) {
 }
 
 void shutdown(memory_pool_t** pool) {
+    // shutdown game data tables
+    destroy_ability_table(*pool);
+
+    // shutdown the different modes
     shutdown_change_language();
     shutdown_main_menu();
     shutdown_title_screen();
     shutdown_combat_mode();
     shutdown_map_mode();
+
+    // shutdown core components
     shutdown_local_handler();
     shutdown_memory_pool(*pool);
     shutdown_input_handler();

@@ -4,6 +4,8 @@ project('TerminalGame', 'c',
 
 termbox_file = files('termbox2/termbox2.c')
 
+helper_files = files('src/helper/string_helper.c',)
+
 src_files = files('src/main.c',
                   'src/game.c',)
 
@@ -36,12 +38,15 @@ map_files = files('src/game_modes/map/map_mode.c',
 
 combat_files = files('src/game_modes/combat/combat_mode.c')
 
+ability_files = files('src/game_data/ability/ability.c',)
+
 character_files = files('src/game_data/character/character.c',
                         'src/game_data/character/character_parser.c',
                         'src/game_data/character/enemy_generator.c',)
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
+                          helper_files,
                           src_files,
                           memory_files,
                           thread_files,
@@ -53,6 +58,7 @@ TerminalGame = executable('TerminalGame',
                           menu_files,
                           map_files,
                           combat_files,
+                          ability_files,
                           character_files,
                           install : true)
 
