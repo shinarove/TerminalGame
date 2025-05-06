@@ -29,7 +29,7 @@ typedef struct attributes {
 typedef struct character {
     unsigned int id;//currently not in use
     unsigned int level;
-    char name[64];
+    char* name;
 
     resources_t base_resources;   // base = character without gear
     resources_t max_resources;    // max = base + buffs from gear

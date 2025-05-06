@@ -27,7 +27,7 @@ enum exit_codes {
 };
 
 int init(memory_pool_t** pool);
-void shutdown();
+void shutdown(memory_pool_t** pool);
 
 int init(memory_pool_t** pool) {
     tb_init();
@@ -65,18 +65,20 @@ int main(void) {
     if (exit_code == 0) {
         start_game_loop(pool, player);
     }
-    shutdown_memory_pool(pool);
-    shutdown();
+
+    destroy_character(pool, player);
+    shutdown(&pool);
     return exit_code;
 }
 
-void shutdown() {
+void shutdown(memory_pool_t** pool) {
     shutdown_change_language();
     shutdown_main_menu();
     shutdown_title_screen();
     shutdown_combat_mode();
     shutdown_map_mode();
     shutdown_local_handler();
+    shutdown_memory_pool(*pool);
     shutdown_input_handler();
     shutdown_logger();
     tb_shutdown();

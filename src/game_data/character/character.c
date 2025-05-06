@@ -3,6 +3,7 @@
 #include "../../logger/logger.h"
 
 #include <stdio.h>
+#include <string.h>
 
 character_t* create_base_character(const memory_pool_t* pool, const unsigned int id, const char* name) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
@@ -12,6 +13,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = id;
+    character->name = (char*) malloc(sizeof(char) * (strlen(name) + 1));
     snprintf(character->name, sizeof(character->name), "%s", name);
     character->level = 1;
 
@@ -35,6 +37,7 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
     character_t* character = (character_t*) memory_pool_alloc(pool, sizeof(character_t));
 
     character->id = id;
+    character->name = (char*) malloc(sizeof(char) * (strlen(name) + 1));
     snprintf(character->name, sizeof(character->name), "%s", name);
     character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
 
@@ -59,6 +62,7 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
 }
 
 void destroy_character(const memory_pool_t* pool, character_t* character) {
+    free(character->name);
     memory_pool_free(pool, character);
 }
 

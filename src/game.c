@@ -76,6 +76,7 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 break;
             case COMBAT_MODE:
                 free_prepared_resources();
+                destroy_character(used_pool, enemy);
             case INVENTORY_MODE:
             case CHARACTER_MODE:
             case MAIN_MENU:
