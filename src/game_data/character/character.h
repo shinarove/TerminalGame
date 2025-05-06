@@ -2,29 +2,7 @@
 #define CHARACTER_H
 
 #include "../../memory/mem_mgmt.h"
-
-typedef enum {
-    STRENGTH,
-    INTELLIGENCE,
-    AGILITY,
-    ENDURANCE,
-    LUCK,
-    MAX_ATTRIBUTES
-} attr_identifier_t;
-
-typedef struct resources {
-    unsigned short health;
-    unsigned short stamina;
-    unsigned short mana;
-} resources_t;
-
-typedef struct attributes {
-    unsigned short strength;
-    unsigned short intelligence;
-    unsigned short agility;
-    unsigned short endurance;
-    unsigned short luck;
-} attributes_t;
+#include "stats.h"
 
 typedef struct character {
     unsigned int id;//currently not in use
