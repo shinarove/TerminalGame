@@ -13,6 +13,8 @@ typedef struct {
 
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
+ * @note Use this function with caution, preferably before a context switch occurs.
+ * (Context switch is a switch between states, for example, MAP MODE -> MAIN MENU MODE)
  */
 void clear_screen(void);
 
