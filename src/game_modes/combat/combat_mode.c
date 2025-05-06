@@ -1,7 +1,7 @@
 #include "combat_mode.h"
 
-#include "../../io/output/common/common_output.h"
 #include "../../io/local/local_handler.h"
+#include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
 
 #include <stdlib.h>
@@ -10,10 +10,11 @@
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
 #define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
-#define CHAT_INFO_FORMAT "%s""\n"CHAR_RESOURCES_FORMAT
+#define CHAT_INFO_FORMAT "%s" \
+                         "\n" CHAR_RESOURCES_FORMAT
 
 #define HORIZONTAL_LINE "--------------------------------------------------"
-#define COMBAT_HEAD_FORMAT CHAT_INFO_FORMAT"\n"HORIZONTAL_LINE"\n"CHAT_INFO_FORMAT
+#define COMBAT_HEAD_FORMAT CHAT_INFO_FORMAT "\n" HORIZONTAL_LINE "\n" CHAT_INFO_FORMAT
 
 enum combat_mode_index {
     //strings that are updated via local
@@ -78,14 +79,14 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     char* enemy_name = get_local_string(enemy->name);
     char* enemy_name_lvl_str = malloc(64);
     snprintf(enemy_name_lvl_str, 64, CHAR_NAME_LVL_FORMAT,
-        enemy_name, combat_mode_strings[LEVEL_STR], enemy->level);
+             enemy_name, combat_mode_strings[LEVEL_STR], enemy->level);
     combat_mode_strings[ENEMY_NAME_LVL] = enemy_name_lvl_str;
     free(enemy_name);
 
     // prepare player name and level string
     char* player_name_lvl_str = malloc(64);
     snprintf(player_name_lvl_str, 64, CHAR_NAME_LVL_FORMAT,
-        player->name, combat_mode_strings[LEVEL_STR], player->level);
+             player->name, combat_mode_strings[LEVEL_STR], player->level);
     combat_mode_strings[PLAYER_NAME_LVL] = player_name_lvl_str;
 
     update_combat_head(player, enemy);
@@ -156,13 +157,13 @@ void update_combat_head(const character_t* player, const character_t* enemy) {
     // update the combat head string
     char* combat_head_str = malloc(256);
     snprintf(combat_head_str, 256, COMBAT_HEAD_FORMAT,
-        combat_mode_strings[ENEMY_NAME_LVL],
-        combat_mode_strings[HEALTH_STR], enemy->current_resources.health, enemy->max_resources.health,
-        combat_mode_strings[STAMINA_STR], enemy->current_resources.stamina, enemy->max_resources.stamina,
-        combat_mode_strings[MANA_STR], enemy->current_resources.mana, enemy->max_resources.mana,
-        combat_mode_strings[PLAYER_NAME_LVL],
-        combat_mode_strings[HEALTH_STR], player->current_resources.health, player->max_resources.health,
-        combat_mode_strings[STAMINA_STR], player->current_resources.stamina, player->max_resources.stamina,
-        combat_mode_strings[MANA_STR], player->current_resources.mana, player->max_resources.mana);
+             combat_mode_strings[ENEMY_NAME_LVL],
+             combat_mode_strings[HEALTH_STR], enemy->current_resources.health, enemy->max_resources.health,
+             combat_mode_strings[STAMINA_STR], enemy->current_resources.stamina, enemy->max_resources.stamina,
+             combat_mode_strings[MANA_STR], enemy->current_resources.mana, enemy->max_resources.mana,
+             combat_mode_strings[PLAYER_NAME_LVL],
+             combat_mode_strings[HEALTH_STR], player->current_resources.health, player->max_resources.health,
+             combat_mode_strings[STAMINA_STR], player->current_resources.stamina, player->max_resources.stamina,
+             combat_mode_strings[MANA_STR], player->current_resources.mana, player->max_resources.mana);
     combat_mode_strings[COMBAT_HEAD] = combat_head_str;
 }

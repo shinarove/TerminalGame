@@ -11,4 +11,4 @@ enum list_of_abilities {
     MAX_ABILITIES
 };
 
-#endif //ABILITY_INDEX_H
+#endif//ABILITY_INDEX_H

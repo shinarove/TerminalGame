@@ -54,7 +54,7 @@ state_t update_main_menu(const input_t input) {
 
     const int res = handle_menu(input, 5, 4, &main_menu);
     switch (res) {
-        case 0: // Continue was selected
+        case 0:// Continue was selected
             clear_screen();
             next_state = MAP_MODE;
             break;

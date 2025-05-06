@@ -1,21 +1,21 @@
 #include "ability.h"
 
-#include "../../logger/logger.h"
 #include "../../helper/string_helper.h"
 #include "../../io/local/local_handler.h"
+#include "../../logger/logger.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 
 #ifdef _WIN32
-#define PATH_SEP "\\"
-#define ABILITY_DIRECTORY "ressources\\game_data\\ability"
+    #define PATH_SEP "\\"
+    #define ABILITY_DIRECTORY "ressources\\game_data\\ability"
 #else
-#define PATH_SEP "/"
-#define ABILITY_DIRECTORY "ressources/game_data/ability"
-#endif //_WIN32
+    #define PATH_SEP "/"
+    #define ABILITY_DIRECTORY "ressources/game_data/ability"
+#endif//_WIN32
 
 #define ABILITY_FILE_NAME "ability_table.csv"
 
@@ -42,7 +42,7 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
         while (fgets(line, sizeof(line), ability_file) && count < MAX_ABILITIES) {
             if (count == -1) {
                 count++;
-                continue; // skip the header line
+                continue;// skip the header line
             }
             id_ref = &singleton_ability_table->abilities[count].id;
             // read the id, convert it to int, and assign it to the ability
@@ -65,7 +65,7 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
         fclose(ability_file);
         observe_local(update_ability_local);
     }
-    return singleton_ability_table; //always return the singleton
+    return singleton_ability_table;//always return the singleton
 }
 
 ability_table_t* get_ability_table() {

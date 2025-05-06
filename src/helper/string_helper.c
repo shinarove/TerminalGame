@@ -7,9 +7,9 @@ int parse_int(const char* str, int* out) {
     const long val = strtol(str, &end, 10);
 
     if (*end != '\0' || end == str) {
-        return -1; // Error: not a valid integer
+        return -1;// Error: not a valid integer
     } else {
         *out = (int) val;
-        return 0; // Success
+        return 0;// Success
     }
 }

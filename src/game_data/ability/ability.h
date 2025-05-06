@@ -1,8 +1,8 @@
 #ifndef ABILITY_H
 #define ABILITY_H
 
-#include "ability_index.h"
 #include "../../memory/mem_mgmt.h"
+#include "ability_index.h"
 
 typedef struct {
     int id;
@@ -21,4 +21,4 @@ ability_table_t* get_ability_table(void);
 
 void destroy_ability_table(const memory_pool_t* pool);
 
-#endif //ABILITY_H
+#endif//ABILITY_H

@@ -4,4 +4,4 @@
 
 int parse_int(const char* str, int* out);
 
-#endif //STRING_HELPER_H
+#endif//STRING_HELPER_H
