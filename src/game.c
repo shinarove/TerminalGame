@@ -1,14 +1,15 @@
 #include "game.h"
 
+#include "game_data/character/enemy_generator.h"
 #include "game_data/map/map_generator.h"
 #include "game_data/map/map_revealer.h"
+#include "game_modes/combat/combat_mode.h"
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/language_menu_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
-#include "game_data/character/enemy_generator.h"
 
 #define FRAMES_PER_SECONDS 20
 
@@ -67,13 +68,14 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                     log_msg(ERROR, "Game", "Failed to generate enemy");
                     running = false;
                 } else {
-                    current = COMBAT_MODE;
+                    current = prepare_combat_mode(player, enemy);
                 }
                 break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);
                 break;
             case COMBAT_MODE:
+                free_prepared_resources();
             case INVENTORY_MODE:
             case CHARACTER_MODE:
             case MAIN_MENU:
