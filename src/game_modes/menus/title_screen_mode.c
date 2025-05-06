@@ -14,7 +14,7 @@ enum title_screen_index {
     OPTION_LOAD_GAME,
     OPTION_CHANGE_LANGUAGE,
     OPTION_EXIT_GAME,
-    MAX_TITLE_SCREEN_INDEX
+    MAX_TITLE_SCREEN_STRINGS
 };
 
 char** title_screen_strings = NULL;
@@ -25,10 +25,10 @@ void update_title_screen_local(void);
 
 int init_title_screen() {
     // allocate memory for the local strings
-    title_screen_strings = (char**) malloc(sizeof(char*) * MAX_TITLE_SCREEN_INDEX);
+    title_screen_strings = (char**) malloc(sizeof(char*) * MAX_TITLE_SCREEN_STRINGS);
     RETURN_WHEN_NULL(title_screen_strings, 1, "Title Screen Mode", "Failed to allocate memory for title screen strings.");
 
-    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+    for (int i = 0; i < MAX_TITLE_SCREEN_STRINGS; i++) {
         title_screen_strings[i] = NULL;
     }
 
@@ -83,7 +83,7 @@ state_t update_title_screen(const input_t input) {
 void shutdown_title_screen() {
     if (title_screen_strings == NULL) return;
 
-    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+    for (int i = 0; i < MAX_TITLE_SCREEN_STRINGS; i++) {
         if (title_screen_strings[i] != NULL) {
             //only free the strings that were allocated
             free(title_screen_strings[i]);
@@ -95,7 +95,7 @@ void shutdown_title_screen() {
 void update_title_screen_local() {
     if (title_screen_strings == NULL) return;
 
-    for (int i = 0; i < MAX_TITLE_SCREEN_INDEX; i++) {
+    for (int i = 0; i < MAX_TITLE_SCREEN_STRINGS; i++) {
         if (title_screen_strings[i] != NULL) {
             //only free the strings that were allocated
             free(title_screen_strings[i]);

@@ -14,7 +14,7 @@ enum change_language_index {
     OPTION_ENGLISH,
     OPTION_GERMAN,
     TAILING_MSG,
-    MAX_CHANGE_LANGUAGE_INDEX
+    MAX_CHANGE_LANGUAGE_STRINGS
 };
 
 char** language_menu_strings = NULL;
@@ -25,10 +25,10 @@ void update_change_language_local(void);
 
 int init_change_language() {
     // allocate memory for the local strings
-    language_menu_strings = (char**) malloc(sizeof(char*) * MAX_CHANGE_LANGUAGE_INDEX);
+    language_menu_strings = (char**) malloc(sizeof(char*) * MAX_CHANGE_LANGUAGE_STRINGS);
     RETURN_WHEN_NULL(language_menu_strings, 1, "Change Language Mode", "Failed to allocate memory for change language strings.");
 
-    for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
+    for (int i = 0; i < MAX_CHANGE_LANGUAGE_STRINGS; i++) {
         language_menu_strings[i] = NULL;
     }
 
@@ -88,7 +88,7 @@ state_t update_change_language(const input_t input, const state_t called_from) {
 void shutdown_change_language() {
     if (language_menu_strings == NULL) return;
 
-    for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
+    for (int i = 0; i < MAX_CHANGE_LANGUAGE_STRINGS; i++) {
         if (language_menu_strings[i] != NULL) {
             free(language_menu_strings[i]);
         }
@@ -99,7 +99,7 @@ void shutdown_change_language() {
 void update_change_language_local() {
     if (language_menu_strings == NULL) return;
 
-    for (int i = 0; i < MAX_CHANGE_LANGUAGE_INDEX; i++) {
+    for (int i = 0; i < MAX_CHANGE_LANGUAGE_STRINGS; i++) {
         if (language_menu_strings[i] != NULL) {
             // only free the strings that were allocated
             free(language_menu_strings[i]);

@@ -16,7 +16,7 @@ enum main_menu_index {
     OPTION_LOAD_GAME,
     OPTION_CHANGE_LANGUAGE,
     OPTION_EXIT_GAME,
-    MAX_MAIN_MENU_INDEX
+    MAX_MAIN_MENU_STRINGS
 };
 
 char** main_menu_strings = NULL;
@@ -27,10 +27,10 @@ void update_main_menu_local(void);
 
 int init_main_menu() {
     // allocate memory for the local strings
-    main_menu_strings = (char**) malloc(sizeof(char*) * MAX_MAIN_MENU_INDEX);
+    main_menu_strings = (char**) malloc(sizeof(char*) * MAX_MAIN_MENU_STRINGS);
     RETURN_WHEN_NULL(main_menu_strings, 1, "Main Menu Mode", "Failed to allocate memory for main menu strings.");
 
-    for (int i = 0; i < MAX_MAIN_MENU_INDEX; i++) {
+    for (int i = 0; i < MAX_MAIN_MENU_STRINGS; i++) {
         main_menu_strings[i] = NULL;
     }
 
@@ -92,7 +92,7 @@ state_t update_main_menu(const input_t input) {
 void shutdown_main_menu() {
     if (main_menu_strings == NULL) return;
 
-    for (int i = 0; i < MAX_MAIN_MENU_INDEX; i++) {
+    for (int i = 0; i < MAX_MAIN_MENU_STRINGS; i++) {
         if (main_menu_strings[i] != NULL) {
             //only free the strings that were allocated
             free(main_menu_strings[i]);
@@ -104,7 +104,7 @@ void shutdown_main_menu() {
 void update_main_menu_local() {
     if (main_menu_strings == NULL) return;
 
-    for (int i = 0; i < MAX_MAIN_MENU_INDEX; i++) {
+    for (int i = 0; i < MAX_MAIN_MENU_STRINGS; i++) {
         if (main_menu_strings[i] != NULL) {
             //only free the strings that were allocated
             free(main_menu_strings[i]);
