@@ -2,9 +2,11 @@
 
 #include "../../io/output/common/common_output.h"
 #include "../../io/local/local_handler.h"
-#include "../../logger/logger.h""
+#include "../../logger/logger.h"
 
 #include <stdlib.h>
+
+#define MAX_COMBAT_MAIN_OPTIONS 2
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
 #define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
@@ -19,7 +21,12 @@ enum combat_mode_index {
     HEALTH_STR,
     STAMINA_STR,
     MANA_STR,
-
+    COMBAT_NEXT_ACTION,
+    USE_ABILITY,
+    USE_POTION,
+    USE_WHICH_ABILITY,
+    USE_WHICH_POTION,
+    SUBMENU_RETURN_TEXT,
     //strings that are prepared in advance
     ENEMY_NAME_LVL,
     PLAYER_NAME_LVL,
@@ -29,6 +36,10 @@ enum combat_mode_index {
 };
 
 char** combat_mode_strings = NULL;
+
+menu_t combat_mode_main_menu;
+menu_t combat_mode_ability_menu;
+menu_t combat_mode_potion_menu;
 
 void update_combat_mode_local(void);
 
@@ -41,6 +52,11 @@ int init_combat_mode() {
     for (int i = 0; i < MAX_COMBAT_MODE_STRINGS; i++) {
         combat_mode_strings[i] = NULL;
     }
+
+    combat_mode_main_menu.options = &combat_mode_strings[USE_ABILITY];
+    combat_mode_main_menu.option_count = MAX_COMBAT_MAIN_OPTIONS;
+    combat_mode_main_menu.selected_index = 0;
+    combat_mode_main_menu.tailing_text = " ";
 
     update_combat_mode_local();
     observe_local(update_combat_mode_local);
@@ -116,6 +132,19 @@ void update_combat_mode_local(void) {
     combat_mode_strings[HEALTH_STR] = get_local_string("HEALTH");
     combat_mode_strings[STAMINA_STR] = get_local_string("STAMINA");
     combat_mode_strings[MANA_STR] = get_local_string("MANA");
+
+    combat_mode_strings[COMBAT_NEXT_ACTION] = get_local_string("COMBAT.NEXT_ACTION");
+    combat_mode_main_menu.title = combat_mode_strings[COMBAT_NEXT_ACTION];
+    combat_mode_strings[USE_ABILITY] = get_local_string("COMBAT.USE_ABILITY");
+    combat_mode_strings[USE_POTION] = get_local_string("COMBAT.USE_POTION");
+
+    combat_mode_strings[USE_WHICH_ABILITY] = get_local_string("COMBAT.ABILITY.WHICH");
+    combat_mode_ability_menu.title = combat_mode_strings[USE_WHICH_ABILITY];
+    combat_mode_strings[USE_WHICH_POTION] = get_local_string("COMBAT.POTION.WHICH");
+    combat_mode_potion_menu.title = combat_mode_strings[USE_WHICH_POTION];
+    combat_mode_strings[SUBMENU_RETURN_TEXT] = get_local_string("PRESS_ESC.RETURN");
+    combat_mode_ability_menu.tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
+    combat_mode_potion_menu.tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
 }
 
 void update_combat_head(const character_t* player, const character_t* enemy) {

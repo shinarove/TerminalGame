@@ -8,7 +8,7 @@ int init_combat_mode(void);
 
 state_t prepare_combat_mode(const character_t* player, const character_t* enemy);
 
-state_t update_combat_mode(input_t input, const character_t* player, character_t* enemy);
+state_t update_combat_mode(input_t input, character_t* player, character_t* enemy);
 
 void free_prepared_resources();
 
