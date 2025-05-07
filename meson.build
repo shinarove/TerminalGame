@@ -44,7 +44,8 @@ character_files = files('src/game_data/character/character.c',
                         'src/game_data/character/character_parser.c',
                         'src/game_data/character/enemy_generator.c',)
 
-dice_files = files('src/game_mechanics/dice/dice.c')
+game_mechanics_files = files('src/game_mechanics/ability_usage.c',
+                             'src/game_mechanics/dice/dice.c')
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
@@ -62,7 +63,7 @@ TerminalGame = executable('TerminalGame',
                           combat_files,
                           ability_files,
                           character_files,
-                          dice_files,
+                          game_mechanics_files,
                           install : true)
 
 subdir('test') # Test directory
