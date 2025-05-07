@@ -20,4 +20,4 @@ typedef enum {
     D20 = 20
 } dice_t;
 
-#endif //DICE_H
+#endif//DICE_H

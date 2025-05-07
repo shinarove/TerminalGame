@@ -29,4 +29,4 @@ typedef struct attributes {
     unsigned short luck;
 } attributes_t;
 
-#endif //STATS_H
+#endif//STATS_H
