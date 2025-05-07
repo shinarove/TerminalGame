@@ -198,3 +198,18 @@ int remove_ability_c(character_t* character, const ability_id_t ability_id) {
     }
     return removed;
 }
+
+ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t ability_id) {
+    RETURN_WHEN_NULL(character, NULL, "Character", "Character is NULL")
+
+    ability_t* found_ability = NULL;
+    const ability_node_t* current_node = character->abilities;
+    while (current_node != NULL && found_ability == NULL) {
+        if (current_node->ability->id == ability_id) {
+            found_ability = current_node->ability;
+        }
+        current_node = current_node->next;
+    }
+
+    return found_ability;
+}

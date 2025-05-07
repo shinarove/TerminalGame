@@ -144,4 +144,13 @@ void add_ability_c(const character_t* character, ability_id_t ability_id);
  */
 int remove_ability_c(const character_t* character, ability_id_t ability_id);
 
+/**
+ * Retrieves a pointer to an ability with the specified ID from the character's list of abilities.
+ *
+ * @param character A pointer to the character from which the ability is to be retrieved. Must not be NULL.
+ * @param ability_id The unique identifier of the ability to find.
+ * @return A pointer to the matching ability if found, or NULL if no matching ability exists or the character is NULL.
+ */
+ability_t* get_ability_by_id_c(const character_t* character, ability_id_t ability_id);
+
 #endif//CHARACTER_H
