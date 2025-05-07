@@ -10,8 +10,7 @@
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
 #define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
-#define CHAT_INFO_FORMAT "%s" \
-                         "\n" CHAR_RESOURCES_FORMAT
+#define CHAT_INFO_FORMAT "%s\n" CHAR_RESOURCES_FORMAT
 
 #define HORIZONTAL_LINE "--------------------------------------------------"
 #define COMBAT_HEAD_FORMAT CHAT_INFO_FORMAT "\n" HORIZONTAL_LINE "\n" CHAT_INFO_FORMAT
