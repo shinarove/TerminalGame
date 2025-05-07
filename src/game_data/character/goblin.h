@@ -1,7 +1,7 @@
 #ifndef GOBLIN_H
 #define GOBLIN_H
 
-#include "character.h"
+#include "stats.h"
 
 constexpr attr_identifier_t lvl_table_goblin[] = {
         STRENGTH,

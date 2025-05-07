@@ -2,7 +2,6 @@
 
 #include "../../logger/logger.h"
 
-#include <stdio.h>
 #include <string.h>
 
 character_t* create_base_character(const memory_pool_t* pool, const unsigned int id, const char* name) {
@@ -95,7 +94,7 @@ void reset_mana_c(character_t* character) {
     character->current_resources.mana = character->max_resources.mana;
 }
 
-void level_up_c(character_t* character, attr_identifier_t attr_to_increase) {
+void level_up_c(character_t* character, const attr_identifier_t attr_to_increase) {
     RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     if (character->level >= 20) {
         log_msg(WARNING, "Character", "Character is already at max level");
