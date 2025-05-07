@@ -60,27 +60,27 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
 
             // read target character
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability single character at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read c_target at line %d", count + 1)
             singleton_ability_table->abilities[count].c_target = token[0];
             // read target resource
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability target resource at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read r_target at line %d", count + 1)
             singleton_ability_table->abilities[count].r_target = token[0];
             // read effect type
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect type at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect type at line %d", count + 1)
             singleton_ability_table->abilities[count].effect_type = token[0];
             // read effect scaler
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect scaler at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect scaler at line %d", count + 1)
             singleton_ability_table->abilities[count].effect_scaler = token[0];
             // read accuracy scaler
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability accuracy scaler at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy scaler at line %d", count + 1)
             singleton_ability_table->abilities[count].accuracy_scaler = token[0];
             // read resource cost
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability costs resource at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read r_cost at line %d", count + 1)
             singleton_ability_table->abilities[count].r_cost = token[0];
 
             // read effect dice
@@ -90,36 +90,36 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
                              NULL, "Ability", "Failed to read ability effect dice at line %d", count + 1)
             // read accuracy dice
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability accuracy dice at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy dice at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_dice) != 0,
-                             NULL, "Ability", "Failed to read ability accuracy dice at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse accuracy dice at line %d", count + 1)
             // read effect rolls
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect rolls at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read  effect rolls at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_rolls) != 0,
-                             NULL, "Ability", "Failed to read ability effect rolls at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse effect rolls at line %d", count + 1)
             // read accuracy rolls
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability accuracy rolls at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy rolls at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_rolls) != 0,
-                             NULL, "Ability", "Failed to read ability accuracy rolls at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse accuracy rolls at line %d", count + 1)
 
             // read effect scale value
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect scale value at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect scale value at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_float(token, &singleton_ability_table->abilities[count].effect_scale_value) != 0,
-                             NULL, "Ability", "Failed to read ability effect scale value at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse effect scale value at line %d", count + 1)
             // read accuracy scale value
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability accuracy scale value at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy scale value at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_float(token, &singleton_ability_table->abilities[count].accuracy_scale_value) != 0,
-                             NULL, "Ability", "Failed to read ability accuracy scale value at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse accuracy scale value at line %d", count + 1)
 
             // read resource cost
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability resource cost at line %d", count + 1)
+            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read v_cost at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].v_cost) != 0,
-                             NULL, "Ability", "Failed to read ability resource cost at line %d", count + 1)
+                             NULL, "Ability", "Failed to parse v_cost at line %d", count + 1)
 
             count++;
         }
