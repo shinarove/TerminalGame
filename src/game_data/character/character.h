@@ -133,11 +133,14 @@ void level_up_c(character_t* character, attr_identifier_t attr_to_increase);
 void add_ability_c(const character_t* character, ability_id_t ability_id);
 
 /**
- * Checks if a character has the specified ability and returns a success flag.
+ * Removes a specified ability from the character's ability list.
+ * The ability is identified by its unique ability ID. If the ability
+ * is found, it is removed from the linked list of abilities associated
+ * with the character.
  *
- * @param character A pointer to the character whose abilities are being checked. Must not be NULL.
- * @param ability_id The unique identifier of the ability to be searched for within the character's abilities.
- * @return 1 if the specified ability is found, or 0 if the ability is not present or the parameters are invalid.
+ * @param character A pointer to the character structure whose ability is to be removed. Must not be NULL.
+ * @param ability_id The unique identifier of the ability to be removed.
+ * @return 0 if the ability was successfully removed, 1 if the ability was not found, or -1 if parameters are invalid.
  */
 int remove_ability_c(const character_t* character, ability_id_t ability_id);
 

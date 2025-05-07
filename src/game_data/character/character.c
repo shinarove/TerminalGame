@@ -25,11 +25,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
 
-    // prepare the first node
-    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
-    ability_node->ability = NULL;
-    ability_node->next = NULL;
-    character->abilities = ability_node;
+    character->abilities = NULL;
 
     return character;
 }
@@ -62,11 +58,7 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
     character->max_attributes = character->base_attributes;
     character->current_attributes = character->base_attributes;
 
-    // prepare the first node
-    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
-    ability_node->ability = NULL;
-    ability_node->next = NULL;
-    character->abilities = ability_node;
+    character->abilities = NULL;
 
     return character;
 }
@@ -165,31 +157,44 @@ void level_up_c(character_t* character, const attr_identifier_t attr_to_increase
     }
 }
 
-void add_ability_c(const character_t* character, const ability_id_t ability_id) {
+void add_ability_c(character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
 
     ability_node_t* ability_node = malloc(sizeof(ability_node_t));
     ability_node->ability = &get_ability_table()->abilities[ability_id];
     ability_node->next = NULL;
 
-    ability_node_t* current_node = character->abilities;
-    while (current_node->next != NULL) {
-        current_node = current_node->next;
+    if (character->abilities == NULL) {
+        character->abilities = ability_node;
+    } else {
+        ability_node_t* current_node = character->abilities;
+        while (current_node->next != NULL) {
+            current_node = current_node->next;
+        }
+        current_node->next = ability_node; // add the new ability node to the end of the list
     }
-    current_node->next = ability_node; // add the new ability node to the end of the list
 }
 
-int remove_ability_c(const character_t* character, const ability_id_t ability_id) {
+int remove_ability_c(character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, 0, "Character", "Character is NULL")
 
-    const ability_node_t* current_node = character->abilities;
-    int found = 0;
-    while (current_node != NULL && found == 0) {
-        if (current_node->ability->id == ability_id) {
-            found = 1;
+    ability_node_t* prev_node = NULL;
+    ability_node_t* current_node = character->abilities;
+    int removed = 0;
+    while (current_node != NULL && removed == 0) {
+        if (current_node->ability == &get_ability_table()->abilities[ability_id]) {
+            removed = 1;
+            ability_node_t* next_node = current_node->next;
+            if (prev_node == NULL) {
+                character->abilities = next_node; // remove the first node
+            } else {
+                prev_node->next = next_node; // remove the current node
+            }
+            free(current_node);
         } else {
+            prev_node = current_node;
             current_node = current_node->next;
         }
     }
-    return found;
+    return removed;
 }
