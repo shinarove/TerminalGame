@@ -3,6 +3,7 @@
 #include "../../helper/string_helper.h"
 #include "../../io/local/local_handler.h"
 #include "../../logger/logger.h"
+#include "../../game_mechanics/dice/dice.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,16 +84,23 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
             RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read r_cost at line %d", count + 1)
             singleton_ability_table->abilities[count].r_cost = token[0];
 
+            int dice_size = 0;
             // read effect dice
             token = strtok(NULL, ",");
             RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect dice at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_dice) != 0,
                              NULL, "Ability", "Failed to read ability effect dice at line %d", count + 1)
+            dice_size = singleton_ability_table->abilities[count].effect_dice;
+            RETURN_WHEN_TRUE(check_dice(dice_size) != 0,
+                             NULL, "Ability", "Invalid effect dice %d at line %d", dice_size, count + 1)
             // read accuracy dice
             token = strtok(NULL, ",");
             RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy dice at line %d", count + 1)
             RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_dice) != 0,
                              NULL, "Ability", "Failed to parse accuracy dice at line %d", count + 1)
+            dice_size = singleton_ability_table->abilities[count].accuracy_dice;
+            RETURN_WHEN_TRUE(check_dice(dice_size) != 0,
+                             NULL, "Ability", "Invalid accuracy dice %d at line %d", dice_size, count + 1)
             // read effect rolls
             token = strtok(NULL, ",");
             RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read  effect rolls at line %d", count + 1)
