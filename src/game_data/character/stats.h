@@ -4,8 +4,7 @@
 typedef enum {
     HEALTH,
     STAMINA,
-    MANA,
-    MAX_RESOURCES
+    MANA
 } res_identifier_t;
 
 typedef enum {
@@ -13,8 +12,7 @@ typedef enum {
     INTELLIGENCE,
     AGILITY,
     ENDURANCE,
-    LUCK,
-    MAX_ATTRIBUTES
+    LUCK
 } attr_identifier_t;
 
 typedef struct resources {
