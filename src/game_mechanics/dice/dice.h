@@ -10,7 +10,6 @@
 #define D20_STR "d20"
 
 typedef enum {
-    NO_DICE = 0,
     D3 = 3,
     D4 = 4,
     D6 = 6,
@@ -19,5 +18,21 @@ typedef enum {
     D12 = 12,
     D20 = 20
 } dice_t;
+
+/**
+ * A simple function to roll a die.
+ *
+ * @param dice The used dice for rolling
+ * @return The rolled value
+ */
+unsigned int roll_dice(dice_t dice);
+
+/**
+ * Verifies if the provided dice value is valid.
+ *
+ * @param dice The dice value to check
+ * @return Returns 0 if the dice is valid, otherwise returns 1
+ */
+int check_dice(int dice);
 
 #endif//DICE_H
