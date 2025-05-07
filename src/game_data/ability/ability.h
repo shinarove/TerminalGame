@@ -2,7 +2,16 @@
 #define ABILITY_H
 
 #include "../../memory/mem_mgmt.h"
-#include "ability_index.h"
+
+typedef enum {
+    //basic abilities
+    BITE,
+    CLAWS,
+    PUNCH,
+    //sword abilities
+    //...
+    MAX_ABILITIES
+} ability_id_t;
 
 #define SELF_CHAR 's'
 #define ENEMY_CHAR 'e'

@@ -3,6 +3,12 @@
 
 #include "../../memory/mem_mgmt.h"
 #include "stats.h"
+#include "../ability/ability.h"
+
+typedef struct ability_node {
+    ability_t* ability;
+    struct ability_node* next;
+} ability_node_t;
 
 typedef struct character {
     unsigned int id;//currently not in use
@@ -16,6 +22,8 @@ typedef struct character {
     attributes_t base_attributes;   // base = character without gear
     attributes_t max_attributes;    // max = base + buffs from gear
     attributes_t current_attributes;// current = max +- temporary buffs / debuffs
+
+    ability_node_t* abilities; // linked list of abilities
 } character_t;
 
 /**
@@ -28,7 +36,6 @@ typedef struct character {
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
  */
 character_t* create_base_character(const memory_pool_t* pool, unsigned int id, const char* name);
-
 
 /**
  * Creates a character with specified ID, name, level, base resources, and base attributes,
@@ -114,5 +121,24 @@ void reset_mana_c(character_t* character);
  *                         attribute is increased.
  */
 void level_up_c(character_t* character, attr_identifier_t attr_to_increase);
+
+/**
+ * Adds a new ability to the character's list of abilities.
+ * Allocates memory for a new ability node and appends it to the end
+ * of the character's linked list of abilities.
+ *
+ * @param character A pointer to the character structure to which the ability is added. Must not be NULL.
+ * @param ability_id The identifier of the ability to be added, referencing an entry in the ability table.
+ */
+void add_ability_c(const character_t* character, ability_id_t ability_id);
+
+/**
+ * Checks if a character has the specified ability and returns a success flag.
+ *
+ * @param character A pointer to the character whose abilities are being checked. Must not be NULL.
+ * @param ability_id The unique identifier of the ability to be searched for within the character's abilities.
+ * @return 1 if the specified ability is found, or 0 if the ability is not present or the parameters are invalid.
+ */
+int remove_ability_c(const character_t* character, ability_id_t ability_id);
 
 #endif//CHARACTER_H

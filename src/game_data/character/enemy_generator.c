@@ -2,6 +2,7 @@
 
 #include "../../logger/logger.h"
 #include "goblin.h"
+#include "../ability/ability.h"
 
 #include <stdio.h>
 
@@ -20,7 +21,9 @@ character_t* generate_goblin(const memory_pool_t* pool, unsigned int level) {
         level_up_c(goblin, lvl_table_goblin[i]);
     }
 
-    //TODO: add items and abilities
+    add_ability_c(goblin, CLAWS);
+
+    //TODO: add random items
 
     return goblin;
 }

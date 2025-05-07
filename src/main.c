@@ -68,6 +68,7 @@ int main(void) {
     const int exit_code = init(&pool);
 
     character_t* player = create_base_character(pool, 1, "Hero");
+    add_ability_c(player, PUNCH);
 
     if (exit_code == 0) {
         start_game_loop(pool, player);

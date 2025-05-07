@@ -25,10 +25,17 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
 
+    // prepare the first node
+    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
+    ability_node->ability = NULL;
+    ability_node->next = NULL;
+    character->abilities = ability_node;
+
     return character;
 }
 
-character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name, const int level, resources_t base_res, attributes_t base_attr) {
+character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name,
+    const int level, const resources_t base_res, const attributes_t base_attr) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
     RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
 
@@ -55,15 +62,29 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
     character->max_attributes = character->base_attributes;
     character->current_attributes = character->base_attributes;
 
+    // prepare the first node
+    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
+    ability_node->ability = NULL;
+    ability_node->next = NULL;
+    character->abilities = ability_node;
+
     return character;
 }
 
 void destroy_character(const memory_pool_t* pool, character_t* character) {
     free(character->name);
+
+    ability_node_t* current_node = character->abilities;
+    while (current_node != NULL) {
+        ability_node_t* next_node = current_node->next;
+        free(current_node);
+        current_node = next_node;
+    }
+
     memory_pool_free(pool, character);
 }
 
-void add_resources_c(character_t* character, unsigned int health, unsigned int stamina, unsigned int mana) {
+void add_resources_c(character_t* character, const unsigned int health, const unsigned int stamina, const unsigned int mana) {
     RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
 
     const resources_t cur_res = character->current_resources;
@@ -142,4 +163,33 @@ void level_up_c(character_t* character, const attr_identifier_t attr_to_increase
             log_msg(ERROR, "Character", "Invalid attribute identifier");
             break;
     }
+}
+
+void add_ability_c(const character_t* character, const ability_id_t ability_id) {
+    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+
+    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
+    ability_node->ability = &get_ability_table()->abilities[ability_id];
+    ability_node->next = NULL;
+
+    ability_node_t* current_node = character->abilities;
+    while (current_node->next != NULL) {
+        current_node = current_node->next;
+    }
+    current_node->next = ability_node; // add the new ability node to the end of the list
+}
+
+int remove_ability_c(const character_t* character, const ability_id_t ability_id) {
+    RETURN_WHEN_NULL(character, 0, "Character", "Character is NULL")
+
+    const ability_node_t* current_node = character->abilities;
+    int found = 0;
+    while (current_node != NULL && found == 0) {
+        if (current_node->ability->id == ability_id) {
+            found = 1;
+        } else {
+            current_node = current_node->next;
+        }
+    }
+    return found;
 }
