@@ -65,3 +65,4 @@ TerminalGame = executable('TerminalGame',
                           dice_files,
                           install : true)
 
+subdir('test') # Test directory
