@@ -75,8 +75,13 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 current = update_map_mode(input, maps[active_map_index], player);
                 break;
             case COMBAT_MODE:
-                free_prepared_resources();
-                destroy_character(used_pool, enemy);
+                current = update_combat_mode(input, player, enemy);
+                if (current != COMBAT_MODE) {
+                    // combat mode has ended free / destroy the resources
+                    free_prepared_resources();
+                    destroy_character(used_pool, enemy);
+                }
+                break;
             case INVENTORY_MODE:
             case CHARACTER_MODE:
             case MAIN_MENU:
@@ -87,7 +92,7 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 current = update_change_language(input, return_to);
                 break;
             case GAME_OVER:
-                log_msg(ERROR, "Game", "Unsupported state: %d", current);
+                log_msg(INFO, "Game", "Unsupported state: %d, now exiting game.", current);
             case EXIT_GAME:
                 running = false;
                 break;
