@@ -26,6 +26,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     character->current_attributes = char_attr;
 
     character->abilities = NULL;
+    character->ability_count = 0;
 
     return character;
 }
@@ -59,6 +60,7 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
     character->current_attributes = character->base_attributes;
 
     character->abilities = NULL;
+    character->ability_count = 0;
 
     return character;
 }
@@ -173,6 +175,7 @@ void add_ability_c(character_t* character, const ability_id_t ability_id) {
         }
         current_node->next = ability_node; // add the new ability node to the end of the list
     }
+    character->ability_count++; // increase the ability count
 }
 
 int remove_ability_c(character_t* character, const ability_id_t ability_id) {
@@ -181,16 +184,17 @@ int remove_ability_c(character_t* character, const ability_id_t ability_id) {
     ability_node_t* prev_node = NULL;
     ability_node_t* current_node = character->abilities;
     int removed = 0;
-    while (current_node != NULL && removed == 0) {
-        if (current_node->ability == &get_ability_table()->abilities[ability_id]) {
+    while (current_node != NULL) {
+        if (current_node->ability->id == (int) ability_id) {
             removed = 1;
-            ability_node_t* next_node = current_node->next;
             if (prev_node == NULL) {
-                character->abilities = next_node; // remove the first node
+                character->abilities = current_node->next; // remove the first node
             } else {
-                prev_node->next = next_node; // remove the current node
+                prev_node->next = current_node->next; // remove the current node
             }
+            character->ability_count--; // decrease the ability count
             free(current_node);
+            break;
         } else {
             prev_node = current_node;
             current_node = current_node->next;
@@ -205,7 +209,7 @@ ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t 
     ability_t* found_ability = NULL;
     const ability_node_t* current_node = character->abilities;
     while (current_node != NULL && found_ability == NULL) {
-        if (current_node->ability->id == ability_id) {
+        if (current_node->ability->id == (int) ability_id) {
             found_ability = current_node->ability;
         }
         current_node = current_node->next;

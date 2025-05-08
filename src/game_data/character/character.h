@@ -24,6 +24,7 @@ typedef struct character {
     attributes_t current_attributes;// current = max +- temporary buffs / debuffs
 
     ability_node_t* abilities; // linked list of abilities
+    int ability_count; // number of abilities
 } character_t;
 
 /**
@@ -130,7 +131,7 @@ void level_up_c(character_t* character, attr_identifier_t attr_to_increase);
  * @param character A pointer to the character structure to which the ability is added. Must not be NULL.
  * @param ability_id The identifier of the ability to be added, referencing an entry in the ability table.
  */
-void add_ability_c(const character_t* character, ability_id_t ability_id);
+void add_ability_c(character_t* character, ability_id_t ability_id);
 
 /**
  * Removes a specified ability from the character's ability list.
@@ -142,7 +143,7 @@ void add_ability_c(const character_t* character, ability_id_t ability_id);
  * @param ability_id The unique identifier of the ability to be removed.
  * @return 0 if the ability was successfully removed, 1 if the ability was not found, or -1 if parameters are invalid.
  */
-int remove_ability_c(const character_t* character, ability_id_t ability_id);
+int remove_ability_c(character_t* character, ability_id_t ability_id);
 
 /**
  * Retrieves a pointer to an ability with the specified ID from the character's list of abilities.
