@@ -255,9 +255,11 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
             const unsigned short curr_health = target->current_resources.health;
             target->current_resources.health = damage > curr_health ? 0 : curr_health - damage;
             if (target->current_resources.health == 0) res = TARGET_DIED;
+            break;
         case STAMINA_CHAR:
             const unsigned short curr_stamina = target->current_resources.stamina;
             target->current_resources.stamina = damage > curr_stamina ? 0 : curr_stamina - damage;
+            break;
         case MANA_CHAR:
             const unsigned short curr_mana = target->current_resources.mana;
             target->current_resources.mana = damage > curr_mana ? 0 : curr_mana - damage;
