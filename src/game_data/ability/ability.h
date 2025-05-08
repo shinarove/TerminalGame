@@ -50,7 +50,7 @@ typedef struct ability {
 
 typedef struct {
     ability_t abilities[MAX_ABILITIES];
-    unsigned int count;
+    int count;
 } ability_table_t;
 
 ability_table_t* init_ability_table(const memory_pool_t* pool);
