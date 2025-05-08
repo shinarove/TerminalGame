@@ -137,7 +137,7 @@ void lvl_up_c(character_t* character, const attr_identifier_t attr_to_increase) 
     character->level++;
     // ensure that exp over the limit is not lost
     character->current_exp = character->current_exp - character->needed_exp > 0 ? character->current_exp - character->needed_exp : 0;
-    if (character->level == 20) character->current_exp = 0; // max level reached
+    if (character->level == 20) character->current_exp = 0;// max level reached
     character->needed_exp = needed_exp_table[character->level];
 
     switch (attr_to_increase) {

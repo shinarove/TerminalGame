@@ -1,11 +1,11 @@
 #include "combat_mode.h"
 
 #include "../../game_mechanics/ability_usage.h"
+#include "../../game_mechanics/leveling.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
-#include "../../game_mechanics/leveling.h"
 
 #include <stdlib.h>
 

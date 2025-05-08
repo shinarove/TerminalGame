@@ -1,8 +1,8 @@
 #include "leveling.h"
 
-#include "../logger/logger.h"
 #include "../game_data/character/enemy_generator.h"
 #include "../game_data/character/goblin.h"
+#include "../logger/logger.h"
 
 void gain_exp(character_t* player, const character_t* enemy) {
     RETURN_WHEN_NULL(player, , "Leveling", "In `gain_exp` given player is NULL")

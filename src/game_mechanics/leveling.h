@@ -5,4 +5,4 @@
 
 void gain_exp(character_t* player, const character_t* enemy);
 
-#endif //LEVELING_H
+#endif//LEVELING_H
