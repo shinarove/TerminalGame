@@ -13,12 +13,12 @@ character_t* generate_goblin(const memory_pool_t* pool, unsigned int level) {
     char goblin_name[32];
     snprintf(goblin_name, sizeof(goblin_name), "GOBLIN.TYPE%d.NAME", level / 6);
 
-    character_t* goblin = create_base_character(pool, 0, goblin_name);
+    character_t* goblin = create_base_character(pool, GOBLIN, goblin_name);
     RETURN_WHEN_NULL(goblin, NULL, "Enemy Generator", "Failed to allocate memory for goblin")
 
     //level up goblin
     for (int i = 1; i < level; i++) {
-        level_up_c(goblin, lvl_table_goblin[i]);
+        lvl_up_c(goblin, lvl_table_goblin[i]);
     }
 
     add_ability_c(goblin, CLAWS);

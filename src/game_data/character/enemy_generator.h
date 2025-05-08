@@ -4,6 +4,13 @@
 #include "../../memory/mem_mgmt.h"
 #include "character.h"
 
+enum enemy_id {
+    // player id = 0
+
+    GOBLIN = 1,
+};
+
+
 /**
  * Generates a goblin character with attributes and level scaling.
  *

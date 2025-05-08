@@ -12,6 +12,8 @@ typedef struct ability_node {
 
 typedef struct character {
     unsigned int id;//currently not in use
+    unsigned int current_exp;
+    unsigned int needed_exp;
     unsigned int level;
     char* name;
 
@@ -108,6 +110,15 @@ void reset_stamina_c(character_t* character);
 void reset_mana_c(character_t* character);
 
 /**
+ * Checks if the character's current experience is enough to meet or exceed
+ * the required experience for the next level.
+ *
+ * @param character A pointer to the character whose experience is being checked. Must not be NULL.
+ * @return 1 if the character's current experience is greater than or equal to the required experience, 0 otherwise.
+ */
+int check_exp_c(const character_t* character);
+
+/**
  * Levels up the specified character, increasing its level and updating its resources
  * and attributes based on predetermined calculations. One primary attribute can be
  * chosen for an additional increase upon leveling up.
@@ -121,7 +132,7 @@ void reset_mana_c(character_t* character);
  *                         is provided, an error message will be logged and no
  *                         attribute is increased.
  */
-void level_up_c(character_t* character, attr_identifier_t attr_to_increase);
+void lvl_up_c(character_t* character, attr_identifier_t attr_to_increase);
 
 /**
  * Adds a new ability to the character's list of abilities.

@@ -45,6 +45,7 @@ character_files = files('src/game_data/character/character.c',
                         'src/game_data/character/enemy_generator.c',)
 
 game_mechanics_files = files('src/game_mechanics/ability_usage.c',
+                             'src/game_mechanics/leveling.c',
                              'src/game_mechanics/dice/dice.c')
 
 TerminalGame = executable('TerminalGame',

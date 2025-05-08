@@ -5,6 +5,7 @@
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
+#include "../../game_mechanics/leveling.h"
 
 #include <stdlib.h>
 
@@ -86,7 +87,7 @@ void update_combat_mode_local(void);
 
 void update_combat_head(const character_t* player, const character_t* enemy);
 
-state_t evaluate_player_ability_usage(usage_result_t result, const character_t* player, const character_t* enemy);
+state_t evaluate_player_ability_usage(usage_result_t result, character_t* player, const character_t* enemy);
 
 state_t evaluate_enemy_ability_usage(usage_result_t result, const character_t* player, const character_t* enemy);
 
@@ -359,7 +360,7 @@ void update_combat_head(const character_t* player, const character_t* enemy) {
 }
 
 // TODO: add a parameter for the used ability
-state_t evaluate_player_ability_usage(const usage_result_t result, const character_t* player, const character_t* enemy) {
+state_t evaluate_player_ability_usage(const usage_result_t result, character_t* player, const character_t* enemy) {
     state_t res = COMBAT_MODE;
     switch (result) {
         case SUCCESS:
@@ -408,6 +409,9 @@ state_t evaluate_player_ability_usage(const usage_result_t result, const charact
                      combat_mode_strings[VICTORY_TEXT_PART1], combat_mode_strings[ENEMY_NAME], combat_mode_strings[VICTORY_TEXT_PART2]);
             combat_mode_strings[COMBAT_END_MSG] = buffer;
             update_combat_head(player, enemy);
+
+            gain_exp(player, enemy);
+
             clear_screen();
             break;
         case UNEXPECTED_ERROR:

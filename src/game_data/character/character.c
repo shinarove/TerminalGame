@@ -14,6 +14,8 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     character->id = id;
     character->name = strdup(name);
     character->level = 1;
+    character->current_exp = 0;
+    character->needed_exp = needed_exp_table[1];
 
     const resources_t char_res = {10, 5, 5};
     character->base_resources = char_res;
@@ -41,6 +43,8 @@ character_t* create_character(const memory_pool_t* pool, const unsigned int id, 
     character->id = id;
     character->name = strdup(name);
     character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
+    character->current_exp = 0;
+    character->needed_exp = needed_exp_table[character->level];
 
     //assign base resources and attributes
     character->base_resources.health = base_res.health < 1 ? 1 : base_res.health;
@@ -109,7 +113,11 @@ void reset_mana_c(character_t* character) {
     character->current_resources.mana = character->max_resources.mana;
 }
 
-void level_up_c(character_t* character, const attr_identifier_t attr_to_increase) {
+int check_exp_c(const character_t* character) {
+    return character->current_exp >= character->needed_exp;
+}
+
+void lvl_up_c(character_t* character, const attr_identifier_t attr_to_increase) {
     RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
     if (character->level >= 20) {
         log_msg(WARNING, "Character", "Character is already at max level");
@@ -127,6 +135,11 @@ void level_up_c(character_t* character, const attr_identifier_t attr_to_increase
     character->current_resources = character->base_resources;
 
     character->level++;
+    // ensure that exp over the limit is not lost
+    character->current_exp = character->current_exp - character->needed_exp > 0 ? character->current_exp - character->needed_exp : 0;
+    if (character->level == 20) character->current_exp = 0; // max level reached
+    character->needed_exp = needed_exp_table[character->level];
+
     switch (attr_to_increase) {
         case STRENGTH:
             character->base_attributes.strength++;
