@@ -154,4 +154,18 @@ int remove_ability_c(character_t* character, ability_id_t ability_id);
  */
 ability_t* get_ability_by_id_c(const character_t* character, ability_id_t ability_id);
 
+/**
+ * Retrieves an ability from a character's list of abilities based on the specified index.
+ *
+ * This function traverses the character's linked list of abilities and returns the ability at the given index.
+ * If the character is NULL or the index is invalid (out of range), the function returns NULL and logs an error.
+ *
+ * @param character A pointer to the character whose abilities are being accessed. Must not be NULL.
+ * @param index The zero-based index of the ability to retrieve. Must be within the range of the character's
+ *              abilities (0 to ability_count - 1).
+ * @return A pointer to the ability at the specified index, or NULL if the character is NULL or the index is
+ *         out of bounds.
+ */
+ability_t* get_ability_by_index_c(const character_t* character, int index);
+
 #endif//CHARACTER_H

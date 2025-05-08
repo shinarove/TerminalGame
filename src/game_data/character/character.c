@@ -217,3 +217,14 @@ ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t 
 
     return found_ability;
 }
+
+ability_t* get_ability_by_index_c(const character_t* character, int index) {
+    RETURN_WHEN_NULL(character, NULL, "Character", "Character is NULL")
+    RETURN_WHEN_TRUE(index < 0 || index >= character->ability_count, NULL, "Character", "Invalid index %d", index)
+
+    ability_node_t* current_node = character->abilities;
+    for (int i = 0; i < index; i++) {
+        current_node = current_node->next;
+    }
+    return current_node->ability;
+}
