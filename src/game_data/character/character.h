@@ -2,8 +2,8 @@
 #define CHARACTER_H
 
 #include "../../memory/mem_mgmt.h"
-#include "stats.h"
 #include "../ability/ability.h"
+#include "stats.h"
 
 typedef struct ability_node {
     ability_t* ability;
@@ -23,8 +23,8 @@ typedef struct character {
     attributes_t max_attributes;    // max = base + buffs from gear
     attributes_t current_attributes;// current = max +- temporary buffs / debuffs
 
-    ability_node_t* abilities; // linked list of abilities
-    int ability_count; // number of abilities
+    ability_node_t* abilities;// linked list of abilities
+    int ability_count;        // number of abilities
 } character_t;
 
 /**

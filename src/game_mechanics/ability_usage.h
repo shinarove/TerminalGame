@@ -9,9 +9,9 @@ typedef enum {
     NOT_ENOUGH_HEALTH,
     NOT_ENOUGH_STAMINA,
     NOT_ENOUGH_MANA,
-    MISSED, // missed the target
-    FAILED, // failed to use ability
-    TARGET_DIED, // special success case for when the target died
+    MISSED,     // missed the target
+    FAILED,     // failed to use ability
+    TARGET_DIED,// special success case for when the target died
     UNEXPECTED_ERROR
 } usage_result_t;
 
@@ -36,4 +36,4 @@ typedef enum {
  */
 usage_result_t use_ability(character_t* user, character_t* target, const ability_t* ability);
 
-#endif //ABILITY_USAGE_H
+#endif//ABILITY_USAGE_H

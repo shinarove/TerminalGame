@@ -142,29 +142,29 @@ usage_result_t consume_resource(character_t* user, const ability_t* ability) {
     switch (ability->r_cost) {
         case HEALTH_CHAR:
             if (user->current_resources.health < ability->v_cost) {
-                res = NOT_ENOUGH_HEALTH; // failed to use ability
+                res = NOT_ENOUGH_HEALTH;// failed to use ability
             } else {
                 user->current_resources.health -= ability->v_cost;
             }
             break;
         case STAMINA_CHAR:
             if (user->current_resources.stamina < ability->v_cost) {
-                res = NOT_ENOUGH_STAMINA; // failed to use ability
+                res = NOT_ENOUGH_STAMINA;// failed to use ability
             } else {
                 user->current_resources.stamina -= ability->v_cost;
             }
             break;
         case MANA_CHAR:
             if (user->current_resources.mana < ability->v_cost) {
-                res = NOT_ENOUGH_MANA; // failed to use ability
+                res = NOT_ENOUGH_MANA;// failed to use ability
             } else {
                 user->current_resources.mana -= ability->v_cost;
             }
             break;
         default:
             log_msg(WARNING, "Ability Usage",
-                "Invalid resource cost type: %c encountered in `consume_resource`", ability->r_cost);
-            res = UNEXPECTED_ERROR; // failed to use ability
+                    "Invalid resource cost type: %c encountered in `consume_resource`", ability->r_cost);
+            res = UNEXPECTED_ERROR;// failed to use ability
             break;
     }
 
@@ -222,7 +222,7 @@ usage_result_t use_ability_on(const character_t* user, character_t* target, cons
             break;
         default:
             log_msg(WARNING, "Ability Usage",
-                "Invalid effect type: %c encountered in `use_ability_on`", ability->effect_type);
+                    "Invalid effect type: %c encountered in `use_ability_on`", ability->effect_type);
             return UNEXPECTED_ERROR;
     }
 
@@ -266,7 +266,7 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
             break;
         default:
             log_msg(WARNING, "Ability Usage",
-                "Invalid resource target: %c encountered in `use_ability_on`", r_target);
+                    "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
     return res;
@@ -275,20 +275,17 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
 usage_result_t heal_target(character_t* target, const char r_target, const int healing) {
     switch (r_target) {
         case HEALTH_CHAR:
-            target->current_resources.health = target->current_resources.health + healing > target->max_resources.health ?
-                target->max_resources.health : target->current_resources.health + healing;
+            target->current_resources.health = target->current_resources.health + healing > target->max_resources.health ? target->max_resources.health : target->current_resources.health + healing;
             break;
         case STAMINA_CHAR:
-            target->current_resources.stamina = target->current_resources.stamina + healing > target->max_resources.stamina ?
-                target->max_resources.stamina : target->current_resources.stamina + healing;
+            target->current_resources.stamina = target->current_resources.stamina + healing > target->max_resources.stamina ? target->max_resources.stamina : target->current_resources.stamina + healing;
             break;
         case MANA_CHAR:
-            target->current_resources.mana = target->current_resources.mana + healing > target->max_resources.mana ?
-                target->max_resources.mana : target->current_resources.mana + healing;
+            target->current_resources.mana = target->current_resources.mana + healing > target->max_resources.mana ? target->max_resources.mana : target->current_resources.mana + healing;
             break;
         default:
             log_msg(WARNING, "Ability Usage",
-                "Invalid resource target: %c encountered in `use_ability_on`", r_target);
+                    "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
     return SUCCESS;

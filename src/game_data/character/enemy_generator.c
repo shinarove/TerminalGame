@@ -1,8 +1,8 @@
 #include "enemy_generator.h"
 
 #include "../../logger/logger.h"
-#include "goblin.h"
 #include "../ability/ability.h"
+#include "goblin.h"
 
 #include <stdio.h>
 

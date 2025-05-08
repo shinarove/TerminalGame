@@ -1,9 +1,9 @@
 #include "ability.h"
 
+#include "../../game_mechanics/dice/dice.h"
 #include "../../helper/string_helper.h"
 #include "../../io/local/local_handler.h"
 #include "../../logger/logger.h"
-#include "../../game_mechanics/dice/dice.h"
 
 #include <stdio.h>
 #include <stdlib.h>

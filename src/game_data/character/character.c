@@ -32,7 +32,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
 }
 
 character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name,
-    const int level, const resources_t base_res, const attributes_t base_attr) {
+                              const int level, const resources_t base_res, const attributes_t base_attr) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
     RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
 
@@ -173,9 +173,9 @@ void add_ability_c(character_t* character, const ability_id_t ability_id) {
         while (current_node->next != NULL) {
             current_node = current_node->next;
         }
-        current_node->next = ability_node; // add the new ability node to the end of the list
+        current_node->next = ability_node;// add the new ability node to the end of the list
     }
-    character->ability_count++; // increase the ability count
+    character->ability_count++;// increase the ability count
 }
 
 int remove_ability_c(character_t* character, const ability_id_t ability_id) {
@@ -188,11 +188,11 @@ int remove_ability_c(character_t* character, const ability_id_t ability_id) {
         if (current_node->ability->id == (int) ability_id) {
             removed = 1;
             if (prev_node == NULL) {
-                character->abilities = current_node->next; // remove the first node
+                character->abilities = current_node->next;// remove the first node
             } else {
-                prev_node->next = current_node->next; // remove the current node
+                prev_node->next = current_node->next;// remove the current node
             }
-            character->ability_count--; // decrease the ability count
+            character->ability_count--;// decrease the ability count
             free(current_node);
             break;
         } else {

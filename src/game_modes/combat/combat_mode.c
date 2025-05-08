@@ -1,10 +1,10 @@
 #include "combat_mode.h"
 
+#include "../../game_mechanics/ability_usage.h"
 #include "../../io/local/local_handler.h"
+#include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
-#include "../../io/menu.h"
-#include "../../game_mechanics/ability_usage.h"
 
 #include <stdlib.h>
 
@@ -36,16 +36,16 @@ typedef enum {
     WAIT_AFTER_PLAYER_ACTION,
     ENEMY_TURN,
     WAIT_AFTER_ENEMY_ACTION,
-    EXIT_COMBAT_MODE // enemy or player died
+    EXIT_COMBAT_MODE// enemy or player died
 } combat_mode_state_t;
 
 enum combat_mode_index {
     //strings that are updated via local
-    LEVEL_STR, // String for 'level'
+    LEVEL_STR,  // String for 'level'
     HEALTH_STR, // String for 'health'
-    STAMINA_STR, // String for 'stamina'
-    MANA_STR, // String for 'mana'
-    USED_STR, // String for 'used'
+    STAMINA_STR,// String for 'stamina'
+    MANA_STR,   // String for 'mana'
+    USED_STR,   // String for 'used'
     COMBAT_NEXT_ACTION,
     USE_ABILITY,
     USE_POTION,
@@ -145,7 +145,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     const ability_node_t* current_node = player->abilities;
     for (int i = 0; i < player->ability_count; i++) {
         RETURN_WHEN_TRUE(current_node == NULL, EXIT_GAME, "Combat Mode",
-            "In `prepare_combat_mode` the `ability_count` doesn't match the linked list size.")
+                         "In `prepare_combat_mode` the `ability_count` doesn't match the linked list size.")
         ability_names[i] = current_node->ability->local_name;
         current_node = current_node->next;
     }
@@ -171,7 +171,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            switch(handle_menu(input, 5, Y_POS_BODY, &combat_mode_main_menu)) {
+            switch (handle_menu(input, 5, Y_POS_BODY, &combat_mode_main_menu)) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
                     clear_screen();
@@ -180,11 +180,11 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
                     combat_state = CHECK_POTION_INV;
                     clear_screen();
                     break;
-                case MAX_COMBAT_MAIN_OPTIONS: // nothing was done, do nothing
+                case MAX_COMBAT_MAIN_OPTIONS:// nothing was done, do nothing
                 case -1:
-                    break; // ESC was pressed, do nothing
+                    break;// ESC was pressed, do nothing
                 case -2:
-                    res = EXIT_GAME; // Ctrl + C was pressed
+                    res = EXIT_GAME;// Ctrl + C was pressed
                     break;
                 default:
                     log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", res);
@@ -194,19 +194,19 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
         case ABILITY_SELECTION:
             const int selected_index = handle_menu(input, 5, Y_POS_BODY, &combat_mode_ability_menu);
             switch (selected_index) {
-                case -1: // ESC was pressed
+                case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
                     clear_screen();
                     break;
                 case -2:
-                    res = EXIT_GAME; // Ctrl + C was pressed
+                    res = EXIT_GAME;// Ctrl + C was pressed
                     break;
                 default:
                     if (selected_index >= 0 && selected_index < combat_mode_ability_menu.option_count) {
                         // a valid ability was selected
                         const ability_t* ability = get_ability_by_index_c(player, selected_index);
                         RETURN_WHEN_NULL(ability, EXIT_GAME, "Combat Mode",
-                            "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", selected_index)
+                                         "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", selected_index)
                         const usage_result_t result = use_ability(player, enemy, ability);
                         res = evaluate_player_ability_usage(result, player, enemy);
                     } else if (selected_index != combat_mode_ability_menu.option_count) {
@@ -405,13 +405,13 @@ state_t evaluate_player_ability_usage(const usage_result_t result, const charact
             if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
             char* buffer = malloc(64);
             snprintf(buffer, 64, VICTORY_MESSAGE_FORMAT,
-                combat_mode_strings[VICTORY_TEXT_PART1], combat_mode_strings[ENEMY_NAME], combat_mode_strings[VICTORY_TEXT_PART2]);
+                     combat_mode_strings[VICTORY_TEXT_PART1], combat_mode_strings[ENEMY_NAME], combat_mode_strings[VICTORY_TEXT_PART2]);
             combat_mode_strings[COMBAT_END_MSG] = buffer;
             update_combat_head(player, enemy);
             clear_screen();
             break;
         case UNEXPECTED_ERROR:
-            res = EXIT_GAME; // unexpected error
+            res = EXIT_GAME;// unexpected error
             break;
     }
     return res;
@@ -428,8 +428,8 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name, //TODO
-                combat_mode_strings[ENEMY_ABILITY_HIT]);
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_ABILITY_HIT]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             update_combat_head(player, enemy);
             clear_screen();
@@ -439,7 +439,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
         case NOT_ENOUGH_MANA:
             // this should not happen!
             log_msg(ERROR, "Combat Mode",
-                "In `evaluate_enemy_ability_usage` the enemy tried to use an ability, but hasn't enough resources.");
+                    "In `evaluate_enemy_ability_usage` the enemy tried to use an ability, but hasn't enough resources.");
             res = EXIT_GAME;
             break;
         case MISSED:
@@ -447,8 +447,8 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name, //TODO
-                combat_mode_strings[ENEMY_ABILITY_MISSED]);
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_ABILITY_MISSED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();
             break;
@@ -457,8 +457,8 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name, //TODO
-                combat_mode_strings[ENEMY_ABILITY_FAILED]);
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_ABILITY_FAILED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();
             break;
@@ -469,7 +469,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, DEATH_MESSAGE_FORMAT,
-                combat_mode_strings[DEATH_TEXT], combat_mode_strings[ENEMY_NAME]);
+                     combat_mode_strings[DEATH_TEXT], combat_mode_strings[ENEMY_NAME]);
             combat_mode_strings[COMBAT_END_MSG] = char_buffer;
             update_combat_head(player, enemy);
             clear_screen();
