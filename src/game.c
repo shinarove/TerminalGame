@@ -92,7 +92,7 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 current = update_change_language(input, return_to);
                 break;
             case GAME_OVER:
-                log_msg(INFO, "Game", "Unsupported state: %d, now exiting game.", current);
+                log_msg(INFO, "Game", "Game Over isn't completed: %d, now exiting game.", current);
             case EXIT_GAME:
                 running = false;
                 break;

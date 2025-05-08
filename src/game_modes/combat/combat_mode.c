@@ -24,6 +24,8 @@
 #define ENEMY_ABILITY_USAGE_FORMAT "%s %s %s, %s"
 // [Part 1] [Enemy Name] [Part 2]
 #define VICTORY_MESSAGE_FORMAT "%s %s %s"
+// [Msg] [Enemy Name]
+#define DEATH_MESSAGE_FORMAT "%s %s"
 
 typedef enum {
     CHOOSE_ABILITY_POTION,
@@ -54,6 +56,7 @@ enum combat_mode_index {
     CONTINUE_TEXT,
     VICTORY_TEXT_PART1,
     VICTORY_TEXT_PART2,
+    DEATH_TEXT,
     ENEMY_ABILITY_HIT,
     ENEMY_ABILITY_MISSED,
     ENEMY_ABILITY_FAILED,
@@ -77,6 +80,7 @@ menu_t combat_mode_ability_menu;
 menu_t combat_mode_potion_menu;
 
 combat_mode_state_t combat_state = CHOOSE_ABILITY_POTION;
+state_t exit_combat_mode = MAP_MODE;
 
 void update_combat_mode_local(void);
 
@@ -262,7 +266,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[COMBAT_END_MSG]);
             print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
             if (input == ENTER) {
-                res = MAP_MODE;
+                res = exit_combat_mode;
                 clear_screen();
             }
             break;
@@ -327,6 +331,7 @@ void update_combat_mode_local(void) {
     combat_mode_strings[CONTINUE_TEXT] = get_local_string("PRESS_ENTER.CONTINUE");
     combat_mode_strings[VICTORY_TEXT_PART1] = get_local_string("COMBAT.PLAYER.VICTORY1");
     combat_mode_strings[VICTORY_TEXT_PART2] = get_local_string("COMBAT.PLAYER.VICTORY2");
+    combat_mode_strings[DEATH_TEXT] = get_local_string("COMBAT.PLAYER.DEATH_MSG");
 
     combat_mode_strings[ENEMY_ABILITY_HIT] = get_local_string("COMBAT.ENEMY.ABILITY.HIT");
     combat_mode_strings[ENEMY_ABILITY_MISSED] = get_local_string("COMBAT.ENEMY.ABILITY.MISS");
@@ -396,11 +401,13 @@ state_t evaluate_player_ability_usage(const usage_result_t result, const charact
             break;
         case TARGET_DIED:
             combat_state = EXIT_COMBAT_MODE;
+            exit_combat_mode = MAP_MODE;
             if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
             char* buffer = malloc(64);
             snprintf(buffer, 64, VICTORY_MESSAGE_FORMAT,
                 combat_mode_strings[VICTORY_TEXT_PART1], combat_mode_strings[ENEMY_NAME], combat_mode_strings[VICTORY_TEXT_PART2]);
             combat_mode_strings[COMBAT_END_MSG] = buffer;
+            update_combat_head(player, enemy);
             clear_screen();
             break;
         case UNEXPECTED_ERROR:
@@ -457,7 +464,15 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             break;
         case TARGET_DIED:
             // player died
-            res = GAME_OVER;
+            combat_state = EXIT_COMBAT_MODE;
+            exit_combat_mode = GAME_OVER;
+            if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
+            char_buffer = malloc(64);
+            snprintf(char_buffer, 64, DEATH_MESSAGE_FORMAT,
+                combat_mode_strings[DEATH_TEXT], combat_mode_strings[ENEMY_NAME]);
+            combat_mode_strings[COMBAT_END_MSG] = char_buffer;
+            update_combat_head(player, enemy);
+            clear_screen();
             break;
         case UNEXPECTED_ERROR:
             res = EXIT_GAME;

@@ -15,7 +15,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     character->name = strdup(name);
     character->level = 1;
 
-    const resources_t char_res = {5, 5, 5};
+    const resources_t char_res = {10, 5, 5};
     character->base_resources = char_res;
     character->max_resources = char_res;
     character->current_resources = char_res;
