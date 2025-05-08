@@ -17,7 +17,7 @@ character_t* generate_goblin(const memory_pool_t* pool, unsigned int level) {
     RETURN_WHEN_NULL(goblin, NULL, "Enemy Generator", "Failed to allocate memory for goblin")
 
     //level up goblin
-    for (int i = 0; i < level; i++) {
+    for (int i = 1; i < level; i++) {
         level_up_c(goblin, lvl_table_goblin[i]);
     }
 
