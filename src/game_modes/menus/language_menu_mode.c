@@ -35,6 +35,7 @@ int init_change_language() {
     change_language_menu.options = &language_menu_strings[OPTION_ENGLISH];// only the first option address is needed
     change_language_menu.option_count = MAX_LANGUAGES;
     change_language_menu.selected_index = 0;
+    change_language_menu.args = NULL;
 
     update_change_language_local();
     observe_local(update_change_language_local);
@@ -49,7 +50,7 @@ state_t update_change_language(const input_t input, const state_t called_from) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, language_menu_strings[GAME_TITEL]);
 
     int local_res = 0;
-    switch (handle_simple_menu(input, 5, 4, &change_language_menu, NULL)) {
+    switch (handle_simple_menu(input, 5, 4, &change_language_menu)) {
         case 0:
             // change language to English
             if (get_language() != LANGE_EN) {

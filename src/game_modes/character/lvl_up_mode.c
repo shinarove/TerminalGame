@@ -64,6 +64,7 @@ int init_lvl_up_mode(void) {
     lvl_up_menu.option_count = MAX_ATTRIBUTES;
     lvl_up_menu.selected_index = 0;
     lvl_up_menu.tailing_text = " ";
+    lvl_up_menu.args = NULL;
 
     update_lvl_up_mode_local();
     observe_local(update_lvl_up_mode_local);
@@ -97,7 +98,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
     print_text(5, LVLUP_Y_POS_PLAYER_HEAD, WHITE, DEFAULT, lvl_up_mode_strings[LVL_UP_HEAD]);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
-        switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu, NULL)) {
+        switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
             case STRENGTH:
                 lvl_up_c(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;

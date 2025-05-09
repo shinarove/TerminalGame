@@ -4,23 +4,28 @@
 #include "../../colors.h"
 
 typedef struct {
+    int active;// non-zero if the menu is active
+    color_t selected_fg;
+    color_t selected_bg;
+    color_t unselected_fg;
+    color_t unselected_bg;
+} menu_arg_t;
+
+typedef struct {
     char* title;
     char** options;
     int option_count;
     int selected_index;
     char* tailing_text;
+    menu_arg_t* args;
 } menu_t;
 
 typedef struct {
-    int active;// non-zero if the menu is active
-} menu_arg_t;
-
-typedef struct {
-    int active;           // non-zero if the spinner is active
+    menu_t* menu;
     char left_symbol;     // symbol to the left of the spinner
     char right_symbol;    // symbol to the right of the spinner
     int max_option_length;// maximum length of the options
-} spinner_arg_t;
+} spinner_menu_t;
 
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
@@ -56,7 +61,7 @@ void print_text(int x, int y, color_t fg, color_t bg, const char* text);
  * @param args A pointer to a menu_arg_t structure that can hold extended information
  *                        related to the menu. Can be NULL if no additional information is required.
  */
-void print_simple_menu(int x, int y, const menu_t* menu, menu_arg_t* args);
+void print_simple_menu(int x, int y, const menu_t* menu);
 
 /**
  * Prints a spinner-style menu on the terminal screen at the specified coordinates.
@@ -66,11 +71,11 @@ void print_simple_menu(int x, int y, const menu_t* menu, menu_arg_t* args);
  *
  * @param x The x-coordinate for the top-left position of the menu.
  * @param y The y-coordinate for the top-left position of the menu.
- * @param menu Pointer to a simple_menu_t structure, which contains the menu options, title, selected index, and tailing text.
+ * @param spinner_menu Pointer to a simple_menu_t structure, which contains the menu options, title, selected index, and tailing text.
  *             Must not be NULL.
  * @param args Pointer to a spinner_additional_t structure, which specifies the spinner symbols and maximum option length.
  *                        Must not be NULL.
  */
-void print_spinner_menu(int x, int y, const menu_t* menu, const spinner_arg_t* args);
+void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu);
 
 #endif//COMMON_OUTPUT_H

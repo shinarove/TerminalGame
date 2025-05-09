@@ -37,6 +37,7 @@ int init_title_screen() {
     title_screen_menu.option_count = MAX_TISC_OPTION;
     title_screen_menu.selected_index = 0;
     title_screen_menu.tailing_text = " ";
+    title_screen_menu.args = NULL;
 
     update_title_screen_local();
     observe_local(update_title_screen_local);
@@ -50,7 +51,7 @@ state_t update_title_screen(const input_t input) {
     // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
-    switch (handle_simple_menu(input, 5, 4, &title_screen_menu, NULL)) {
+    switch (handle_simple_menu(input, 5, 4, &title_screen_menu)) {
         case 0:
             clear_screen();
             next_state = GENERATE_MAP;

@@ -39,6 +39,7 @@ int init_main_menu() {
     main_menu.option_count = MAX_MAIN_MENU_OPTIONS;
     main_menu.selected_index = 0;
     main_menu.tailing_text = " ";
+    main_menu.args = NULL;
 
     update_main_menu_local();
     observe_local(update_main_menu_local);
@@ -52,7 +53,7 @@ state_t update_main_menu(const input_t input) {
     // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, main_menu_strings[GAME_TITLE]);
 
-    const int res = handle_simple_menu(input, 5, 4, &main_menu, NULL);
+    const int res = handle_simple_menu(input, 5, 4, &main_menu);
     switch (res) {
         case 0:// Continue was selected
             clear_screen();

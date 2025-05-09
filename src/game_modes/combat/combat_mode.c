@@ -103,9 +103,12 @@ int init_combat_mode() {
     combat_mode_main_menu.option_count = MAX_COMBAT_MAIN_OPTIONS;
     combat_mode_main_menu.selected_index = 0;
     combat_mode_main_menu.tailing_text = " ";
+    combat_mode_main_menu.args = NULL;
 
     combat_mode_ability_menu.options = NULL;
+    combat_mode_ability_menu.args = NULL;
     combat_mode_potion_menu.options = NULL;
+    combat_mode_potion_menu.args = NULL;
 
     update_combat_mode_local();
     observe_local(update_combat_mode_local);
@@ -172,7 +175,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            switch (handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_main_menu, NULL)) {
+            switch (handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_main_menu)) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
                     clear_screen();
@@ -193,7 +196,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             }
             break;
         case ABILITY_SELECTION:
-            const int selected_index = handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_ability_menu, NULL);
+            const int selected_index = handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_ability_menu);
             switch (selected_index) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
