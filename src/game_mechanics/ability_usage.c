@@ -2,6 +2,7 @@
 
 #include "../logger/logger.h"
 #include "dice/dice.h"
+#include "luck.h"
 
 /**
  * Consumes the required resource from the user character based on the given ability.
@@ -175,7 +176,7 @@ usage_result_t evaluate_accuracy(const character_t* user, const character_t* tar
     // define if the user is at an advantage: 1 for yes, 0 for no
     const int user_advantage = user->current_attributes.agility >= target->current_attributes.agility ? 1 : 0;
     // target only rolls once
-    const int target_roll = roll_dice(ability->accuracy_dice);
+    const int target_roll = roll_dice(ability->accuracy_dice) + roll_luck_dice(target);
 
     int user_roll = 0;
     // roll the dice based on the number of accuracy rolls, then only pick the highest
@@ -195,6 +196,7 @@ usage_result_t evaluate_accuracy(const character_t* user, const character_t* tar
     if (scaler < 1) return UNEXPECTED_ERROR;
     // for compiler the casts aren't necessary, but makes it more predictable
     user_roll += (int) ((float) scaler * ability->accuracy_scale_value);
+    user_roll += roll_luck_dice(user);
     if (user == target) {
         // if the user and target are the same, the ability is used on the user himself
         return user_roll > target_roll ? SUCCESS : FAILED;

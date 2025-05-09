@@ -9,8 +9,8 @@ typedef enum {
     NOT_ENOUGH_HEALTH,
     NOT_ENOUGH_STAMINA,
     NOT_ENOUGH_MANA,
-    MISSED,     // missed the target
-    FAILED,     // failed to use ability
+    MISSED,     // missed the target, only possible when user and target are different
+    FAILED,     // failed to use ability, only possible when user and target are the same
     TARGET_DIED,// special success case for when the target died
     UNEXPECTED_ERROR
 } usage_result_t;
