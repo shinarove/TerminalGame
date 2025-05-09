@@ -20,7 +20,7 @@ void print_text(int x, int y, const color_t fg, const color_t bg, const char* te
     tb_present();
 }
 
-void print_menu(int x, int y, const menu_t* menu) {
+void print_menu_s(int x, int y, const simple_menu_t* menu) {
     RETURN_WHEN_NULL(menu, , "Common Output", "print_menu: Menu is NULL");
 
     if (x < 0 || y < 0) {

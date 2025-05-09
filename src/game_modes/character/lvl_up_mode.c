@@ -44,7 +44,7 @@ enum lvl_up_mode_index {
 
 char** lvl_up_mode_strings = NULL;
 
-menu_t lvl_up_menu;
+simple_menu_t lvl_up_menu;
 
 lvl_up_mode_state_t lvl_up_state = LVL_UP_SELECTION;
 
@@ -97,7 +97,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
     print_text(5, LVLUP_Y_POS_PLAYER_HEAD, WHITE, DEFAULT, lvl_up_mode_strings[LVL_UP_HEAD]);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
-        switch (handle_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
+        switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
             case STRENGTH:
                 lvl_up_c(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;

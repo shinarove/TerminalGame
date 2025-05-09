@@ -19,7 +19,7 @@ enum change_language_index {
 
 char** language_menu_strings = NULL;
 
-menu_t change_language_menu;
+simple_menu_t change_language_menu;
 
 void update_change_language_local(void);
 
@@ -49,7 +49,7 @@ state_t update_change_language(const input_t input, const state_t called_from) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, language_menu_strings[GAME_TITEL]);
 
     int local_res = 0;
-    switch (handle_menu(input, 5, 4, &change_language_menu)) {
+    switch (handle_simple_menu(input, 5, 4, &change_language_menu)) {
         case 0:
             // change language to English
             if (get_language() != LANGE_EN) {

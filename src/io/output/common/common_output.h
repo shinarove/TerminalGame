@@ -9,7 +9,7 @@ typedef struct {
     int option_count;
     int selected_index;
     char* tailing_text;
-} menu_t;
+} simple_menu_t;
 
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
@@ -47,6 +47,6 @@ void print_text(int x, int y, color_t fg, color_t bg, const char* text);
  * The function outputs the menu's title above the options and any tailing text below the options.
  * After rendering, the terminal display is updated using `tb_present`.
  */
-void print_menu(int x, int y, const menu_t* menu);
+void print_menu_s(int x, int y, const simple_menu_t* menu);
 
 #endif//COMMON_OUTPUT_H

@@ -18,6 +18,6 @@
  *         - -2 if the QUIT key was pressed to indicate quitting the game.
  *         - The total number of options in the menu if the input did not lead to any specific action.
  */
-int handle_menu(input_t input, int x, int y, menu_t* menu_to_handle);
+int handle_simple_menu(input_t input, int x, int y, simple_menu_t* menu_to_handle);
 
 #endif//MENU_H

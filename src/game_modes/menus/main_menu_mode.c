@@ -21,7 +21,7 @@ enum main_menu_index {
 
 char** main_menu_strings = NULL;
 
-menu_t main_menu;
+simple_menu_t main_menu;
 
 void update_main_menu_local(void);
 
@@ -52,7 +52,7 @@ state_t update_main_menu(const input_t input) {
     // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, main_menu_strings[GAME_TITLE]);
 
-    const int res = handle_menu(input, 5, 4, &main_menu);
+    const int res = handle_simple_menu(input, 5, 4, &main_menu);
     switch (res) {
         case 0:// Continue was selected
             clear_screen();

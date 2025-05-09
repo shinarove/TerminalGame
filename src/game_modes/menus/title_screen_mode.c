@@ -19,7 +19,7 @@ enum title_screen_index {
 
 char** title_screen_strings = NULL;
 
-menu_t title_screen_menu;
+simple_menu_t title_screen_menu;
 
 void update_title_screen_local(void);
 
@@ -50,7 +50,7 @@ state_t update_title_screen(const input_t input) {
     // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
-    switch (handle_menu(input, 5, 4, &title_screen_menu)) {
+    switch (handle_simple_menu(input, 5, 4, &title_screen_menu)) {
         case 0:
             clear_screen();
             next_state = GENERATE_MAP;

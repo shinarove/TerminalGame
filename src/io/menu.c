@@ -2,10 +2,10 @@
 
 #include "../logger/logger.h"
 
-int handle_menu(const input_t input, const int x, const int y, menu_t* menu_to_handle) {
+int handle_simple_menu(const input_t input, const int x, const int y, simple_menu_t* menu_to_handle) {
     RETURN_WHEN_NULL(menu_to_handle, -2, "Menu", "Menu to handle is NULL");
 
-    print_menu(x, y, menu_to_handle);
+    print_menu_s(x, y, menu_to_handle);
 
     switch (input) {
         case UP:
