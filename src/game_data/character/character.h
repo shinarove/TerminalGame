@@ -132,7 +132,7 @@ int check_exp_c(const character_t* character);
  *                         is provided, an error message will be logged and no
  *                         attribute is increased.
  */
-void lvl_up_c(character_t* character, attr_identifier_t attr_to_increase);
+void lvl_up_c(character_t* character, attr_id_t attr_to_increase);
 
 /**
  * Adds a new ability to the character's list of abilities.

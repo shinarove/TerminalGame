@@ -17,9 +17,9 @@
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
 #define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
-#define CHAT_INFO_FORMAT "%s\n" CHAR_RESOURCES_FORMAT
+#define CHAR_INFO_FORMAT "%s\n" CHAR_RESOURCES_FORMAT
 #define HORIZONTAL_LINE "--------------------------------------------------"
-#define COMBAT_HEAD_FORMAT CHAT_INFO_FORMAT "\n" HORIZONTAL_LINE "\n" CHAT_INFO_FORMAT
+#define COMBAT_HEAD_FORMAT CHAR_INFO_FORMAT "\n" HORIZONTAL_LINE "\n" CHAR_INFO_FORMAT
 
 // [Enemy Name] "used" [Ability Name], [Result]
 #define ENEMY_ABILITY_USAGE_FORMAT "%s %s %s, %s"
@@ -276,7 +276,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     return res;
 }
 
-void free_prepared_resources() {
+void free_prepared_cm_resources() {
     for (int i = ENEMY_NAME; i < MAX_COMBAT_MODE_STRINGS; i++) {
         if (combat_mode_strings[i] != NULL) {
             free(combat_mode_strings[i]);

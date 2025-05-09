@@ -10,6 +10,7 @@ typedef enum {
     GENERATE_ENEMY,
     MAP_MODE,
     COMBAT_MODE,
+    LVL_UP_MODE,
     INVENTORY_MODE,
     CHARACTER_MODE,
     MAIN_MENU,

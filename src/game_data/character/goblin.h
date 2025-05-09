@@ -3,7 +3,7 @@
 
 #include "stats.h"
 
-constexpr attr_identifier_t lvl_table_goblin[] = {
+constexpr attr_id_t lvl_table_goblin[] = {
         STRENGTH,
         STRENGTH,
         ENDURANCE,

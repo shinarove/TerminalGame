@@ -78,7 +78,7 @@ state_t update_combat_mode(input_t input, character_t* player, character_t* enem
  * - Resets the `options` pointers for the ability menu and potion menu to NULL
  *   after freeing the memory to prevent reuse.
  */
-void free_prepared_resources();
+void free_prepared_cm_resources();
 
 /**
  * Shuts down and cleans up resources associated with combat mode.

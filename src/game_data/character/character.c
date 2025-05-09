@@ -5,8 +5,8 @@
 #include <string.h>
 
 character_t* create_base_character(const memory_pool_t* pool, const unsigned int id, const char* name) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
-    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
+    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
+    RETURN_WHEN_NULL(name, NULL, "Character", "In `create_base_character` given name is NULL")
 
     character_t* character = memory_pool_alloc(pool, sizeof(character_t));
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
@@ -35,8 +35,8 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
 
 character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name,
                               const int level, const resources_t base_res, const attributes_t base_attr) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "Pool is NULL")
-    RETURN_WHEN_NULL(name, NULL, "Character", "Name is NULL")
+    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_character` given mem pool is NULL")
+    RETURN_WHEN_NULL(name, NULL, "Character", "In `create_character` given name is NULL")
 
     character_t* character = memory_pool_alloc(pool, sizeof(character_t));
 
@@ -83,7 +83,7 @@ void destroy_character(const memory_pool_t* pool, character_t* character) {
 }
 
 void add_resources_c(character_t* character, const unsigned int health, const unsigned int stamina, const unsigned int mana) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `add_resources_c` given character is NULL")
 
     const resources_t cur_res = character->current_resources;
     const resources_t max_res = character->max_resources;
@@ -94,22 +94,22 @@ void add_resources_c(character_t* character, const unsigned int health, const un
 }
 
 void reset_resources_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `reset_resources_c` given character is NULL")
     character->current_resources = character->max_resources;
 }
 
 void reset_health_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `reset_health_c` given character is NULL")
     character->current_resources.health = character->max_resources.health;
 }
 
 void reset_stamina_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `reset_stamina_c` given character is NULL")
     character->current_resources.stamina = character->max_resources.stamina;
 }
 
 void reset_mana_c(character_t* character) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `reset_mana_c` given character is NULL")
     character->current_resources.mana = character->max_resources.mana;
 }
 
@@ -117,10 +117,12 @@ int check_exp_c(const character_t* character) {
     return character->current_exp >= character->needed_exp;
 }
 
-void lvl_up_c(character_t* character, const attr_identifier_t attr_to_increase) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
+    RETURN_WHEN_NULL(character, , "Character", "In `lvl_up_c` given character is NULL")
+    RETURN_WHEN_TRUE(attr_to_increase == MAX_ATTRIBUTES, , "Character",
+        "Given attribute id in `lvl_up_c` == MAX_ATTRIBUTES. Now returning")
     if (character->level >= 20) {
-        log_msg(WARNING, "Character", "Character is already at max level");
+        log_msg(INFO, "Character", "Character is already at max level");
         return;
     }
 
@@ -167,13 +169,14 @@ void lvl_up_c(character_t* character, const attr_identifier_t attr_to_increase) 
             character->current_attributes.luck++;
             break;
         default:
-            log_msg(ERROR, "Character", "Invalid attribute identifier");
+            //general error handling, when the given attribute id is not supported
+            log_msg(ERROR, "Character", "In `lvl_up_c` given attribute id %d is not supported", attr_to_increase);
             break;
     }
 }
 
 void add_ability_c(character_t* character, const ability_id_t ability_id) {
-    RETURN_WHEN_NULL(character, , "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, , "Character", "In `add_ability_c` given character is NULL")
 
     ability_node_t* ability_node = malloc(sizeof(ability_node_t));
     ability_node->ability = &get_ability_table()->abilities[ability_id];
@@ -192,7 +195,7 @@ void add_ability_c(character_t* character, const ability_id_t ability_id) {
 }
 
 int remove_ability_c(character_t* character, const ability_id_t ability_id) {
-    RETURN_WHEN_NULL(character, 0, "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, 0, "Character", "In `remove_ability_c` given character is NULL")
 
     ability_node_t* prev_node = NULL;
     ability_node_t* current_node = character->abilities;
@@ -217,7 +220,7 @@ int remove_ability_c(character_t* character, const ability_id_t ability_id) {
 }
 
 ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t ability_id) {
-    RETURN_WHEN_NULL(character, NULL, "Character", "Character is NULL")
+    RETURN_WHEN_NULL(character, NULL, "Character", "In `get_ability_by_id_c` given character is NULL")
 
     ability_t* found_ability = NULL;
     const ability_node_t* current_node = character->abilities;
@@ -232,8 +235,9 @@ ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t 
 }
 
 ability_t* get_ability_by_index_c(const character_t* character, const int index) {
-    RETURN_WHEN_NULL(character, NULL, "Character", "Given character in `get_ability_by_index_c` is NULL")
-    RETURN_WHEN_TRUE(index < 0 || index >= character->ability_count, NULL, "Character", "Invalid index %d", index)
+    RETURN_WHEN_NULL(character, NULL, "Character", "In `get_ability_by_index_c` given character is NULL")
+    RETURN_WHEN_TRUE(index < 0 || index >= character->ability_count, NULL,
+        "Character", "In `get_ability_by_index_c` given index is invalid: %d", index)
 
     const ability_node_t* current_node = character->abilities;
     for (int i = 0; i < index; i++) {

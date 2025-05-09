@@ -78,8 +78,10 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                 current = update_combat_mode(input, player, enemy);
                 if (current != COMBAT_MODE) {
                     // combat mode has ended free / destroy the resources
-                    free_prepared_resources();
+                    free_prepared_cm_resources();
                     destroy_character(used_pool, enemy);
+
+                    check_exp_c(player); // TODO: if level up ready, change to lvl up screen
                 }
                 break;
             case INVENTORY_MODE:
