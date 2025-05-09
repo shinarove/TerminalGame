@@ -41,6 +41,7 @@ combat_files = files('src/game_modes/combat/combat_mode.c')
 ability_files = files('src/game_data/ability/ability.c',)
 
 character_files = files('src/game_modes/character/lvl_up_mode.c',
+                        'src/game_modes/character/character_creation_mode.c',
                         'src/game_data/character/character.c',
                         'src/game_data/character/character_parser.c',
                         'src/game_data/character/enemy_generator.c',)

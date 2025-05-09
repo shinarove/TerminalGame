@@ -2,7 +2,6 @@
 #include "../termbox2/termbox2.h"
 #include "game.h"
 #include "game_data/ability/ability.h"
-#include "game_data/character/character.h"
 #include "game_modes/combat/combat_mode.h"
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/language_menu_mode.h"
@@ -13,6 +12,7 @@
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
 #include "game_modes/character/lvl_up_mode.h"
+#include "game_modes/character/character_creation_mode.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -21,6 +21,7 @@ enum exit_codes {
     SUCCESS,
     ERROR_MEMORY_POOL_INIT,
     ERROR_LOCAL_INIT,
+    ERROR_CHARACTER_CREATION_INIT,
     ERROR_MAP_MODE_INIT,
     ERROR_COMBAT_MODE_INIT,
     ERROR_LVL_UP_MODE_INIT,
@@ -43,6 +44,7 @@ int init(memory_pool_t** pool) {
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
 
     // init of the different modes
+    if (init_character_creation_mode() != 0) return ERROR_CHARACTER_CREATION_INIT;
     if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
     if (init_combat_mode() != 0) return ERROR_COMBAT_MODE_INIT;
     if (init_lvl_up_mode() != 0) return ERROR_LVL_UP_MODE_INIT;
@@ -70,20 +72,10 @@ int main(void) {
     memory_pool_t* pool = NULL;
     const int exit_code = init(&pool);
 
-    character_t* player = create_base_character(pool, 0, "Hero");
-    // TODO: for testing purposes
-    const resources_t resources = {100, 5, 5};
-    player->base_resources = resources;
-    player->max_resources = resources;
-    player->current_resources = resources;
-
-    add_ability_c(player, PUNCH);
-
     if (exit_code == 0) {
-        start_game_loop(pool, player);
+        start_game_loop(pool);
     }
 
-    destroy_character(pool, player);
     shutdown(&pool);
     return exit_code;
 }
@@ -99,6 +91,7 @@ void shutdown(memory_pool_t** pool) {
     shutdown_lvl_up_mode();
     shutdown_combat_mode();
     shutdown_map_mode();
+    shutdown_character_creation_mode();
 
     // shutdown core components
     shutdown_local_handler();
