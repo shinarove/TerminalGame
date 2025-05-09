@@ -27,4 +27,4 @@
  */
 int roll_luck_dice(const character_t* character);
 
-#endif //LUCK_H
+#endif//LUCK_H

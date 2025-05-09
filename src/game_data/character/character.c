@@ -120,7 +120,7 @@ int check_exp_c(const character_t* character) {
 void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     RETURN_WHEN_NULL(character, , "Character", "In `lvl_up_c` given character is NULL")
     RETURN_WHEN_TRUE(attr_to_increase == MAX_ATTRIBUTES, , "Character",
-        "Given attribute id in `lvl_up_c` == MAX_ATTRIBUTES. Now returning")
+                     "Given attribute id in `lvl_up_c` == MAX_ATTRIBUTES. Now returning")
     if (character->level >= 20) {
         log_msg(INFO, "Character", "Character is already at max level");
         return;
@@ -237,7 +237,7 @@ ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t 
 ability_t* get_ability_by_index_c(const character_t* character, const int index) {
     RETURN_WHEN_NULL(character, NULL, "Character", "In `get_ability_by_index_c` given character is NULL")
     RETURN_WHEN_TRUE(index < 0 || index >= character->ability_count, NULL,
-        "Character", "In `get_ability_by_index_c` given index is invalid: %d", index)
+                     "Character", "In `get_ability_by_index_c` given index is invalid: %d", index)
 
     const ability_node_t* current_node = character->abilities;
     for (int i = 0; i < index; i++) {

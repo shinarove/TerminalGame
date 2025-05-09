@@ -1,10 +1,10 @@
 #include "lvl_up_mode.h"
 
-#include "../../io/local/local_handler.h"
-#include "../../logger/logger.h"
-#include "../../io/menu.h"
-#include "../../game_data/character/stats.h"
 #include "../../game_data/character/character.h"
+#include "../../game_data/character/stats.h"
+#include "../../io/local/local_handler.h"
+#include "../../io/menu.h"
+#include "../../logger/logger.h"
 
 #define LVLUP_Y_POS_TITLE 2
 #define LVLUP_Y_POS_PLAYER_HEAD 4
@@ -81,7 +81,7 @@ state_t prepare_lvl_up_mode(const character_t* player) {
 
     char* buffer = malloc(64);
     snprintf(buffer, 64, CHAR_NAME_LVL_FORMAT,
-        player->name, lvl_up_mode_strings[LEVEL_STR], player->level);
+             player->name, lvl_up_mode_strings[LEVEL_STR], player->level);
     lvl_up_mode_strings[PLAYER_NAME_LVL] = buffer;
 
     update_lvl_up_head(player);
@@ -201,14 +201,14 @@ void update_lvl_up_head(const character_t* player) {
     // update the level up head string
     char* lvl_up_head_str = malloc(256);
     snprintf(lvl_up_head_str, 256, LVL_UP_HEAD_FORMAT,
-        lvl_up_mode_strings[PLAYER_NAME_LVL],
-        lvl_up_mode_strings[HEALTH_STR], player->current_resources.health, player->max_resources.health,
-        lvl_up_mode_strings[STAMINA_STR], player->current_resources.stamina, player->max_resources.stamina,
-        lvl_up_mode_strings[MANA_STR], player->current_resources.mana, player->max_resources.mana,
-        lvl_up_mode_strings[STRENGTH_STR], player->current_attributes.strength,
-        lvl_up_mode_strings[INTELLIGENCE_STR], player->current_attributes.intelligence,
-        lvl_up_mode_strings[AGILITY_STR], player->current_attributes.agility,
-        lvl_up_mode_strings[ENDURANCE_STR], player->current_attributes.endurance,
-        lvl_up_mode_strings[LUCK_STR], player->current_attributes.luck);
+             lvl_up_mode_strings[PLAYER_NAME_LVL],
+             lvl_up_mode_strings[HEALTH_STR], player->current_resources.health, player->max_resources.health,
+             lvl_up_mode_strings[STAMINA_STR], player->current_resources.stamina, player->max_resources.stamina,
+             lvl_up_mode_strings[MANA_STR], player->current_resources.mana, player->max_resources.mana,
+             lvl_up_mode_strings[STRENGTH_STR], player->current_attributes.strength,
+             lvl_up_mode_strings[INTELLIGENCE_STR], player->current_attributes.intelligence,
+             lvl_up_mode_strings[AGILITY_STR], player->current_attributes.agility,
+             lvl_up_mode_strings[ENDURANCE_STR], player->current_attributes.endurance,
+             lvl_up_mode_strings[LUCK_STR], player->current_attributes.luck);
     lvl_up_mode_strings[LVL_UP_HEAD] = lvl_up_head_str;
 }

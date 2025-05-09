@@ -14,4 +14,4 @@ void free_prepared_lum_resources(void);
 
 void shutdown_lvl_up_mode(void);
 
-#endif //LEVEL_UP_MODE_H
+#endif//LEVEL_UP_MODE_H

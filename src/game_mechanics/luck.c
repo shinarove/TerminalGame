@@ -28,6 +28,6 @@ int roll_luck_dice(const character_t* character) {
         return 0;
     }
 
-    res = roll_dice(used_dice) - 1; // that way a 0 res is possible
+    res = roll_dice(used_dice) - 1;// that way a 0 res is possible
     return res;
 }
