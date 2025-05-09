@@ -81,7 +81,7 @@ menu_t combat_mode_ability_menu;
 menu_t combat_mode_potion_menu;
 
 combat_mode_state_t combat_state = CHOOSE_ABILITY_POTION;
-state_t exit_combat_mode = MAP_MODE;
+state_t exit_combat_mode_with = MAP_MODE;
 
 void update_combat_mode_local(void);
 
@@ -267,7 +267,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[COMBAT_END_MSG]);
             print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
             if (input == ENTER) {
-                res = exit_combat_mode;
+                res = exit_combat_mode_with;
                 clear_screen();
             }
             break;
@@ -402,7 +402,7 @@ state_t evaluate_player_ability_usage(const usage_result_t result, character_t* 
             break;
         case TARGET_DIED:
             combat_state = EXIT_COMBAT_MODE;
-            exit_combat_mode = MAP_MODE;
+            exit_combat_mode_with = MAP_MODE;
             if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
             char* buffer = malloc(64);
             snprintf(buffer, 64, VICTORY_MESSAGE_FORMAT,
@@ -469,7 +469,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
         case TARGET_DIED:
             // player died
             combat_state = EXIT_COMBAT_MODE;
-            exit_combat_mode = GAME_OVER;
+            exit_combat_mode_with = GAME_OVER;
             if (combat_mode_strings[COMBAT_END_MSG] != NULL) free(combat_mode_strings[COMBAT_END_MSG]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, DEATH_MESSAGE_FORMAT,
