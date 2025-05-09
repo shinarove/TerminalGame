@@ -3,6 +3,7 @@
 
 #include "../../game.h"
 #include "../../io/input/input_handler.h"
+#include "../../game_data/character/character.h"
 
 /**
  * Initializes the combat mode of the game.

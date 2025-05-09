@@ -3,6 +3,7 @@
 
 #include "../../game.h"
 #include "../../game_data/map/map.h"
+#include "../../game_data/character/character.h"
 
 /**
  * Handles events related to the provided map and updates the player's state accordingly.

@@ -4,6 +4,7 @@
 #include "../../game.h"
 #include "../../game_data/map/map.h"
 #include "../../io/input/input_handler.h"
+#include "../../game_data/character/character.h"
 
 /**
  * Initializes the map mode by allocating memory for map mode strings,
