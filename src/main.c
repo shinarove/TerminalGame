@@ -68,6 +68,12 @@ int main(void) {
     const int exit_code = init(&pool);
 
     character_t* player = create_base_character(pool, 0, "Hero");
+    // for testing purposes
+    const resources_t resources = {100, 5, 5};
+    player->base_resources = resources;
+    player->max_resources = resources;
+    player->current_resources = resources;
+
     add_ability_c(player, PUNCH);
 
     if (exit_code == 0) {
