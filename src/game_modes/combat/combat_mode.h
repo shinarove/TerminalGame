@@ -2,8 +2,8 @@
 #define COMBAT_MODE_H
 
 #include "../../game.h"
-#include "../../io/input/input_handler.h"
 #include "../../game_data/character/character.h"
+#include "../../io/input/input_handler.h"
 
 /**
  * Initializes the combat mode of the game.

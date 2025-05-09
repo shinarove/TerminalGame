@@ -57,7 +57,7 @@ int handle_spinner_menu(const input_t input, const int x, const int y, menu_t* m
         case QUIT:
             return -2;// return -2 to indicate that the game should exit
         default:
-            break; // do nothing
+            break;// do nothing
     }
     // return the number of options * 2 to indicate that the input was not handled
     return real_option_count;

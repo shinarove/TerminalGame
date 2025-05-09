@@ -3,6 +3,7 @@
 #include "game_data/character/enemy_generator.h"
 #include "game_data/map/map_generator.h"
 #include "game_data/map/map_revealer.h"
+#include "game_modes/character/character_creation_mode.h"
 #include "game_modes/character/lvl_up_mode.h"
 #include "game_modes/combat/combat_mode.h"
 #include "game_modes/map/map_mode.h"
@@ -11,7 +12,6 @@
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
-#include "game_modes/character/character_creation_mode.h"
 
 #define FRAMES_PER_SECONDS 20
 

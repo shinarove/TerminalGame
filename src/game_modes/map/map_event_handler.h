@@ -2,8 +2,8 @@
 #define MAP_EVENT_HANDLER_H
 
 #include "../../game.h"
-#include "../../game_data/map/map.h"
 #include "../../game_data/character/character.h"
+#include "../../game_data/map/map.h"
 
 /**
  * Handles events related to the provided map and updates the player's state accordingly.

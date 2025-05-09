@@ -12,14 +12,14 @@ typedef struct {
 } menu_t;
 
 typedef struct {
-    int active; // non-zero if the menu is active
+    int active;// non-zero if the menu is active
 } menu_arg_t;
 
 typedef struct {
-    int active; // non-zero if the spinner is active
-    char left_symbol; // symbol to the left of the spinner
-    char right_symbol; // symbol to the right of the spinner
-    int max_option_length; // maximum length of the options
+    int active;           // non-zero if the spinner is active
+    char left_symbol;     // symbol to the left of the spinner
+    char right_symbol;    // symbol to the right of the spinner
+    int max_option_length;// maximum length of the options
 } spinner_arg_t;
 
 /**

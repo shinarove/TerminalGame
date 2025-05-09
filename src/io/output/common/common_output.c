@@ -47,7 +47,7 @@ void print_spinner_menu(int x, int y, const menu_t* menu, const spinner_arg_t* a
     RETURN_WHEN_NULL(menu, , "Common Output", "In `print_spinner_menu` menu is NULL")
     RETURN_WHEN_NULL(args, , "Common Output", "In `print_spinner_menu` additional_info is NULL")
     RETURN_WHEN_TRUE(args->max_option_length < 0, , "Common Output",
-        "In `print_spinner_menu` max_option_length is negative")
+                     "In `print_spinner_menu` max_option_length is negative")
     check_xy(&x, &y);
 
     const int spinner_x_pos = x + args->max_option_length + 1;
