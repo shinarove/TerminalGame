@@ -11,6 +11,12 @@ typedef struct {
     char* tailing_text;
 } simple_menu_t;
 
+typedef struct {
+    char left_symbol; // symbol to the left of the spinner
+    char right_symbol; // symbol to the right of the spinner
+    int max_option_length; // maximum length of the options
+} spinner_additional_t;
+
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
  * @note Use this function with caution, preferably before a context switch occurs.
@@ -47,6 +53,21 @@ void print_text(int x, int y, color_t fg, color_t bg, const char* text);
  * The function outputs the menu's title above the options and any tailing text below the options.
  * After rendering, the terminal display is updated using `tb_present`.
  */
-void print_menu_s(int x, int y, const simple_menu_t* menu);
+void print_simple_menu(int x, int y, const simple_menu_t* menu);
+
+/**
+ * Prints a spinner-style menu on the terminal screen at the specified coordinates.
+ * The menu includes options displayed in a vertical list, along with a spinner control on the right side,
+ * which highlights the selected option's spinner symbols based on the current selection index.
+ * This function supports customizable spinner symbols and adjusts according to the maximum option length.
+ *
+ * @param x The x-coordinate for the top-left position of the menu.
+ * @param y The y-coordinate for the top-left position of the menu.
+ * @param menu Pointer to a simple_menu_t structure, which contains the menu options, title, selected index, and tailing text.
+ *             Must not be NULL.
+ * @param additional_info Pointer to a spinner_additional_t structure, which specifies the spinner symbols and maximum option length.
+ *                        Must not be NULL.
+ */
+void print_spinner_menu(int x, int y, const simple_menu_t* menu, const spinner_additional_t* additional_info);
 
 #endif//COMMON_OUTPUT_H
