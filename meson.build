@@ -47,6 +47,7 @@ character_files = files('src/game_modes/character/lvl_up_mode.c',
 
 game_mechanics_files = files('src/game_mechanics/ability_usage.c',
                              'src/game_mechanics/leveling.c',
+                             'src/game_mechanics/luck.c',
                              'src/game_mechanics/dice/dice.c')
 
 TerminalGame = executable('TerminalGame',
