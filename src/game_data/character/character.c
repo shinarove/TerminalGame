@@ -4,6 +4,34 @@
 
 #include <string.h>
 
+character_t* create_empty_character(const memory_pool_t* pool) {
+    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
+
+    character_t* character = memory_pool_alloc(pool, sizeof(character_t));
+    RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
+
+    character->id = 0;
+    character->current_exp = 0;
+    character->needed_exp = 0;
+    character->level = 0;
+    character->name = NULL;
+
+    const resources_t char_res = {0, 0, 0};
+    character->base_resources = char_res;
+    character->max_resources = char_res;
+    character->current_resources = char_res;
+
+    const attributes_t char_attr = {0, 0, 0, 0, 0};
+    character->base_attributes = char_attr;
+    character->max_attributes = char_attr;
+    character->current_attributes = char_attr;
+
+    character->abilities = NULL;
+    character->ability_count = 0;
+
+    return character;
+}
+
 character_t* create_base_character(const memory_pool_t* pool, const int id, const char* name) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_base_character` given name is NULL")

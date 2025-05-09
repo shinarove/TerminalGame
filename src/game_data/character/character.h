@@ -30,6 +30,15 @@ typedef struct character {
 } character_t;
 
 /**
+ * Creates an empty character structure with initialized values all set to zero.
+ * The character's attributes, resources, and abilities are all set to their default states.
+ *
+ * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.
+ * @return A pointer to the newly created character structure, or NULL if memory allocation fails or the parameter is invalid.
+ */
+character_t* create_empty_character(const memory_pool_t* pool);
+
+/**
  * Creates a base character with specified ID and name, using the provided memory pool.
  * The character's resources and attributes are initialized to default values.
  *
