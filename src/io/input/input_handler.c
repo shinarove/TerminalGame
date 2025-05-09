@@ -10,6 +10,10 @@ input_t input_buffer[INPUT_BUFFER_SIZE];
 volatile int buffer_head = 0;
 volatile int buffer_tail = 0;
 
+char* text_buffer = NULL;
+int text_buffer_length = 0;
+int text_buffer_pos = 0;
+
 bool input_handler_is_running = false;
 
 /**
@@ -24,6 +28,13 @@ void start_input_handler_thread(void);
  */
 void input_handler_thread(void);
 
+/**
+ * Populates the text buffer with characters input from a terminal event.
+ *
+ * @param event The terminal event containing the input data, which includes key presses or character inputs.
+ */
+void populate_text_buffer(struct tb_event event);
+
 void init_input_handler() {
     start_input_handler_thread();
 }
@@ -34,6 +45,23 @@ input_t get_next_input() {
     const input_t input = input_buffer[buffer_tail];
     buffer_tail = (buffer_tail + 1) % INPUT_BUFFER_SIZE;
     return input;
+}
+
+char* start_text_input(const size_t max_length) {
+    RETURN_WHEN_TRUE(text_buffer != NULL, NULL, "Input Handler", "Text input is already active");
+    text_buffer = malloc(max_length);
+    memset(text_buffer, '\0', max_length);
+    text_buffer_length = (int) max_length;
+
+    return text_buffer;
+}
+
+void end_text_input(void) {
+    RETURN_WHEN_TRUE(text_buffer == NULL, , "Input Handler", "Text input is not active");
+    free(text_buffer);
+    text_buffer = NULL;
+    text_buffer_length = 0;
+    text_buffer_pos = 0;
 }
 
 void shutdown_input_handler(void) {
@@ -85,10 +113,25 @@ void input_handler_thread() {
                 input_buffer[buffer_head] = input;
                 buffer_head = (buffer_head + 1) % INPUT_BUFFER_SIZE;
             }
+
+            if (text_buffer != NULL) {
+                // text input is active, populate the text buffer
+                populate_text_buffer(event);
+            }
         }
 
         if (!input_handler_is_running) {
             running = false;
         }
+    }
+}
+
+void populate_text_buffer(const struct tb_event event) {
+    if (event.key == TB_KEY_BACKSPACE && text_buffer_pos > 0) {
+        text_buffer_pos--;
+        text_buffer[text_buffer_pos] = '\0';
+    } else if (event.ch != 0 && text_buffer_pos < text_buffer_length - 1) {
+        text_buffer[text_buffer_pos++] = (char) event.ch;
+        text_buffer[text_buffer_pos] = '\0'; // ensure the string is always null-terminated
     }
 }
