@@ -21,22 +21,20 @@
 int handle_simple_menu(input_t input, int x, int y, menu_t* menu_to_handle);
 
 /**
- * Handles the user input for navigating and interacting with a spinner menu. Depending on the input,
- * the current selection is updated, moved, or a specific action is triggered (e.g., selecting an option,
- * closing the menu, or quitting the game).
+ * Handles navigation and selection within a spinner menu using user input. The spinner menu
+ * allows horizontal navigation between paired options in addition to vertical scrolling. Selection
+ * or actions are triggered based on specific input keys.
  *
- * @param input The user input that affects the menu (e.g., UP, DOWN, LEFT, RIGHT, ENTER, ESCAPE, etc.).
- * @param x The x-coordinate of where the menu should be displayed.
- * @param y The y-coordinate of where the menu should be displayed.
- * @param menu_to_handle A pointer to the menu structure that is being manipulated.
- * @param args A pointer to additional spinner-specific information (e.g., symbols and maximum option length).
+ * @param input The user input that interacts with the spinner menu (e.g., UP, DOWN, LEFT, RIGHT, ENTER, ESCAPE, QUIT, etc.).
+ * @param x The x-coordinate of the spinner menu's display location.
+ * @param y The y-coordinate of the spinner menu's display location.
+ * @param menu_to_handle A pointer to the spinner menu structure containing menu details and the current state.
  * @return Returns:
- *         - The selected index in the menu if the ENTER key was pressed.
- *         - -1 if the ESCAPE key was pressed to indicate the menu was closed.
- *         - -2 if the QUIT key was pressed or if a null pointer is encountered (e.g., `menu_to_handle` or `additional_info` is null).
- *         - The total number of adjusted options (option_count * 2) if the input does not lead to any specific action.
+ *         - The selected index of the spinner menu if the ENTER key is pressed.
+ *         - -1 if the ESCAPE key is pressed to indicate that the menu has been closed.
+ *         - -2 if the QUIT key is pressed or if `menu_to_handle` or its internal `menu` is null to indicate an error or exit.
+ *         - The total number of paired spinner menu options if the input does not result in a selection or specific action.
  */
-int handle_spinner_menu(input_t input, int x, int y, menu_t* menu_to_handle,
-                        const spinner_arg_t* args);
+int handle_spinner_menu(input_t input, int x, int y, const spinner_menu_t* menu_to_handle);
 
 #endif//MENU_H

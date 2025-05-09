@@ -67,28 +67,34 @@ void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu) {
                      "In `print_spinner_menu` max_option_length is negative")
     check_xy(&x, &y);
 
-    const int spinner_x_pos = x + args->max_option_length + 1;
-    //print title
-    tb_printf(x, y++, TB_WHITE, TB_DEFAULT, "%s", spinner_menu->title);
+    const menu_arg_t args = extract_menu_args(spinner_menu->menu->args);
+    const uintattr_t uns_fg = color_mapping[args.unselected_fg].value;
+    const uintattr_t uns_bg = color_mapping[args.unselected_bg].value;
+    const uintattr_t sel_fg = color_mapping[args.selected_fg].value;
+    const uintattr_t sel_bg = color_mapping[args.selected_bg].value;
 
-    for (int i = 0; i < spinner_menu->option_count; i++) {
-        tb_printf(x, y, TB_WHITE, TB_DEFAULT, "%s", spinner_menu->options[i]);
-        if (i == spinner_menu->selected_index / 2 && spinner_menu->selected_index % 2 == 0) {
+    const int spinner_x_pos = x + spinner_menu->max_option_length + 1;
+    //print title
+    tb_printf(x, y++, uns_fg, uns_bg, "%s", spinner_menu->menu->title);
+
+    for (int i = 0; i < spinner_menu->menu->option_count; i++) {
+        tb_printf(x, y, uns_fg, uns_bg, "%s", spinner_menu->menu->options[i]);
+        if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 0 && args.active) {
             // the left symbol is marked
-            tb_printf(spinner_x_pos, y, TB_BLACK, TB_WHITE, "%c", args->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", args->right_symbol);
-        } else if (i == spinner_menu->selected_index / 2 && spinner_menu->selected_index % 2 == 1) {
+            tb_printf(spinner_x_pos, y, sel_fg, sel_bg, "%c", spinner_menu->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, "%c", spinner_menu->right_symbol);
+        } else if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 1 && args.active) {
             // the right symbol is marked
-            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", args->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_BLACK, TB_WHITE, "%c", args->right_symbol);
+            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "%c", spinner_menu->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, sel_fg, sel_bg, "%c", spinner_menu->right_symbol);
         } else {
-            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", args->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", args->right_symbol);
+            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "%c", spinner_menu->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, "%c", spinner_menu->right_symbol);
         }
         y += 1;
     }
 
-    tb_printf(x, y + 2, TB_WHITE, TB_DEFAULT, "%s", spinner_menu->tailing_text);
+    tb_printf(x, y + 2, uns_fg, uns_bg, "%s", spinner_menu->menu->tailing_text);
     tb_present();
 }
 
