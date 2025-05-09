@@ -6,7 +6,12 @@
 
 #define INPUT_BUFFER_SIZE 16
 
-// === internal functions ===
+input_t input_buffer[INPUT_BUFFER_SIZE];
+volatile int buffer_head = 0;
+volatile int buffer_tail = 0;
+
+bool input_handler_is_running = false;
+
 /**
  * Starts the input handler thread.
  */
@@ -19,13 +24,21 @@ void start_input_handler_thread(void);
  */
 void input_handler_thread(void);
 
+void init_input_handler() {
+    start_input_handler_thread();
+}
 
-// === global variables ===
-input_t input_buffer[INPUT_BUFFER_SIZE];
-volatile int buffer_head = 0;
-volatile int buffer_tail = 0;
+input_t get_next_input() {
+    if (buffer_head == buffer_tail) return NO_INPUT;// no input available
 
-bool input_handler_is_running = false;
+    const input_t input = input_buffer[buffer_tail];
+    buffer_tail = (buffer_tail + 1) % INPUT_BUFFER_SIZE;
+    return input;
+}
+
+void shutdown_input_handler(void) {
+    input_handler_is_running = false;
+}
 
 void start_input_handler_thread(void) {
     input_handler_is_running = true;
@@ -78,20 +91,4 @@ void input_handler_thread() {
             running = false;
         }
     }
-}
-
-void init_input_handler() {
-    start_input_handler_thread();
-}
-
-input_t get_next_input() {
-    if (buffer_head == buffer_tail) return NO_INPUT;// no input available
-
-    const input_t input = input_buffer[buffer_tail];
-    buffer_tail = (buffer_tail + 1) % INPUT_BUFFER_SIZE;
-    return input;
-}
-
-void shutdown_input_handler(void) {
-    input_handler_is_running = false;
 }
