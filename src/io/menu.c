@@ -2,10 +2,10 @@
 
 #include "../logger/logger.h"
 
-int handle_simple_menu(const input_t input, const int x, const int y, simple_menu_t* menu_to_handle) {
+int handle_simple_menu(const input_t input, const int x, const int y, menu_t* menu_to_handle, menu_arg_t* args) {
     RETURN_WHEN_NULL(menu_to_handle, -2, "Menu", "Menu to handle is NULL");
 
-    print_simple_menu(x, y, menu_to_handle);
+    print_simple_menu(x, y, menu_to_handle, args);
 
     switch (input) {
         case UP:
@@ -26,12 +26,12 @@ int handle_simple_menu(const input_t input, const int x, const int y, simple_men
     return menu_to_handle->option_count;// return the number of options to indicate that the input was not handled
 }
 
-int handle_spinner_menu(const input_t input, const int x, const int y, simple_menu_t* menu_to_handle,
-                        const spinner_additional_t* additional_info) {
+int handle_spinner_menu(const input_t input, const int x, const int y, menu_t* menu_to_handle,
+                        const spinner_arg_t* args) {
     RETURN_WHEN_NULL(menu_to_handle, -2, "Menu", "Menu to handle is NULL");
-    RETURN_WHEN_NULL(additional_info, -2, "Menu", "Additional info to handle is NULL");
+    RETURN_WHEN_NULL(args, -2, "Menu", "Additional info to handle is NULL");
 
-    print_spinner_menu(x, y, menu_to_handle, additional_info);
+    print_spinner_menu(x, y, menu_to_handle, args);
 
     const int real_option_count = menu_to_handle->option_count * 2;
 

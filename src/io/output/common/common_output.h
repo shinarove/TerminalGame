@@ -9,13 +9,18 @@ typedef struct {
     int option_count;
     int selected_index;
     char* tailing_text;
-} simple_menu_t;
+} menu_t;
 
 typedef struct {
+    int active; // non-zero if the menu is active
+} menu_arg_t;
+
+typedef struct {
+    int active; // non-zero if the spinner is active
     char left_symbol; // symbol to the left of the spinner
     char right_symbol; // symbol to the right of the spinner
     int max_option_length; // maximum length of the options
-} spinner_additional_t;
+} spinner_arg_t;
 
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
@@ -40,20 +45,18 @@ void print_text(int x, int y, color_t fg, color_t bg, const char* text);
 
 
 /**
- * Displays a menu at the specified position on the terminal with a highlighted option to indicate selection.
+ * Displays a simple menu at the specified position using the provided menu structure.
+ * Highlights the currently selected menu option and displays additional trailing text if specified.
+ * Ensures x and y values are valid by performing a boundary check.
  *
- * @param x The x-coordinate for the top-left corner of the menu.
- * @param y The y-coordinate for the top-left corner of the menu.
- * @param menu A pointer to a `menu_t` structure that contains the menu's title, options, selected index, and tailing text.
- *
- * If the provided `menu` is NULL, the function logs an error and returns without rendering the menu.
- * When the given `x` or `y` is negative, a warning is logged, and the position is clamped to (0, 0).
- *
- * Each menu option is displayed on a separate line, with the selected option highlighted using inverted colors.
- * The function outputs the menu's title above the options and any tailing text below the options.
- * After rendering, the terminal display is updated using `tb_present`.
+ * @param x The horizontal coordinate on the terminal screen where the menu will begin.
+ * @param y The vertical coordinate on the terminal screen where the menu will begin.
+ * @param menu A pointer to the menu_t structure containing the menu details such as title, options,
+ *             selected option index, and trailing text. Must not be NULL.
+ * @param args A pointer to a menu_arg_t structure that can hold extended information
+ *                        related to the menu. Can be NULL if no additional information is required.
  */
-void print_simple_menu(int x, int y, const simple_menu_t* menu);
+void print_simple_menu(int x, int y, const menu_t* menu, menu_arg_t* args);
 
 /**
  * Prints a spinner-style menu on the terminal screen at the specified coordinates.
@@ -65,9 +68,9 @@ void print_simple_menu(int x, int y, const simple_menu_t* menu);
  * @param y The y-coordinate for the top-left position of the menu.
  * @param menu Pointer to a simple_menu_t structure, which contains the menu options, title, selected index, and tailing text.
  *             Must not be NULL.
- * @param additional_info Pointer to a spinner_additional_t structure, which specifies the spinner symbols and maximum option length.
+ * @param args Pointer to a spinner_additional_t structure, which specifies the spinner symbols and maximum option length.
  *                        Must not be NULL.
  */
-void print_spinner_menu(int x, int y, const simple_menu_t* menu, const spinner_additional_t* additional_info);
+void print_spinner_menu(int x, int y, const menu_t* menu, const spinner_arg_t* args);
 
 #endif//COMMON_OUTPUT_H

@@ -83,7 +83,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 }
                 break;
             case CHARACTER_CREATION:
-                current = update_character_creation_mode(input, player);
+                current = update_character_creation(input, player);
                 break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);

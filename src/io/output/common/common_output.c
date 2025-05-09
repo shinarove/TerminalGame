@@ -24,7 +24,7 @@ void print_text(int x, int y, const color_t fg, const color_t bg, const char* te
     tb_present();
 }
 
-void print_simple_menu(int x, int y, const simple_menu_t* menu) {
+void print_simple_menu(int x, int y, const menu_t* menu, menu_arg_t* args) {
     RETURN_WHEN_NULL(menu, , "Common Output", "In `print_simple_menu` menu is NULL");
     check_xy(&x, &y);
 
@@ -43,14 +43,14 @@ void print_simple_menu(int x, int y, const simple_menu_t* menu) {
     tb_present();
 }
 
-void print_spinner_menu(int x, int y, const simple_menu_t* menu, const spinner_additional_t* additional_info) {
+void print_spinner_menu(int x, int y, const menu_t* menu, const spinner_arg_t* args) {
     RETURN_WHEN_NULL(menu, , "Common Output", "In `print_spinner_menu` menu is NULL")
-    RETURN_WHEN_NULL(additional_info, , "Common Output", "In `print_spinner_menu` additional_info is NULL")
-    RETURN_WHEN_TRUE(additional_info->max_option_length < 0, , "Common Output",
+    RETURN_WHEN_NULL(args, , "Common Output", "In `print_spinner_menu` additional_info is NULL")
+    RETURN_WHEN_TRUE(args->max_option_length < 0, , "Common Output",
         "In `print_spinner_menu` max_option_length is negative")
     check_xy(&x, &y);
 
-    const int spinner_x_pos = x + additional_info->max_option_length + 1;
+    const int spinner_x_pos = x + args->max_option_length + 1;
     //print title
     tb_printf(x, y++, TB_WHITE, TB_DEFAULT, "%s", menu->title);
 
@@ -58,15 +58,15 @@ void print_spinner_menu(int x, int y, const simple_menu_t* menu, const spinner_a
         tb_printf(x, y, TB_WHITE, TB_DEFAULT, "%s", menu->options[i]);
         if (i == menu->selected_index / 2 && menu->selected_index % 2 == 0) {
             // the left symbol is marked
-            tb_printf(spinner_x_pos, y, TB_BLACK, TB_WHITE, "%c", additional_info->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", additional_info->right_symbol);
+            tb_printf(spinner_x_pos, y, TB_BLACK, TB_WHITE, "%c", args->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", args->right_symbol);
         } else if (i == menu->selected_index / 2 && menu->selected_index % 2 == 1) {
             // the right symbol is marked
-            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", additional_info->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_BLACK, TB_WHITE, "%c", additional_info->right_symbol);
+            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", args->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, TB_BLACK, TB_WHITE, "%c", args->right_symbol);
         } else {
-            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", additional_info->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", additional_info->right_symbol);
+            tb_printf(spinner_x_pos, y, TB_WHITE, TB_DEFAULT, "%c", args->left_symbol);
+            tb_printf(spinner_x_pos + 2, y, TB_WHITE, TB_DEFAULT, "%c", args->right_symbol);
         }
         y += 1;
     }

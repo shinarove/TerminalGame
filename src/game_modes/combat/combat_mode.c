@@ -76,9 +76,9 @@ enum combat_mode_index {
 
 char** combat_mode_strings = NULL;
 
-simple_menu_t combat_mode_main_menu;
-simple_menu_t combat_mode_ability_menu;
-simple_menu_t combat_mode_potion_menu;
+menu_t combat_mode_main_menu;
+menu_t combat_mode_ability_menu;
+menu_t combat_mode_potion_menu;
 
 combat_mode_state_t combat_state = CHOOSE_ABILITY_POTION;
 state_t exit_combat_mode_with = MAP_MODE;
@@ -172,7 +172,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            switch (handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_main_menu)) {
+            switch (handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_main_menu, NULL)) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
                     clear_screen();
@@ -193,7 +193,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             }
             break;
         case ABILITY_SELECTION:
-            const int selected_index = handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_ability_menu);
+            const int selected_index = handle_simple_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_ability_menu, NULL);
             switch (selected_index) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;

@@ -44,7 +44,7 @@ int init(memory_pool_t** pool) {
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
 
     // init of the different modes
-    if (init_character_creation_mode() != 0) return ERROR_CHARACTER_CREATION_INIT;
+    if (init_character_creation() != 0) return ERROR_CHARACTER_CREATION_INIT;
     if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
     if (init_combat_mode() != 0) return ERROR_COMBAT_MODE_INIT;
     if (init_lvl_up_mode() != 0) return ERROR_LVL_UP_MODE_INIT;
@@ -91,7 +91,7 @@ void shutdown(memory_pool_t** pool) {
     shutdown_lvl_up_mode();
     shutdown_combat_mode();
     shutdown_map_mode();
-    shutdown_character_creation_mode();
+    shutdown_character_creation();
 
     // shutdown core components
     shutdown_local_handler();
