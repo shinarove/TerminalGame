@@ -12,6 +12,7 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
+#include "game_modes/character/lvl_up_mode.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -22,6 +23,7 @@ enum exit_codes {
     ERROR_LOCAL_INIT,
     ERROR_MAP_MODE_INIT,
     ERROR_COMBAT_MODE_INIT,
+    ERROR_LVL_UP_MODE_INIT,
     ERROR_TITLE_SCREEN_INIT,
     ERROR_MAIN_MENU_INIT,
     ERROR_CHANGE_LANGUAGE_INIT,
@@ -43,6 +45,7 @@ int init(memory_pool_t** pool) {
     // init of the different modes
     if (init_map_mode() != 0) return ERROR_MAP_MODE_INIT;
     if (init_combat_mode() != 0) return ERROR_COMBAT_MODE_INIT;
+    if (init_lvl_up_mode() != 0) return ERROR_LVL_UP_MODE_INIT;
     if (init_title_screen() != 0) return ERROR_TITLE_SCREEN_INIT;
     if (init_main_menu() != 0) return ERROR_MAIN_MENU_INIT;
     if (init_change_language() != 0) return ERROR_CHANGE_LANGUAGE_INIT;
@@ -93,6 +96,7 @@ void shutdown(memory_pool_t** pool) {
     shutdown_change_language();
     shutdown_main_menu();
     shutdown_title_screen();
+    shutdown_lvl_up_mode();
     shutdown_combat_mode();
     shutdown_map_mode();
 
