@@ -175,7 +175,7 @@ void update_lvl_up_mode_local(void) {
         }
     }
 
-    lvl_up_mode_strings[LEVEL_UP_TITLE] = get_local_string("LEVEL_UP.TITLE");
+    lvl_up_mode_strings[LEVEL_UP_TITLE] = get_local_string("LVL_UP.TITLE");
     lvl_up_mode_strings[CHOOSE_ATTRIBUTE_TEXT] = get_local_string("LVL_UP.MENU.TITLE");
     lvl_up_menu.title = lvl_up_mode_strings[CHOOSE_ATTRIBUTE_TEXT];
 
