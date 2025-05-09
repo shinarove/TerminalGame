@@ -33,7 +33,7 @@ typedef struct character {
 } character_t;
 
 /**
- * Creates an empty character structure with initialized values all set to zero.
+ * Creates an empty character structure with initialized default values.
  * The character's attributes, resources, and abilities are all set to their default states.
  *
  * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.

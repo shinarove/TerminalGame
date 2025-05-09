@@ -4,6 +4,19 @@
 
 #include <string.h>
 
+#define DEFAULT_LVL 1
+#define DEFAULT_CURRENT_EXP 0
+#define DEFAULT_UNSPENT_ATTR_P 0
+#define DEFAULT_UNSPENT_RES_P 0
+#define DEFAULT_HEALTH 10
+#define DEFAULT_STAMINA 5
+#define DEFAULT_MANA 5
+#define DEFAULT_STRENGTH 1
+#define DEFAULT_INTELLIGENCE 1
+#define DEFAULT_AGILITY 1
+#define DEFAULT_ENDURANCE 1
+#define DEFAULT_LUCK 1
+
 character_t* create_empty_character(const memory_pool_t* pool) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
 
@@ -11,20 +24,22 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = 0;
-    character->current_exp = 0;
-    character->needed_exp = 0;
-    character->level = 0;
+    character->current_exp = DEFAULT_CURRENT_EXP;
+    character->needed_exp = needed_exp_table[DEFAULT_LVL];
+    character->level = DEFAULT_LVL;
     character->name = NULL;
 
-    character->unspent_attr_p = 0;
-    character->unspent_res_p = 0;
+    character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
+    character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
 
-    const resources_t char_res = {0, 0, 0};
+    const resources_t char_res = {DEFAULT_HEALTH, DEFAULT_STAMINA, DEFAULT_MANA};
     character->base_resources = char_res;
     character->max_resources = char_res;
     character->current_resources = char_res;
 
-    const attributes_t char_attr = {0, 0, 0, 0, 0};
+    const attributes_t char_attr = {
+        DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
+        DEFAULT_ENDURANCE, DEFAULT_LUCK};
     character->base_attributes = char_attr;
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
@@ -43,20 +58,22 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = id;
-    character->current_exp = 0;
-    character->needed_exp = needed_exp_table[1];
-    character->level = 1;
+    character->current_exp = DEFAULT_CURRENT_EXP;
+    character->needed_exp = needed_exp_table[DEFAULT_LVL];
+    character->level = DEFAULT_LVL;
     character->name = strdup(name);
 
-    character->unspent_attr_p = 0;
-    character->unspent_res_p = 0;
+    character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
+    character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
 
-    const resources_t char_res = {10, 5, 5};
+    const resources_t char_res = {DEFAULT_HEALTH, DEFAULT_STAMINA, DEFAULT_MANA};
     character->base_resources = char_res;
     character->max_resources = char_res;
     character->current_resources = char_res;
 
-    const attributes_t char_attr = {1, 1, 1, 1, 1};
+    const attributes_t char_attr = {
+        DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
+        DEFAULT_ENDURANCE, DEFAULT_LUCK};
     character->base_attributes = char_attr;
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
@@ -75,13 +92,13 @@ character_t* create_character(const memory_pool_t* pool, const int id, const cha
     character_t* character = memory_pool_alloc(pool, sizeof(character_t));
 
     character->id = id;
-    character->current_exp = 0;
+    character->current_exp = DEFAULT_CURRENT_EXP;
     character->needed_exp = needed_exp_table[character->level];
     character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
     character->name = strdup(name);
 
-    character->unspent_attr_p = 0;
-    character->unspent_res_p = 0;
+    character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
+    character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
 
     //assign base resources and attributes
     character->base_resources.health = base_res.health < 1 ? 1 : base_res.health;
