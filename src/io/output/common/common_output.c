@@ -107,8 +107,9 @@ void check_xy(int* x, int* y) {
 }
 
 menu_arg_t extract_menu_args(const menu_arg_t* args) {
+    const menu_arg_t default_args = {1, BLACK, WHITE, WHITE, DEFAULT};
     if (args == NULL) {
-        return {1, BLACK, WHITE, WHITE, DEFAULT};
+        return default_args;
     }
     return *args;
 }
