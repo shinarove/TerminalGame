@@ -25,7 +25,7 @@ typedef enum {
  * @param dice The used dice for rolling
  * @return The rolled value
  */
-unsigned int roll_dice(dice_t dice);
+int roll_dice(dice_t dice);
 
 /**
  * Verifies if the provided dice value is valid.

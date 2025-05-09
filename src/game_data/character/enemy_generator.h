@@ -26,6 +26,6 @@ enum enemy_id {
  * @return A pointer to the created goblin character structure on success, or NULL if
  *         the operation fails (e.g., invalid memory pool or memory allocation error).
  */
-character_t* generate_goblin(const memory_pool_t* pool, unsigned int level);
+character_t* generate_goblin(const memory_pool_t* pool, int level);
 
 #endif//ENEMY_GENERATOR_H

@@ -11,10 +11,10 @@ typedef struct ability_node {
 } ability_node_t;
 
 typedef struct character {
-    unsigned int id;//currently not in use
-    unsigned int current_exp;
-    unsigned int needed_exp;
-    unsigned int level;
+    int id;//currently not in use
+    int current_exp;
+    int needed_exp;
+    int level;
     char* name;
 
     resources_t base_resources;   // base = character without gear
@@ -38,7 +38,7 @@ typedef struct character {
  * @param name The name of the character. Must not be NULL.
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
  */
-character_t* create_base_character(const memory_pool_t* pool, unsigned int id, const char* name);
+character_t* create_base_character(const memory_pool_t* pool, int id, const char* name);
 
 /**
  * Creates a character with specified ID, name, level, base resources, and base attributes,
@@ -60,7 +60,7 @@ character_t* create_base_character(const memory_pool_t* pool, unsigned int id, c
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails
  *         or any mandatory parameter is invalid.
  */
-character_t* create_character(const memory_pool_t* pool, unsigned int id, const char* name, int level, resources_t base_res, attributes_t base_attr);
+character_t* create_character(const memory_pool_t* pool, int id, const char* name, int level, resources_t base_res, attributes_t base_attr);
 
 /**
  * Destroys a character object by freeing its allocated memory.
@@ -79,7 +79,7 @@ void destroy_character(const memory_pool_t* pool, character_t* character);
  * @param stamina The amount of stamina to add to the character. Values are clamped so that the total does not exceed max stamina.
  * @param mana The amount of mana to add to the character. Values are clamped so that the total does not exceed max mana.
  */
-void add_resources_c(character_t* character, unsigned int health, unsigned int stamina, unsigned int mana);
+void add_resources_c(character_t* character, int health, int stamina, int mana);
 
 /**
  * Resets the resources of the specified character to their maximum values.

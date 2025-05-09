@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-character_t* create_base_character(const memory_pool_t* pool, const unsigned int id, const char* name) {
+character_t* create_base_character(const memory_pool_t* pool, const int id, const char* name) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_base_character` given name is NULL")
 
@@ -33,7 +33,7 @@ character_t* create_base_character(const memory_pool_t* pool, const unsigned int
     return character;
 }
 
-character_t* create_character(const memory_pool_t* pool, const unsigned int id, const char* name,
+character_t* create_character(const memory_pool_t* pool, const int id, const char* name,
                               const int level, const resources_t base_res, const attributes_t base_attr) {
     RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_character` given mem pool is NULL")
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_character` given name is NULL")
@@ -82,7 +82,7 @@ void destroy_character(const memory_pool_t* pool, character_t* character) {
     memory_pool_free(pool, character);
 }
 
-void add_resources_c(character_t* character, const unsigned int health, const unsigned int stamina, const unsigned int mana) {
+void add_resources_c(character_t* character, const int health, const int stamina, const int mana) {
     RETURN_WHEN_NULL(character, , "Character", "In `add_resources_c` given character is NULL")
 
     const resources_t cur_res = character->current_resources;
@@ -126,11 +126,11 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
         return;
     }
 
-    character->base_resources.health += (unsigned short) ((double) character->base_attributes.strength * 0.5);
+    character->base_resources.health += (short) ((double) character->base_attributes.strength * 0.5);
     character->base_resources.health += character->base_attributes.endurance;
-    character->base_resources.stamina += (unsigned short) ((double) character->base_attributes.agility * 0.5);
+    character->base_resources.stamina += (short) ((double) character->base_attributes.agility * 0.5);
     character->base_resources.stamina += character->base_attributes.endurance;
-    character->base_resources.mana += (unsigned short) ((double) character->base_attributes.intelligence * 1.5);
+    character->base_resources.mana += (short) ((double) character->base_attributes.intelligence * 1.5);
 
     //TODO: When inventory is implemented, add buffs from gear
     character->max_resources = character->base_resources;
