@@ -17,6 +17,9 @@ typedef struct character {
     int level;
     char* name;
 
+    int unspent_attr_p;
+    int unspent_res_p;
+
     resources_t base_resources;   // base = character without gear
     resources_t max_resources;    // max = base + buffs from gear
     resources_t current_resources;// current usable resources, current <= max
