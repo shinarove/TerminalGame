@@ -9,9 +9,9 @@
 
 #include <stdlib.h>
 
-#define Y_POS_HEAD 2
-#define Y_POS_BODY 8
-#define Y_POS_FOOTER 10
+#define COMBAT_Y_POS_HEAD 2
+#define COMBAT_Y_POS_BODY 8
+#define COMBAT_Y_POS_FOOTER 10
 
 #define MAX_COMBAT_MAIN_OPTIONS 2
 
@@ -167,12 +167,12 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     RETURN_WHEN_NULL(player, EXIT_GAME, "Combat Mode", "Player is NULL.")
     RETURN_WHEN_NULL(enemy, EXIT_GAME, "Combat Mode", "Enemy is NULL.")
 
-    print_text(5, Y_POS_HEAD, WHITE, DEFAULT, combat_mode_strings[COMBAT_HEAD]);
+    print_text(5, COMBAT_Y_POS_HEAD, WHITE, DEFAULT, combat_mode_strings[COMBAT_HEAD]);
 
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            switch (handle_menu(input, 5, Y_POS_BODY, &combat_mode_main_menu)) {
+            switch (handle_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_main_menu)) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
                     clear_screen();
@@ -193,7 +193,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             }
             break;
         case ABILITY_SELECTION:
-            const int selected_index = handle_menu(input, 5, Y_POS_BODY, &combat_mode_ability_menu);
+            const int selected_index = handle_menu(input, 5, COMBAT_Y_POS_BODY, &combat_mode_ability_menu);
             switch (selected_index) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
@@ -218,8 +218,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             break;
         case CHECK_POTION_INV:
             if (combat_mode_potion_menu.option_count == 0) {
-                print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[EMPTY_POTION_BAG]);
-                print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[SUBMENU_RETURN_TEXT]);
+                print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[EMPTY_POTION_BAG]);
+                print_text(5, COMBAT_Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[SUBMENU_RETURN_TEXT]);
                 if (input == ESCAPE) {
                     combat_state = CHOOSE_ABILITY_POTION;
                     clear_screen();
@@ -233,8 +233,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             log_msg(DEBUG, "Combat Mode", "POTION_SELECTION");
             break;
         case WAIT_AFTER_PLAYER_ACTION:
-            print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[PLAYER_ABILITY_USAGE_INFO]);
-            print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
+            print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[PLAYER_ABILITY_USAGE_INFO]);
+            print_text(5, COMBAT_Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
             if (input == ENTER) {
                 combat_state = ENEMY_TURN;
                 clear_screen();
@@ -248,24 +248,24 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             res = evaluate_enemy_ability_usage(result, player, enemy);
             break;
         case WAIT_AFTER_ENEMY_ACTION:
-            print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
-            print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
+            print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
+            print_text(5, COMBAT_Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
             if (input == ENTER) {
                 combat_state = CHOOSE_ABILITY_POTION;
                 clear_screen();
             }
             break;
         case NOT_ENOUGH_RESOURCES:
-            print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[NOT_ENOUGH_RES_INFO]);
-            print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[SUBMENU_RETURN_TEXT]);
+            print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[NOT_ENOUGH_RES_INFO]);
+            print_text(5, COMBAT_Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[SUBMENU_RETURN_TEXT]);
             if (input == ESCAPE) {
                 combat_state = CHOOSE_ABILITY_POTION;
                 clear_screen();
             }
             break;
         case EXIT_COMBAT_MODE:
-            print_text(5, Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[COMBAT_END_MSG]);
-            print_text(5, Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
+            print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[COMBAT_END_MSG]);
+            print_text(5, COMBAT_Y_POS_FOOTER, WHITE, DEFAULT, combat_mode_strings[CONTINUE_TEXT]);
             if (input == ENTER) {
                 res = exit_combat_mode_with;
                 clear_screen();

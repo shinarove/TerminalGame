@@ -6,9 +6,9 @@
 #include "../../game_data/character/stats.h"
 #include "../../game_data/character/character.h"
 
-#define Y_POS_TITLE 2
-#define Y_POS_PLAYER_HEAD 4
-#define Y_POS_BODY 9
+#define LVLUP_Y_POS_TITLE 2
+#define LVLUP_Y_POS_PLAYER_HEAD 4
+#define LVLUP_Y_POS_BODY 9
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
 #define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
@@ -93,11 +93,11 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
 
     state_t res = LVL_UP_MODE;
 
-    print_text(5, Y_POS_TITLE, WHITE, DEFAULT, lvl_up_mode_strings[LEVEL_UP_TITLE]);
-    print_text(5, Y_POS_PLAYER_HEAD, WHITE, DEFAULT, lvl_up_mode_strings[LVL_UP_HEAD]);
+    print_text(5, LVLUP_Y_POS_TITLE, WHITE, DEFAULT, lvl_up_mode_strings[LEVEL_UP_TITLE]);
+    print_text(5, LVLUP_Y_POS_PLAYER_HEAD, WHITE, DEFAULT, lvl_up_mode_strings[LVL_UP_HEAD]);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
-        switch (handle_menu(input, 5, Y_POS_BODY, &lvl_up_menu)) {
+        switch (handle_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
             case STRENGTH:
                 lvl_up_c(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
@@ -138,7 +138,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
         }
     } else if (lvl_up_state == WAIT_AFTER_LVL_UP) {
-        print_text(5, Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
+        print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {
             res = MAP_MODE;
