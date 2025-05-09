@@ -10,6 +10,7 @@
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
+#include "game_modes/character/lvl_up_mode.h"
 
 #define FRAMES_PER_SECONDS 20
 
@@ -81,7 +82,16 @@ void start_game_loop(const memory_pool_t* used_pool, character_t* player) {
                     free_prepared_cm_resources();
                     destroy_character(used_pool, enemy);
 
-                    check_exp_c(player); // TODO: if level up ready, change to lvl up screen
+                    if (check_exp_c(player)) {
+                        current = prepare_lvl_up_mode(player);
+                    }
+                }
+                break;
+            case LVL_UP_MODE:
+                current = update_lvl_up_mode(input, player);
+                if (current != LVL_UP_MODE) {
+                    // level up mode has ended free the prepared resources
+                    free_prepared_lum_resources();
                 }
                 break;
             case INVENTORY_MODE:
