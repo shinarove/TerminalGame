@@ -15,7 +15,7 @@
 
 #define FRAMES_PER_SECONDS 20.0
 
-#define MAX_MAP_COUNT 15
+#define MAX_MAP_COUNT 5
 #define MAP_HEIGHT 19
 #define MAP_WIDTH 39
 #define ENEMY_COUNT 4
@@ -31,7 +31,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t current = TITLE_SCREEN;
     state_t return_to = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int max_floor = 0;    // on which floor the player is 1 - 15, 0 - no floor
+    int max_floor = 0;    // on which floor the player is 1 - 5, 0 - no floor
 
     while (running) {
         usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0));// wait for 1 frame
