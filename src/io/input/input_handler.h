@@ -12,6 +12,7 @@ typedef enum {
     I,
     C,
     Y,
+    BACKSPACE,
     ENTER,
     ESCAPE,
     QUIT,

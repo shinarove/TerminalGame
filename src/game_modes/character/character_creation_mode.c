@@ -11,7 +11,7 @@
 #define CC_Y_POS_BODY 8
 
 #define CLEAR_X_START 25
-#define CLEAR_X_END 35
+#define CLEAR_X_END 45
 
 #define MAX_OPTION_LENGTH 14
 #define MAX_NAME_LENGTH 32
@@ -140,24 +140,39 @@ state_t update_character_creation(const input_t input, character_t* player) {
             }
             print_text(5, 2, WHITE, DEFAULT, cc_mode_strings[INTRODUCTION_TEXT]);
             print_text(5, 4, WHITE, DEFAULT, ">");
-            print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
 
             if (name_input_buffer[0] != '\0') {
                 // input buffer is not empty, show text: "Press ENTER to confirm"
                 print_text(5, 6, WHITE, DEFAULT, cc_mode_strings[CONFIRM_ENTER]);
+            } else {
+                clear_line(6, 5, CLEAR_X_END);
             }
 
-            if (input == ENTER && name_input_buffer[0] != '\0') {
-                player->name = strdup(name_input_buffer);
-                end_text_input();
-                name_input_buffer = NULL;
+            switch (input) {
+                case BACKSPACE:
+                    clear_line(4, 7, CLEAR_X_END);
+                    break;
+                case ENTER:
+                    if (name_input_buffer[0] != '\0') {
+                        player->name = strdup(name_input_buffer);
+                        end_text_input();
+                        name_input_buffer = NULL;
 
-                prepare_player_name_lvl(player);
-                update_cc_head(player);
-                update_spent_p_str(player->unspent_res_p);
-                cc_state = RESSOURCE_DISTRIBUTION;
-                clear_screen();
+                        prepare_player_name_lvl(player);
+                        update_cc_head(player);
+                        update_spent_p_str(player->unspent_res_p);
+                        cc_state = RESSOURCE_DISTRIBUTION;
+                        clear_screen();
+                    }
+                    break;
+                case QUIT:
+                    res = EXIT_GAME;
+                    break;
+                default:
+                    break;
             }
+            // print the name
+            print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
             break;
         case RESSOURCE_DISTRIBUTION:
             print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
@@ -247,7 +262,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     clear_screen();
                 }
             } else if (spend_res_p_menu.tailing_text[0] != ' ') {
-                clear_line(CC_Y_POS_BODY + 7, 5, 40); // clear the line with the confirmation text
+                clear_line(CC_Y_POS_BODY + 6, 5, CLEAR_X_END); // clear the line with the confirmation text
                 spend_res_p_menu.tailing_text = " ";
             }
             break;
@@ -374,7 +389,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     clear_screen();
                 }
             } else if (spend_attr_p_menu.tailing_text[0] != ' ') {
-                clear_line(CC_Y_POS_BODY + 7, 5, 40); // clear the line with the confirmation text
+                clear_line(CC_Y_POS_BODY + 8, 5, CLEAR_X_END); // clear the line with the confirmation text
                 spend_attr_p_menu.tailing_text = " ";
             }
 
@@ -469,8 +484,8 @@ void update_spent_p_str(const int unspent_points) {
         free(cc_mode_strings[UNSPENT_POINTS_FULL]);
     }
 
-    char* unspent_points_str = malloc(32);
-    snprintf(unspent_points_str, 32, UNSPENT_POINTS_FORMAT,
+    char* unspent_points_str = malloc(64);
+    snprintf(unspent_points_str, 64, UNSPENT_POINTS_FORMAT,
         cc_mode_strings[UNPENT_POINTS_TEXT], unspent_points);
     cc_mode_strings[UNSPENT_POINTS_FULL] = unspent_points_str;
 }

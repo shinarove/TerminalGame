@@ -99,6 +99,8 @@ void input_handler_thread() {
                 input = C;
             else if (event.ch == 'y' || event.ch == 'Y')
                 input = Y;
+            else if (event.key == TB_KEY_BACKSPACE || event.key == TB_KEY_BACKSPACE2)
+                input = BACKSPACE;
             else if (event.key == TB_KEY_ENTER)
                 input = ENTER;
             else if (event.key == TB_KEY_ESC)
@@ -129,7 +131,7 @@ void input_handler_thread() {
 }
 
 void populate_text_buffer(const struct tb_event event) {
-    if (event.key == TB_KEY_BACKSPACE && text_buffer_pos > 0) {
+    if ((event.key == TB_KEY_BACKSPACE || event.key == TB_KEY_BACKSPACE2) && text_buffer_pos > 0) {
         text_buffer_pos--;
         text_buffer[text_buffer_pos] = '\0';
     } else if (event.ch != 0 && text_buffer_pos < text_buffer_length - 1) {
