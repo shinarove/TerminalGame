@@ -1,6 +1,7 @@
 #ifndef STRING_HELPER_H
 #define STRING_HELPER_H
 
+#include <stdlib.h>
 
 /**
  * Analyzes a string and converts it to an integer if the string represents
@@ -30,5 +31,22 @@ int parse_int(const char* str, int* out);
  *         out of the range of a float, or represents a NaN or infinity.
  */
 int parse_float(const char* str, float* out);
+
+
+/**
+ * Formats the current date and time into ISO 8601 format and writes
+ * it into the provided buffer.
+ *
+ * @param buffer A pointer to a character array where the formatted date
+ *               and time will be stored. Must not be NULL.
+ * @param buffer_size The size of the buffer in bytes. Must be large
+ *                    enough to store the formatted date and time,
+ *                    including the null terminator.
+ *
+ * @return The number of characters written (excluding the null
+ *         terminator) if successful. Returns 0 if the buffer is too
+ *         small.
+ */
+size_t str_iso_time(char* buffer, size_t buffer_size);
 
 #endif//STRING_HELPER_H

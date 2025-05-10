@@ -3,6 +3,7 @@
 #include "../thread/thread_handler.h"
 #include "logger_config.h"
 #include "ringbuffer.h"
+#include "../helper/string_helper.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -113,7 +114,7 @@ int open_log_file(const int is_init) {
     snprintf(name, sizeof(name), LOG_FILE_FORMAT, file_id);
 
     char filename[256];
-    snprintf(filename, sizeof(filename), "%s" PATH_SEP "%s", LOG_DIRECTORY, name);
+    snprintf(filename, sizeof(filename), "%s%s%s", LOG_DIRECTORY, PATH_SEP, name);
 
     if (is_init) {
         // Check if the file already exists
@@ -245,11 +246,8 @@ void log_msg(const log_level_t level, const char* module, const char* format, ..
     }
 
     //get timestamp
-    const time_t now = time(NULL);
-    const struct tm* tm = localtime(&now);
-
     char timestamp[32];
-    strftime(timestamp, sizeof(timestamp), TIMESTAMP_FORMAT, tm);
+    str_iso_time(timestamp, sizeof(timestamp));
 
     const char* log_level;
     if (level >= MAX_LOG_LEVEL) {

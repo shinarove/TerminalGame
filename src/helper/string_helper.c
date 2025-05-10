@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <time.h>
+
 int parse_int(const char* str, int* out) {
     if (str == NULL || *str == '\0') return -1;// empty string or NULL
 
@@ -48,4 +50,11 @@ int parse_float(const char* str, float* out) {
 
     *out = (float) val;
     return 0;// Success
+}
+
+size_t str_iso_time(char* buffer, const size_t buffer_size) {
+    const time_t now = time(NULL);
+    const struct tm* tm = localtime(&now);
+
+    return strftime(buffer, buffer_size, "%Y-%m-%d %H:%M:%S", tm);
 }
