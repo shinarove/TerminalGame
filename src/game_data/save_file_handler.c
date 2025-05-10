@@ -16,6 +16,8 @@
     #define PATH_SEP "\\"
 #else
     #include <dirent.h>
+    #include <unistd.h>
+    #include <sys/types.h>
 
     #define STAT_STRUCT struct stat
     #define STAT_FUNC stat
@@ -32,12 +34,12 @@
 
 #define SAVE_FILE_DIR "save_files"
 
-int div_checks(const char* save_name);
+int handler_checks(const char* save_name);
 
 int ensure_save_dir(void);
 
 int save_game_state(const char* save_name, const game_state_t* game_state) {
-    if (div_checks(save_name) != 0) return 1;
+    if (handler_checks(save_name) != 0) return 1;
 
     char save_file_path[256];
     snprintf(save_file_path, sizeof(save_file_path), "%s%s%s", SAVE_FILE_DIR, PATH_SEP, save_name);
@@ -68,7 +70,7 @@ int save_game_state(const char* save_name, const game_state_t* game_state) {
     // write id, current_exp, needed_exp, level
     fwrite(&game_state->player->id, sizeof(int), 4, file);
     //writes the name
-    const int name_length = strlen(game_state->player->name) + 1; // +1 for '\0'
+    const int name_length = (int) strlen(game_state->player->name) + 1; // +1 for '\0'
     fwrite(&name_length, sizeof(int), 1, file);
     fwrite(game_state->player->name, sizeof(char), name_length, file);
     // writes has_map_key, unspent_attr_p, unspent_res_p
@@ -93,7 +95,7 @@ int save_game_state(const char* save_name, const game_state_t* game_state) {
 }
 
 int load_game_state(char* save_name, const memory_pool_t* pool, game_state_t* game_state) {
-    if (div_checks(save_name) != 0) return 1;
+    if (handler_checks(save_name) != 0) return 1;
 
     char save_file_path[256];
     snprintf(save_file_path, sizeof(save_file_path), "%s%s%s", SAVE_FILE_DIR, PATH_SEP, save_name);
@@ -160,7 +162,75 @@ int load_game_state(char* save_name, const memory_pool_t* pool, game_state_t* ga
     return 0;
 }
 
-int div_checks(const char* save_name) {
+int get_save_files(char*** save_files, int* count) {
+    // ensure the save directory exists
+    if (ensure_save_dir() != 0) return 1;
+
+    int file_count = 0;
+    *count = 0;
+    *save_files = NULL;
+
+    #ifdef _WIN32
+    WIN32_FIND_DATAA findData;
+    HANDLE hFind;
+    char search_path[MAX_PATH];
+
+    snprintf(search_path, sizeof(search_path), "%s\\*", SAVE_FILE_DIR);
+
+    hFind = FindFirstFileA(search_path, &findData);
+    RETURN_WHEN_TRUE(hFind == INVALID_HANDLE_VALUE, 1, "Save File Handler", "Failed to find save files");
+
+    do {
+        if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            file_count++;
+        }
+    } while (FindNextFileA(hFind, &findData));
+    FindClose(hFind);
+
+    *save_files = malloc(file_count * sizeof(char*));
+
+    hFind = FindFirstFileA(search_path, &findData);
+    RETURN_WHEN_TRUE(hFind == INVALID_HANDLE_VALUE, 1, "Save File Handler", "Failed to find save files");
+
+    int index = 0;
+    do {
+        if (!(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+            (*save_files)[index++] = _strdup(findData.cFileName);
+        }
+    } while (FindNextFileA(hFind, &findData));
+    FindClose(hFind);
+
+    #else //_WIN32
+    // try to open the save directory
+    DIR* dir = opendir(SAVE_FILE_DIR);
+    RETURN_WHEN_NULL(dir, 1, "Save File Handler", "Failed to open save directory");
+
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {
+            file_count++;
+        }
+    }
+
+    rewinddir(dir);
+    *save_files = malloc(file_count * sizeof(char*));
+
+    int index = 0;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {
+            (*save_files)[index] = strdup(entry->d_name);
+            index++;
+        }
+    }
+    closedir(dir);
+
+    #endif //else _WIN32
+
+    *count = file_count;
+    return 0;
+}
+
+int handler_checks(const char* save_name) {
     RETURN_WHEN_TRUE(ensure_save_dir() != 0, 1, "Save File Handler", "Failed to create save directory");
     const int save_name_length = (int) strlen(save_name);
     RETURN_WHEN_TRUE(save_name_length > 31, 1, "Save File Handler", "Save name is too long");

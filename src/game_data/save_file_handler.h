@@ -33,4 +33,14 @@ int save_game_state(const char* save_name, const game_state_t* game_state);
 int load_game_state(char* save_name, const memory_pool_t* pool, game_state_t* game_state);
 
 
+/**
+ * Retrieves the list of save files from the save_files directory and stores them in an array.
+ *
+ * @param save_files A pointer to an array of strings where each string represents the name of a save file.
+ *                   This array will be dynamically allocated and must be freed by the caller.
+ * @param count A pointer to an integer where the total number of save files found will be stored.
+ * @return Returns 0 on success. Returns 1 if an error occurs, such as failing to open the save directory.
+ */
+int get_save_files(char*** save_files, int* count);
+
 #endif //SAVE_FILE_HANDLER_H
