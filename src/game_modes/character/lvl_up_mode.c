@@ -10,8 +10,8 @@
 #define LVLUP_Y_POS_BODY 9
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
-#define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d"
-#define CHAR_ATTRIBUTES_FORMAT "%s: %d | %s: %d | %s: %d | %s: %d | %s: %d"
+#define CHAR_RESOURCES_FORMAT "%s: %d/%d | %s: %d/%d | %s: %d/%d   "
+#define CHAR_ATTRIBUTES_FORMAT "%s: %d | %s: %d | %s: %d | %s: %d | %s: %d   "
 #define HORIZONTAL_LINE "--------------------------------------------------"
 #define LVL_UP_HEAD_FORMAT "%s\n" CHAR_RESOURCES_FORMAT "\n" CHAR_ATTRIBUTES_FORMAT "\n" HORIZONTAL_LINE
 

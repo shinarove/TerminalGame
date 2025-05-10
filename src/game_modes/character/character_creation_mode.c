@@ -19,11 +19,11 @@
 #define UNSPENT_RES_POINTS 10
 #define UNSPENT_ATTR_POINTS 5
 
-#define UNSPENT_POINTS_FORMAT "%s: %d"
+#define UNSPENT_POINTS_FORMAT "%s: %d   "
 
 #define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
-#define CHAR_RESOURCES_FORMAT "%s: %d | %s: %d | %s: %d"
-#define CHAR_ATTRIBUTES_FORMAT "%s: %d | %s: %d | %s: %d | %s: %d | %s: %d"
+#define CHAR_RESOURCES_FORMAT "%s: %d | %s: %d | %s: %d   "
+#define CHAR_ATTRIBUTES_FORMAT "%s: %d | %s: %d | %s: %d | %s: %d | %s: %d   "
 #define HORIZONTAL_LINE "--------------------------------------------------"
 #define CC_HEAD_FORMAT "%s\n" CHAR_RESOURCES_FORMAT "\n" CHAR_ATTRIBUTES_FORMAT "\n" HORIZONTAL_LINE
 
@@ -381,10 +381,7 @@ void update_stats(const int bool_exp, unsigned short* updated_stats, int* unspen
     if (bool_exp) {
         *updated_stats += diff;
         *unspent_points -= diff;
-        clear_line(CC_Y_POS_HEAD + 1, CLEAR_X_START, CLEAR_X_END); // clear the line with the resources
-        clear_line(CC_Y_POS_HEAD + 2, CLEAR_X_START + 20, CLEAR_X_END + 20); // clear the line with the attributes
         update_cc_head(player);
-        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
         update_spent_p_str(*unspent_points);
     }
 }
