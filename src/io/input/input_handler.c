@@ -91,13 +91,13 @@ void input_handler_thread() {
                 input = LEFT;
             else if (event.key == TB_KEY_ARROW_RIGHT || event.ch == 'd')
                 input = RIGHT;
-            else if (event.key == 'm')
+            else if (event.ch == 'm')
                 input = M;
-            else if (event.key == 'i')
+            else if (event.ch == 'i')
                 input = I;
-            else if (event.key == 'c')
+            else if (event.ch == 'c')
                 input = C;
-            else if (event.key == 'y' || event.key == 'Y')
+            else if (event.ch == 'y' || event.ch == 'Y')
                 input = Y;
             else if (event.key == TB_KEY_ENTER)
                 input = ENTER;
