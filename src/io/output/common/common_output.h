@@ -50,31 +50,26 @@ void print_text(int x, int y, color_t fg, color_t bg, const char* text);
 
 
 /**
- * Displays a simple menu at the specified position using the provided menu structure.
- * Highlights the currently selected menu option and displays additional trailing text if specified.
- * Ensures x and y values are valid by performing a boundary check.
+ * Displays a simple menu at specified screen coordinates using termbox for rendering.
+ * The menu includes a title, a list of selectable options, and trailing text.
+ * Colors and selection behavior are controlled via the provided `menu` object.
  *
- * @param x The horizontal coordinate on the terminal screen where the menu will begin.
- * @param y The vertical coordinate on the terminal screen where the menu will begin.
- * @param menu A pointer to the menu_t structure containing the menu details such as title, options,
- *             selected option index, and trailing text. Must not be NULL.
- * @param args A pointer to a menu_arg_t structure that can hold extended information
- *                        related to the menu. Can be NULL if no additional information is required.
+ * @param x The x-coordinate on the screen where the menu should start.
+ * @param y The y-coordinate on the screen where the menu should start.
+ * @param menu A pointer to a `menu_t` structure containing the menu details,
+ *             including its title, options, selected index, and rendering arguments.
  */
 void print_simple_menu(int x, int y, const menu_t* menu);
 
 /**
- * Prints a spinner-style menu on the terminal screen at the specified coordinates.
- * The menu includes options displayed in a vertical list, along with a spinner control on the right side,
- * which highlights the selected option's spinner symbols based on the current selection index.
- * This function supports customizable spinner symbols and adjusts according to the maximum option length.
+ * Renders a spinner menu on the terminal at the specified position.
+ * The spinner menu includes a title, options, and symbols that represent a selected/active state.
+ * Updates the appearance of the spinner menu based on the current selection and active state.
  *
- * @param x The x-coordinate for the top-left position of the menu.
- * @param y The y-coordinate for the top-left position of the menu.
- * @param spinner_menu Pointer to a simple_menu_t structure, which contains the menu options, title, selected index, and tailing text.
- *             Must not be NULL.
- * @param args Pointer to a spinner_additional_t structure, which specifies the spinner symbols and maximum option length.
- *                        Must not be NULL.
+ * @param x The x-coordinate of the starting position for the menu.
+ * @param y The y-coordinate of the starting position for the menu.
+ * @param spinner_menu A pointer to the spinner menu data structure containing menu details, symbols, and other configurations.
+ * @note The function does not validate the terminal's rendering capability and assumes that the provided coordinates and spinner menu data are valid and properly initialized.
  */
 void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu);
 
