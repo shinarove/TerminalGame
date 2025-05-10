@@ -101,11 +101,9 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case ENTER_NEXT_FLOOR:
                 if (active_map_index + 1 == max_floor) {
                     // the player is on the newest generated floor, generate a new map
-                    DEBUG_LOG("Game", "Entering next floor, generating new map.");
                     current = GENERATE_MAP;
                 } else if (active_map_index + 1 < max_floor) {
                     // the player is on an older floor, go to the next floor
-                    DEBUG_LOG("Game", "Entering next floor, loading map %d.", active_map_index + 1);
                     active_map_index += 1;
                     current = MAP_MODE;
                     maps[active_map_index]->player_pos = maps[active_map_index]->entry_pos;

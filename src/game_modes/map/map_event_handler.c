@@ -20,7 +20,6 @@ state_t handle_map_event(map_t* map, character_t* player) {
             if (map->exit_unlocked) {
                 next_state = ENTER_NEXT_FLOOR;
             } else if (player->has_map_key) {
-                DEBUG_LOG("Map Event Handler", "Unlocking exit door");
                 player->has_map_key = 0;
                 map->exit_unlocked = 1;
                 next_state = ENTER_NEXT_FLOOR;
