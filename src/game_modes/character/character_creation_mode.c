@@ -78,6 +78,8 @@ void update_cc_local(void);
 
 void prepare_player_name_lvl(const character_t* player);
 
+void update_stats(int bool_exp, unsigned short* updated_stats, int* unspent_points, int diff, const character_t* player);
+
 void update_cc_head(const character_t* player);
 
 void update_spent_p_str(int unspent_points);
@@ -179,58 +181,28 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {
                 case 0: // decrease health by one
-                    if (player->base_resources.health > 1) {
-                        player->base_resources.health--;
-                        player->unspent_res_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->base_resources.health > 1,
+                        &player->base_resources.health, &player->unspent_res_p, -1, player);
                     break;
                 case 1: // increase health by one
-                    if (player->unspent_res_p > 0) {
-                        player->base_resources.health++;
-                        player->unspent_res_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->unspent_res_p > 0,
+                        &player->base_resources.health, &player->unspent_res_p, 1, player);
                     break;
                 case 2: // decrease stamina by one
-                    if (player->base_resources.stamina > 1) {
-                        player->base_resources.stamina--;
-                        player->unspent_res_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->base_resources.stamina > 1,
+                        &player->base_resources.stamina, &player->unspent_res_p, -1, player);
                     break;
                 case 3: // increase stamina by one
-                    if (player->unspent_res_p > 0) {
-                        player->base_resources.stamina++;
-                        player->unspent_res_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->unspent_res_p > 0,
+                        &player->base_resources.stamina, &player->unspent_res_p, 1, player);
                     break;
                 case 4: // decrease mana by one
-                    if (player->base_resources.mana > 1) {
-                        player->base_resources.mana--;
-                        player->unspent_res_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->base_resources.mana > 1,
+                        &player->base_resources.mana, &player->unspent_res_p, -1, player);
                     break;
                 case 5: // increase mana by one
-                    if (player->unspent_res_p > 0) {
-                        player->base_resources.mana++;
-                        player->unspent_res_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_res_p);
-                    }
+                    update_stats(player->unspent_res_p > 0,
+                        &player->base_resources.mana, &player->unspent_res_p, 1, player);
                     break;
                 case MAX_RESOURCES * 2: // nothing was pressed, do nothing
                 case -1: // ESC was pressed, do nothing
@@ -271,94 +243,44 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_attr_p_spinner)) {
                 case 0: // decrease strength by one
-                    if (player->base_attributes.strength > 1) {
-                        player->base_attributes.strength--;
-                        player->unspent_attr_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->base_attributes.strength > 1,
+                        &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
                     break;
                 case 1: // increase strength by one
-                    if (player->unspent_attr_p > 0) {
-                        player->base_attributes.strength++;
-                        player->unspent_attr_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->unspent_attr_p > 0,
+                        &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
                     break;
                 case 2: // decrease intelligence by one
-                    if (player->base_attributes.intelligence > 1) {
-                        player->base_attributes.intelligence--;
-                        player->unspent_attr_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->base_attributes.intelligence > 1,
+                        &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
                     break;
                 case 3: // increase intelligence by one
-                    if (player->unspent_attr_p > 0) {
-                        player->base_attributes.intelligence++;
-                        player->unspent_attr_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->unspent_attr_p > 0,
+                        &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
                     break;
                 case 4: // decrease agility by one
-                    if (player->base_attributes.agility > 1) {
-                        player->base_attributes.agility--;
-                        player->unspent_attr_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->base_attributes.agility > 1,
+                        &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
                     break;
                 case 5: // increase agility by one
-                    if (player->unspent_attr_p > 0) {
-                        player->base_attributes.agility++;
-                        player->unspent_attr_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->unspent_attr_p > 0,
+                        &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
                     break;
                 case 6: // decrease endurance by one
-                    if (player->base_attributes.endurance > 1) {
-                        player->base_attributes.endurance--;
-                        player->unspent_attr_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->base_attributes.endurance > 1,
+                        &player->base_attributes.endurance, &player->unspent_attr_p, -1, player);
                     break;
                 case 7: // increase endurance by one
-                    if (player->unspent_attr_p > 0) {
-                        player->base_attributes.endurance++;
-                        player->unspent_attr_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->unspent_attr_p > 0,
+                        &player->base_attributes.endurance, &player->unspent_attr_p, 1, player);
                     break;
                 case 8: // decrease luck by one
-                    if (player->base_attributes.luck > 1) {
-                        player->base_attributes.luck--;
-                        player->unspent_attr_p++;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->base_attributes.luck > 1,
+                        &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
                     break;
                 case 9: // increase luck by one
-                    if (player->unspent_attr_p > 0) {
-                        player->base_attributes.luck++;
-                        player->unspent_attr_p--;
-                        update_cc_head(player);
-                        clear_line(CC_Y_POS_UNSPENT_P, 20, 30);
-                        update_spent_p_str(player->unspent_attr_p);
-                    }
+                    update_stats(player->unspent_attr_p > 0,
+                        &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
                     break;
                 case MAX_ATTRIBUTES * 2: // nothing was pressed, do nothing
                 case -1: // ESC was pressed, do nothing
@@ -455,6 +377,16 @@ void prepare_player_name_lvl(const character_t* player) {
     snprintf(buffer, 64, CHAR_NAME_LVL_FORMAT,
              player->name, cc_mode_strings[LEVEL_STR], player->level);
     cc_mode_strings[PLAYER_NAME_LVL] = buffer;
+}
+
+void update_stats(const int bool_exp, unsigned short* updated_stats, int* unspent_points, const int diff, const character_t* player) {
+    if (bool_exp) {
+        *updated_stats += diff;
+        *unspent_points -= diff;
+        update_cc_head(player);
+        clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
+        update_spent_p_str(*unspent_points);
+    }
 }
 
 void update_cc_head(const character_t* player) {
