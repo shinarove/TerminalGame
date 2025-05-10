@@ -27,6 +27,13 @@ void clear_screen() {
     tb_clear();
 }
 
+void clear_line(const int y, const int x_start, const int x_end) {
+    for (int i = x_start; i < x_end; i++) {
+        tb_set_cell(i, y, ' ', color_mapping[DEFAULT].value, color_mapping[DEFAULT].value);
+    }
+    tb_present();
+}
+
 void print_text(int x, int y, const color_t fg, const color_t bg, const char* text) {
     RETURN_WHEN_NULL(text, , "Common Output", "In `print_text` text is NULL");
     check_xy(&x, &y);

@@ -35,6 +35,17 @@ typedef struct {
 void clear_screen(void);
 
 /**
+ * Clears a horizontal line on the terminal screen within specified bounds.
+ * This is achieved by setting each character position within the range to a blank space
+ * and applying default foreground and background colors.
+ *
+ * @param y The y-coordinate of the line to clear in the terminal space.
+ * @param x_start The starting x-coordinate (inclusive) of the line to clear.
+ * @param x_end The ending x-coordinate (exclusive) of the line to clear.
+ */
+void clear_line(int y, int x_start, int x_end);
+
+/**
  * Prints a text string at the specified position on the terminal with the specified foreground and background colors.
  *
  * @param x The x-coordinate where the text will be placed.
