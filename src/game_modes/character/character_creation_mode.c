@@ -177,8 +177,6 @@ state_t update_character_creation(const input_t input, character_t* player) {
             print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
             break;
         case RESSOURCE_DISTRIBUTION:
-            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
-
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {
                 case 0: // decrease health by one
                     update_stats(player->base_resources.health > 1,
@@ -216,7 +214,8 @@ state_t update_character_creation(const input_t input, character_t* player) {
                         spend_res_p_menu.selected_index);
                     break;
             }
-            // to prevent flickering, print the unspent points string after the spinner menu
+
+            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_res_p == 0) {
@@ -239,8 +238,6 @@ state_t update_character_creation(const input_t input, character_t* player) {
             }
             break;
         case ATTRIBUTE_DISTRIBUTION:
-            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
-
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_attr_p_spinner)) {
                 case 0: // decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
@@ -294,7 +291,8 @@ state_t update_character_creation(const input_t input, character_t* player) {
                         spend_attr_p_menu.selected_index);
                     break;
             }
-            // to prevent flickering, print the unspent points string after the spinner menu
+
+            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_attr_p == 0) {
@@ -383,6 +381,8 @@ void update_stats(const int bool_exp, unsigned short* updated_stats, int* unspen
     if (bool_exp) {
         *updated_stats += diff;
         *unspent_points -= diff;
+        clear_line(CC_Y_POS_HEAD + 1, CLEAR_X_START, CLEAR_X_END); // clear the line with the resources
+        clear_line(CC_Y_POS_HEAD + 2, CLEAR_X_START + 20, CLEAR_X_END + 20); // clear the line with the attributes
         update_cc_head(player);
         clear_line(CC_Y_POS_UNSPENT_P, CLEAR_X_START, CLEAR_X_END);
         update_spent_p_str(*unspent_points);
