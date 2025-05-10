@@ -18,12 +18,12 @@ typedef enum {
     MAX_MAP_TILES
 } map_tile_t;
 
-typedef struct {
+typedef struct vector2d {
     int dx;
     int dy;
 } vector2d_t;
 
-typedef struct {
+typedef struct map {
     int floor_nr; // the floor-number this map represents
     int width;
     int height;

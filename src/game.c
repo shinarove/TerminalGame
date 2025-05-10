@@ -23,6 +23,9 @@
 void start_game_loop(const memory_pool_t* used_pool) {
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
+    for (int i = 0; i < MAX_MAP_COUNT; i++) {
+        maps[i] = NULL;
+    }
 
     character_t* player = create_empty_character(used_pool);
     character_t* enemy = NULL;
@@ -87,13 +90,24 @@ void start_game_loop(const memory_pool_t* used_pool) {
 
                 // free all the previously created maps
                 for (int i = 0; i < max_floor; i++) {
-                    if (maps[i] != NULL) memory_pool_free(used_pool, maps[i]);
+                    if (maps[i] != NULL) {
+                        memory_pool_free(used_pool, maps[i]);
+                        maps[i] = NULL;
+                    }
                 }
                 active_map_index = -1;
                 max_floor = 1; // reset the max floor
 
                 // change to character creation mode
                 current = CHARACTER_CREATION;
+                break;
+            case LOAD_GAME:
+                // deallocate current player & maps
+                destroy_character(used_pool, player);
+                for (int i = 0; i < max_floor; i++) {
+                    memory_pool_free(used_pool, maps[i]);
+                    maps[i] = NULL;
+                }
                 break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);
