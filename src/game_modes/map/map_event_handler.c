@@ -4,7 +4,7 @@
 
 void handle_fountain_event(const map_t* map, void (*reset_func)(character_t*), character_t* player);
 
-state_t handle_map_event(const map_t* map, character_t* player) {
+state_t handle_map_event(map_t* map, character_t* player) {
     RETURN_WHEN_NULL(map, MAP_MODE, "Map Event Handler", "Map is NULL")
     RETURN_WHEN_NULL(player, MAP_MODE, "Map Event Handler", "Player is NULL")
 
@@ -13,6 +13,24 @@ state_t handle_map_event(const map_t* map, character_t* player) {
 
     state_t next_state = MAP_MODE;
     switch (tile) {
+        case START_DOOR:
+            next_state = ENTER_PREV_FLOOR;
+            break;
+        case EXIT_DOOR:
+            if (map->exit_unlocked) {
+                next_state = ENTER_NEXT_FLOOR;
+            } else if (player->has_map_key) {
+                DEBUG_LOG("Map Event Handler", "Unlocking exit door");
+                player->has_map_key = 0;
+                map->exit_unlocked = 1;
+                next_state = ENTER_NEXT_FLOOR;
+            }
+            break;
+        case DOOR_KEY:
+            player->has_map_key = 1;
+            map->hidden_tiles[player_on_map_idx] = FLOOR;
+            map->revealed_tiles[player_on_map_idx] = FLOOR;
+            break;
         case LIFE_FOUNTAIN:
             handle_fountain_event(map, reset_health_c, player);
             break;

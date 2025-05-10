@@ -17,6 +17,8 @@ typedef struct character {
     int level;
     char* name;
 
+    int has_map_key; // states if the character has the map key, 0 = no, 1 = yes
+
     int unspent_attr_p;
     int unspent_res_p;
 

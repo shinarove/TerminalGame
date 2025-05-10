@@ -31,7 +31,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t current = TITLE_SCREEN;
     state_t return_to = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int max_floor = 1;    // on which floor the player is 1 - 15
+    int max_floor = 0;    // on which floor the player is 1 - 15, 0 - no floor
 
     while (running) {
         usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0));// wait for 1 frame
@@ -43,20 +43,22 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 if (current == LANGUAGE_MODE) return_to = TITLE_SCREEN;
                 break;
             case GENERATE_MAP: {
-                active_map_index = active_map_index == -1 ? 0 : (active_map_index + 1) % MAX_MAP_COUNT;
-                max_floor = max_floor == MAX_MAP_COUNT ? MAX_MAP_COUNT : max_floor + 1;
+                if (max_floor == MAX_MAP_COUNT) break; // last floor reached, can't generate more maps
+
+                active_map_index += 1;
+                max_floor += 1;
                 maps[active_map_index] = memory_pool_alloc(used_pool, sizeof(map_t));
                 if (maps[active_map_index] == NULL) {
                     log_msg(ERROR, "Game", "Failed to allocate memory for map");
                     running = false;
                 }
                 //initialize the map
-                maps[active_map_index]->id = active_map_index;
+                maps[active_map_index]->floor_nr = max_floor;
                 maps[active_map_index]->width = MAP_WIDTH;
                 maps[active_map_index]->height = MAP_HEIGHT;
                 maps[active_map_index]->enemy_count = ENEMY_COUNT;
 
-                if (generate_map(used_pool, maps[active_map_index]) != 0) {
+                if (generate_map(used_pool, maps[active_map_index], max_floor != MAX_MAP_COUNT) != 0) {
                     log_msg(ERROR, "Game", "Failed to generate map");
                     running = false;
                 } else {
@@ -78,8 +80,54 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case CHARACTER_CREATION:
                 current = update_character_creation(input, player);
                 break;
+            case RESTART_GAME:
+                // destroy current player & creating empty character
+                destroy_character(used_pool, player);
+                player = create_empty_character(used_pool);
+
+                // free all the previously created maps
+                for (int i = 0; i < max_floor; i++) {
+                    if (maps[i] != NULL) memory_pool_free(used_pool, maps[i]);
+                }
+                active_map_index = -1;
+                max_floor = 1; // reset the max floor
+
+                // change to character creation mode
+                current = CHARACTER_CREATION;
+                break;
             case MAP_MODE:
                 current = update_map_mode(input, maps[active_map_index], player);
+                break;
+            case ENTER_NEXT_FLOOR:
+                if (active_map_index + 1 == max_floor) {
+                    // the player is on the newest generated floor, generate a new map
+                    DEBUG_LOG("Game", "Entering next floor, generating new map.");
+                    current = GENERATE_MAP;
+                } else if (active_map_index + 1 < max_floor) {
+                    // the player is on an older floor, go to the next floor
+                    DEBUG_LOG("Game", "Entering next floor, loading map %d.", active_map_index + 1);
+                    active_map_index += 1;
+                    current = MAP_MODE;
+                    maps[active_map_index]->player_pos = maps[active_map_index]->entry_pos;
+                } else {
+                    log_msg(ERROR, "Game", "Invalid map index: %d", active_map_index);
+                    current = EXIT_GAME;
+                }
+                break;
+            case ENTER_PREV_FLOOR:
+                if (active_map_index == 0) {
+                    // revert the player position
+                    maps[active_map_index]->player_pos = maps[active_map_index]->entry_pos;
+                    current = MAP_MODE;
+                } else if (active_map_index > 0) {
+                    // go to the previous floor
+                    active_map_index -= 1;
+                    current = MAP_MODE;
+                    maps[active_map_index]->player_pos = maps[active_map_index]->exit_pos;
+                } else {
+                    log_msg(ERROR, "Game", "Invalid map index: %d", active_map_index);
+                    current = EXIT_GAME;
+                }
                 break;
             case COMBAT_MODE:
                 current = update_combat_mode(input, player, enemy);
@@ -87,6 +135,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     // combat mode has ended free / destroy the resources
                     free_prepared_cm_resources();
                     destroy_character(used_pool, enemy);
+                    enemy = NULL;
 
                     if (check_exp_c(player)) {
                         current = prepare_lvl_up_mode(player);

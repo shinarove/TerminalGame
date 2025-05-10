@@ -50,25 +50,26 @@ state_t update_main_menu(const input_t input) {
     RETURN_WHEN_NULL(main_menu_strings, EXIT_GAME, "Main Menu Mode", "Main menu mode was not initialized.");
     state_t next_state = MAIN_MENU;
 
-    // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, main_menu_strings[GAME_TITLE]);
 
     const int res = handle_simple_menu(input, 5, 4, &main_menu);
     switch (res) {
-        case 0:// Continue was selected
-            clear_screen();
+        case 0:// continue was selected
             next_state = MAP_MODE;
+            clear_screen();
             break;
-        case 1:
-            //TODO: change to a new game
+        case 1: // restart the game
+            next_state = RESTART_GAME;
+            clear_screen();
+            break;
         case 2:
             //TODO: add save functionality
         case 3:
             //TODO: add load functionality
             break;
         case 4:
-            clear_screen();
             next_state = LANGUAGE_MODE;
+            clear_screen();
             break;
         case 5:// Exit game was selected
             next_state = EXIT_GAME;
@@ -76,8 +77,8 @@ state_t update_main_menu(const input_t input) {
         case MAX_MAIN_MENU_OPTIONS:// nothing has changed
             break;
         case -1:// Esc was pressed, return to map mode
-            clear_screen();
             next_state = MAP_MODE;
+            clear_screen();
             break;
         case -2:
             next_state = EXIT_GAME;

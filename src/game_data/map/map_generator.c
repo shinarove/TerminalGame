@@ -67,7 +67,7 @@ void shuffle(vector2d_t* dir, int n);
  */
 int is_in_bounds(int x, int y, const map_t* map);
 
-int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
+int generate_map(const memory_pool_t* pool, map_t* map_to_generate, const int generate_exit) {
     RETURN_WHEN_NULL(pool, 1, "Map Generator", "Memory pool is NULL");
     RETURN_WHEN_NULL(map_to_generate, 1, "Map Generator", "Map to generate is NULL");
 
@@ -106,6 +106,8 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         log_msg(WARNING, "Map Generator", "Player position Y was even, should not be possible");
         map_to_generate->player_pos.dy += 1;
     }
+
+    map_to_generate->exit_unlocked = 0;
 
     //get the start position
     const int start_x = map_to_generate->player_pos.dx;
@@ -212,44 +214,70 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate) {
         max_attempts--;
     }
 
-    int exit_x = 0;
-    int exit_y = 0;
-    // get a random exit edge that is different from the start edge
-    int exit_edge = start_edge;
-    while (exit_edge == start_edge) {
-        exit_edge = rand() % 4;
-    }
+    if (generate_exit) { // only generate an exit, when told so!
+        int exit_x = 0;
+        int exit_y = 0;
+        // get a random exit edge that is different from the start edge
+        int exit_edge = start_edge;
+        while (exit_edge == start_edge) {
+            exit_edge = rand() % 4;
+        }
 
-    bool valid_exit = false;
-    do {
+        bool valid_exit = false;
+        do {
+            switch (exit_edge) {
+                case TOP:
+                    exit_x = 1 + 2 * (rand() % ((width - 2) / 2));
+                    exit_y = 0;
+                    valid_exit = map_to_generate->hidden_tiles[exit_x * height + exit_y + 1] == FLOOR;
+                    break;
+                case BOTTOM:
+                    exit_x = 1 + 2 * (rand() % ((width - 2) / 2));
+                    exit_y = height - 1;
+                    valid_exit = map_to_generate->hidden_tiles[exit_x * height + exit_y - 1] == FLOOR;
+                    break;
+                case LEFT:
+                    exit_x = 0;
+                    exit_y = 1 + 2 * (rand() % ((height - 2) / 2));
+                    valid_exit = map_to_generate->hidden_tiles[(exit_x + 1) * height + exit_y] == FLOOR;
+                    break;
+                case RIGHT:
+                    exit_x = width - 1;
+                    exit_y = 1 + 2 * (rand() % ((height - 2) / 2));
+                    valid_exit = map_to_generate->hidden_tiles[(exit_x - 1) * height + exit_y] == FLOOR;
+                    break;
+                default:
+                    log_msg(ERROR, "Map Generator", "Invalid exit edge");
+                    return 1;
+            }
+        } while (!valid_exit);
+
+        map_to_generate->hidden_tiles[exit_x * height + exit_y] = EXIT_DOOR;
+
         switch (exit_edge) {
             case TOP:
-                exit_x = 1 + 2 * (rand() % ((width - 2) / 2));
-                exit_y = 0;
-                valid_exit = map_to_generate->hidden_tiles[exit_x * height + exit_y + 1] == FLOOR;
+                map_to_generate->exit_pos.dx = exit_x;
+                map_to_generate->exit_pos.dy = 1;
                 break;
             case BOTTOM:
-                exit_x = 1 + 2 * (rand() % ((width - 2) / 2));
-                exit_y = height - 1;
-                valid_exit = map_to_generate->hidden_tiles[exit_x * height + exit_y - 1] == FLOOR;
+                map_to_generate->exit_pos.dx = exit_x;
+                map_to_generate->exit_pos.dy = height - 2;
                 break;
             case LEFT:
-                exit_x = 0;
-                exit_y = 1 + 2 * (rand() % ((height - 2) / 2));
-                valid_exit = map_to_generate->hidden_tiles[(exit_x + 1) * height + exit_y] == FLOOR;
+                map_to_generate->exit_pos.dx = 1;
+                map_to_generate->exit_pos.dy = exit_y;
                 break;
             case RIGHT:
-                exit_x = width - 1;
-                exit_y = 1 + 2 * (rand() % ((height - 2) / 2));
-                valid_exit = map_to_generate->hidden_tiles[(exit_x - 1) * height + exit_y] == FLOOR;
+                map_to_generate->exit_pos.dx = width - 2;
+                map_to_generate->exit_pos.dy = exit_y;
                 break;
-            default:
-                log_msg(ERROR, "Map Generator", "Invalid exit edge");
-                return 1;
+            default:;
         }
-    } while (!valid_exit);
 
-    map_to_generate->hidden_tiles[exit_x * height + exit_y] = EXIT_DOOR;
+    } else {
+        map_to_generate->exit_pos.dx = -1;
+        map_to_generate->exit_pos.dy = -1;
+    }
 
     RETURN_WHEN_TRUE(populate_map(map_to_generate), 1, "Map Generator", "Failed to populate map");
 
@@ -299,6 +327,7 @@ int init_start_position(map_t* map) {
             return -1;
     }
 
+    map->entry_pos = map->player_pos;
     return start_edge;
 }
 

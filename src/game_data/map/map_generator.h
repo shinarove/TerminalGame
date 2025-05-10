@@ -5,28 +5,15 @@
 #include "map.h"
 
 /**
- * @brief Generates a 2D map with predefined dimensions, initializes its tiles,
- *        and creates a valid layout using a depth-first search (DFS) algorithm.
+ * Generates a map using a specified memory pool and configuration.
  *
- * @param pool Pointer to a memory pool (memory_pool_t) for memory allocation.
- *             This pool is used to allocate memory for the map's tiles.
- * @param map_to_generate Pointer to the map_t structure where the generated map
- *                        data will be stored. This function can modify the height,
- *                        width, tiles, and other attributes of the map.
- *
- * @return Returns 0 on successful map generation or 1 on failure due to invalid
- *         inputs or memory allocation failures.
- *
- * @note If the dimensions of the map are too small, default dimensions are applied.
- *       If the dimensions are not odd, they are incremented to ensure odd values.
- * @note The function uses DFS to generate paths on the map and ensures there is
- *       both a start and an exit position with valid coordinates.
- * @note Memory for `hidden_tiles` and `revealed_tiles` in the map is allocated
- *       using the provided memory pool. If memory allocation fails, the function
- *       terminates with an error.
- * @warning Ensure the provided memory pool is initialized and large enough
- *          to allocate the required memory for the map tiles.
+ * @param pool Pointer to the memory pool to be used for memory allocations during map generation.
+ * @param map_to_generate Pointer to the map structure to be filled with the generated map data.
+ * @param generate_exit Flag indicating whether an exit point should be included in the generated map.
+ *                      A non-zero value enables the generation of an exit point, while zero disables it.
+ * @return Returns an integer indicating the success or failure of the map generation process.
+ *         Typically, 0 represents success, whereas a non-zero value indicates an error.
  */
-int generate_map(const memory_pool_t* pool, map_t* map_to_generate);
+int generate_map(const memory_pool_t* pool, map_t* map_to_generate, int generate_exit);
 
 #endif//MAP_GENERATOR_H

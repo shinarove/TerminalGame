@@ -321,6 +321,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
             if (input == ENTER) {
                 add_ability_c(player, PUNCH); // add the default ability
 
+                cc_state = PRE_CREATION; // reset the cc state
                 res = GENERATE_MAP;
                 clear_screen();
             }

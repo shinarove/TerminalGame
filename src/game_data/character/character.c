@@ -28,6 +28,7 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->needed_exp = needed_exp_table[DEFAULT_LVL];
     character->level = DEFAULT_LVL;
     character->name = NULL;
+    character->has_map_key = 0;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
@@ -62,6 +63,7 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     character->needed_exp = needed_exp_table[DEFAULT_LVL];
     character->level = DEFAULT_LVL;
     character->name = strdup(name);
+    character->has_map_key = 0;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
@@ -96,6 +98,7 @@ character_t* create_character(const memory_pool_t* pool, const int id, const cha
     character->needed_exp = needed_exp_table[character->level];
     character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
     character->name = strdup(name);
+    character->has_map_key = 0;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
