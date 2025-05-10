@@ -51,6 +51,8 @@ game_mechanics_files = files('src/game_mechanics/ability_usage.c',
                              'src/game_mechanics/luck.c',
                              'src/game_mechanics/dice/dice.c')
 
+game_data_files = files('src/game_data/save_file_handler.c')
+
 TerminalGame = executable('TerminalGame',
                           termbox_file,
                           helper_files,
@@ -68,6 +70,7 @@ TerminalGame = executable('TerminalGame',
                           ability_files,
                           character_files,
                           game_mechanics_files,
+                          game_data_files,
                           install : true)
 
 subdir('test') # Test directory

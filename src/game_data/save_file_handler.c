@@ -102,26 +102,26 @@ int load_game_state(char* save_name, const memory_pool_t* pool, game_state_t* ga
     RETURN_WHEN_NULL(file, 1, "Save File Handler", "Failed to open save file for writing");
 
     // reading the max floors and active map index from file
-    FREAD(&game_state->max_floors, sizeof(int), 2, file);
+    FREAD(&game_state->max_floors, sizeof(int), 2, file, 1);
     for (int i = 0; i < game_state->max_floors; i++) {
         if (game_state->maps[i] == NULL){
             game_state->maps[i] = memory_pool_alloc(pool, sizeof(map_t));
             // read floor_nr, width, height, enemy_count, exit_unlocked,
             // entry_pos.dx, entry_pos.dy, exit_pos.dx, exit_pos.dy,
             // player_pos.dx and player_pos.dy
-            FREAD(&game_state->maps[i]->floor_nr, sizeof(int), 11, file);
+            FREAD(&game_state->maps[i]->floor_nr, sizeof(int), 11, file, 1);
 
             // read the hidden tiles
             game_state->maps[i]->hidden_tiles = memory_pool_alloc(pool, sizeof(map_tile_t) *
                                                                                 game_state->maps[i]->width * game_state->maps[i]->height);
             FREAD(game_state->maps[i]->hidden_tiles, sizeof(map_tile_t),
-                  game_state->maps[i]->width * game_state->maps[i]->height, file);
+                  game_state->maps[i]->width * game_state->maps[i]->height, file, 1);
 
             // read the revealed tiles
             game_state->maps[i]->revealed_tiles = memory_pool_alloc(pool, sizeof(map_tile_t) *
                                                                                   game_state->maps[i]->width * game_state->maps[i]->height);
             FREAD(game_state->maps[i]->revealed_tiles, sizeof(map_tile_t),
-              game_state->maps[i]->width * game_state->maps[i]->height, file);
+              game_state->maps[i]->width * game_state->maps[i]->height, file, 1);
         } else {
             log_msg(ERROR, "Save File Handler", "Map %d is NULL", i);
             fclose(file);
@@ -134,24 +134,24 @@ int load_game_state(char* save_name, const memory_pool_t* pool, game_state_t* ga
 
     // read character data
     // read id, current_exp, needed_exp, level
-    FREAD(&game_state->player->id, sizeof(int), 4, file);
+    FREAD(&game_state->player->id, sizeof(int), 4, file, 1);
     // read the name
     int name_length;
-    FREAD(&name_length, sizeof(int), 1, file);
+    FREAD(&name_length, sizeof(int), 1, file, 1);
     game_state->player->name = malloc(name_length);
     FREAD(game_state->player->name, sizeof(char), name_length, file, 1);
     // read has_map_key, unspent_attr_p, unspent_res_p
-    FREAD(&game_state->player->has_map_key, sizeof(int), 3, file);
+    FREAD(&game_state->player->has_map_key, sizeof(int), 3, file, 1);
     // read ressource structs
-    FREAD(&game_state->player->base_resources, sizeof(resources_t), 3, file);
+    FREAD(&game_state->player->base_resources, sizeof(resources_t), 3, file, 1);
     // read attribute structs
-    FREAD(&game_state->player->base_attributes, sizeof(attributes_t), 3, file);
+    FREAD(&game_state->player->base_attributes, sizeof(attributes_t), 3, file, 1);
     // read the ability count
-    FREAD(&game_state->player->ability_count, sizeof(int), 1, file);
+    FREAD(&game_state->player->ability_count, sizeof(int), 1, file, 1);
     // add each ability to the character
     for (int i = 0; i < game_state->player->ability_count; i++) {
         int ability_id;
-        FREAD(&ability_id, sizeof(int), 1, file);
+        FREAD(&ability_id, sizeof(int), 1, file, 1);
         add_ability_c(game_state->player, ability_id);
     }
     
