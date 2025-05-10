@@ -97,6 +97,8 @@ void input_handler_thread() {
                 input = I;
             else if (event.key == 'c')
                 input = C;
+            else if (event.key == 'y' || event.key == 'Y')
+                input = Y;
             else if (event.key == TB_KEY_ENTER)
                 input = ENTER;
             else if (event.key == TB_KEY_ESC)

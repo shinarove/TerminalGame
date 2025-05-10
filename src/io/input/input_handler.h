@@ -11,6 +11,7 @@ typedef enum {
     M,
     I,
     C,
+    Y,
     ENTER,
     ESCAPE,
     QUIT,
