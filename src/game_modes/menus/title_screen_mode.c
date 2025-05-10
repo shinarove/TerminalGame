@@ -52,26 +52,24 @@ state_t update_title_screen(const input_t input) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
     switch (handle_simple_menu(input, 5, 4, &title_screen_menu)) {
-        case 0:
+        case 0: // New game was selected
             clear_screen();
-            next_state = GENERATE_MAP;
+            next_state = CHARACTER_CREATION;
             break;
-        case 1:
+        case 1: // Load game was selected
             //TODO: add load functionality
             break;
-        case 2:
+        case 2: // Change language was selected
             clear_screen();
             next_state = LANGUAGE_MODE;
             break;
-        case 3:
-            // Exit game was selected
-        case -1:
-            // ESC was pressed
+        case 3: // Exit game was selected
+        case -1: // ESC was pressed
+            break;
         case -2:
             next_state = EXIT_GAME;
             break;
-        case MAX_TISC_OPTION:
-            //does nothing
+        case MAX_TISC_OPTION: //does nothing
             break;
         default:
             log_msg(WARNING, "Title Screen Mode", "Invalid option returned in handle_menu: %d", title_screen_menu.selected_index);

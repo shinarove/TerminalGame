@@ -29,9 +29,9 @@ constexpr attr_id_t lvl_table_goblin[] = {
  * The table of the gained exp when defeating a goblin, with their respective level.
  */
 static const int exp_table_goblin[] = {
-        0, 100, 12, 14, 17,// TODO: change the first exp value, to lvl up after a fight
-        19, 22, 25, 28, 31,
-        35, 39, 43, 47, 51,
-        56, 60, 65, 70, 76, 81};
+        0, 100, 24, 28, 33,// TODO: changed the second exp value, to lvl up after a fight
+        38, 44, 50, 56, 63,
+        70, 77, 85, 93, 102,
+        111, 121, 130, 141, 151, 162};
 
 #endif//GOBLIN_H

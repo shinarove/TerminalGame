@@ -24,14 +24,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
 
-    character_t* player = create_base_character(used_pool, 0, "Hero");
-    // TODO: for testing purposes
-    const resources_t resources = {100, 5, 5};
-    player->base_resources = resources;
-    player->max_resources = resources;
-    player->current_resources = resources;
-    add_ability_c(player, PUNCH);
-
+    character_t* player = create_empty_character(used_pool);
     character_t* enemy = NULL;
 
     bool running = true;

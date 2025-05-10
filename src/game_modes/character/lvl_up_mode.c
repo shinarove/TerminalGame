@@ -1,6 +1,5 @@
 #include "lvl_up_mode.h"
 
-#include "../../game_data/character/character.h"
 #include "../../game_data/character/stats.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
