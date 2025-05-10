@@ -13,9 +13,9 @@
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
-#define FRAMES_PER_SECONDS 20
+#define FRAMES_PER_SECONDS 20.0
 
-#define MAX_MAP_COUNT 16
+#define MAX_MAP_COUNT 15
 #define MAP_HEIGHT 19
 #define MAP_WIDTH 39
 #define ENEMY_COUNT 4
@@ -31,7 +31,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t current = TITLE_SCREEN;
     state_t return_to = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int map_count = 0;        // number of maps that have been generated
+    int max_floor = 1;    // on which floor the player is 1 - 15
 
     while (running) {
         usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0));// wait for 1 frame
@@ -44,7 +44,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             case GENERATE_MAP: {
                 active_map_index = active_map_index == -1 ? 0 : (active_map_index + 1) % MAX_MAP_COUNT;
-                map_count = map_count == MAX_MAP_COUNT ? MAX_MAP_COUNT : map_count + 1;
+                max_floor = max_floor == MAX_MAP_COUNT ? MAX_MAP_COUNT : max_floor + 1;
                 maps[active_map_index] = memory_pool_alloc(used_pool, sizeof(map_t));
                 if (maps[active_map_index] == NULL) {
                     log_msg(ERROR, "Game", "Failed to allocate memory for map");
@@ -118,8 +118,8 @@ void start_game_loop(const memory_pool_t* used_pool) {
     }
 
     destroy_character(used_pool, player);
-    for (int i = 0; i < map_count; i++) {
-        memory_pool_free(used_pool, maps[i]);
+    for (int i = 0; i < max_floor; i++) {
+        if (maps[i] != NULL) memory_pool_free(used_pool, maps[i]);
     }
     memory_pool_free(used_pool, maps);
     memory_pool_free(used_pool, player);

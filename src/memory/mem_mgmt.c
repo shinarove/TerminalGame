@@ -66,10 +66,7 @@ void* memory_pool_alloc(const memory_pool_t* pool, size_t size) {
 }
 
 void memory_pool_free(const memory_pool_t* pool, void* ptr) {
-    if (!ptr) {
-        log_msg(ERROR, "Memory", "Pointer is NULL");
-        return;
-    }
+    RETURN_WHEN_NULL(ptr, , "Memory", "In `memory_pool_free` pointer is NULL")
 
     memory_block_t* block = (memory_block_t*) ptr - 1;
     if (block < pool->first || block >= (memory_block_t*) ((char*) pool->first + pool->pool_size)) {
