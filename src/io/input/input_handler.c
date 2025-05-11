@@ -136,6 +136,6 @@ void populate_text_buffer(const struct tb_event event) {
         text_buffer[text_buffer_pos] = '\0';
     } else if (event.ch != 0 && text_buffer_pos < text_buffer_length - 1) {
         text_buffer[text_buffer_pos++] = (char) event.ch;
-        text_buffer[text_buffer_pos] = '\0'; // ensure the string is always null-terminated
+        text_buffer[text_buffer_pos] = '\0';// ensure the string is always null-terminated
     }
 }

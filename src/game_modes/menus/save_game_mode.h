@@ -2,8 +2,8 @@
 #define SAVE_GAME_MODE_H
 
 #include "../../game.h"
-#include "../../io/input/input_handler.h"
 #include "../../game_data/save_file_handler.h"
+#include "../../io/input/input_handler.h"
 
 /**
  * Initializes the save game mode by setting up required data structures and
@@ -62,4 +62,4 @@ state_t update_save_game_mode(input_t input);
  */
 void shutdown_save_game_mode(void);
 
-#endif //SAVE_GAME_MODE_H
+#endif//SAVE_GAME_MODE_H

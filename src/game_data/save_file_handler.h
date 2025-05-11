@@ -1,9 +1,9 @@
 #ifndef SAVE_FILE_HANDLER_H
 #define SAVE_FILE_HANDLER_H
 
-#include "map/map.h"
-#include "character/character.h"
 #include "../memory/mem_mgmt.h"
+#include "character/character.h"
+#include "map/map.h"
 
 typedef enum {
     SLOT_1,
@@ -22,8 +22,8 @@ typedef struct {
 } game_state_t;
 
 typedef struct {
-    char** dates; // dates of the save slots, when NULL the save slot is empty
-    int length; // number of save slots
+    char** dates;// dates of the save slots, when NULL the save slot is empty
+    int length;  // number of save slots
 } save_infos_t;
 
 /**
@@ -69,4 +69,4 @@ int load_game_state(save_slot_t save_slot, const memory_pool_t* pool, game_state
  */
 save_infos_t get_save_infos(void);
 
-#endif //SAVE_FILE_HANDLER_H
+#endif//SAVE_FILE_HANDLER_H

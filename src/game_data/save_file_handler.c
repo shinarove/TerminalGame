@@ -1,12 +1,12 @@
 #include "save_file_handler.h"
 
-#include "../logger/logger.h"
 #include "../helper/string_helper.h"
+#include "../logger/logger.h"
 
-#include <stdlib.h>
-#include <sys/stat.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #ifdef _WIN32
     #include <direct.h>
@@ -17,8 +17,8 @@
     #define PATH_SEP "\\"
 #else
     #include <dirent.h>
-    #include <unistd.h>
     #include <sys/types.h>
+    #include <unistd.h>
 
     #define STAT_STRUCT struct stat
     #define STAT_FUNC stat
@@ -26,11 +26,11 @@
     #define PATH_SEP "/"
 #endif
 
-#define FREAD(ptr, size, count, stream, return_val) \
-    if (fread(ptr, size, count, stream) != count) { \
-        fclose(stream); \
+#define FREAD(ptr, size, count, stream, return_val)                           \
+    if (fread(ptr, size, count, stream) != count) {                           \
+        fclose(stream);                                                       \
         log_msg(ERROR, "Save File Handler", "Failed to read from save file"); \
-        return return_val; \
+        return return_val;                                                    \
     }
 
 #define SAVE_FILE_DIR "save_files"
@@ -39,12 +39,11 @@ static struct {
     save_slot_t slot;
     const char* name;
 } save_slot_files[] = {
-    {SLOT_1, "save_file_1.sav"},
-    {SLOT_2, "save_file_2.sav"},
-    {SLOT_3, "save_file_3.sav"},
-    {SLOT_4, "save_file_4.sav"},
-    {SLOT_5, "save_file_5.sav"}
-};
+        {SLOT_1, "save_file_1.sav"},
+        {SLOT_2, "save_file_2.sav"},
+        {SLOT_3, "save_file_3.sav"},
+        {SLOT_4, "save_file_4.sav"},
+        {SLOT_5, "save_file_5.sav"}};
 
 /**
  * Performs necessary checks on the save file name to ensure validity.
@@ -109,7 +108,7 @@ void free_map_resources(const memory_pool_t* pool, map_t** map, int length);
 
 int save_game_state(const save_slot_t save_slot, const game_state_t* game_state) {
     RETURN_WHEN_TRUE(save_slot < 0 || save_slot >= MAX_SAVE_SLOTS, 1,
-        "Save File Handler", "In `save_game_state` given save slot %d is invalid", save_slot);
+                     "Save File Handler", "In `save_game_state` given save slot %d is invalid", save_slot);
 
     char save_name[32];
     snprintf(save_name, sizeof(save_name), "%s", save_slot_files[save_slot].name);
@@ -123,7 +122,7 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
 
     // write the iso timestamp length & string
     char timestamp[32];
-    const size_t len = str_iso_time(timestamp, sizeof(timestamp)) + 1; // +1 for '\0'
+    const size_t len = str_iso_time(timestamp, sizeof(timestamp)) + 1;// +1 for '\0'
     fwrite(&len, sizeof(int), 1, file);
     fwrite(timestamp, sizeof(char), len, file);
 
@@ -163,7 +162,7 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
     }
 
     // writes the name and length
-    const int name_length = (int) strlen(game_state->player->name) + 1; // +1 for '\0'
+    const int name_length = (int) strlen(game_state->player->name) + 1;// +1 for '\0'
     fwrite(&name_length, sizeof(int), 1, file);
     fwrite(game_state->player->name, sizeof(char), name_length, file);
 
@@ -176,7 +175,7 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
 
 int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game_state_t* game_state) {
     RETURN_WHEN_TRUE(save_slot < 0 || save_slot >= MAX_SAVE_SLOTS, 1,
-        "Save File Handler", "In `save_game_state` given save slot %d is invalid", save_slot);
+                     "Save File Handler", "In `save_game_state` given save slot %d is invalid", save_slot);
 
     char save_name[32];
     snprintf(save_name, sizeof(save_name), "%s", save_slot_files[save_slot].name);
@@ -207,7 +206,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     }
     // allocate all the maps in the memory pool
     RETURN_WHEN_TRUE(allocate_maps(pool, game_state->maps, game_state->max_floors), 1,
-        "Save File Handler", "Failed to allocate memory for maps");
+                     "Save File Handler", "Failed to allocate memory for maps");
 
     // reading all the tiles of each map
     for (int i = 0; i < game_state->max_floors; i++) {
@@ -309,9 +308,9 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     const long calculated_checksum = calculate_checksum(game_state);
     if (calculated_checksum != file_checksum) {
         log_msg(ERROR, "Save File Handler",
-            "Checksum mismatch: expected %ld, got %ld", calculated_checksum, file_checksum);
+                "Checksum mismatch: expected %ld, got %ld", calculated_checksum, file_checksum);
     }
-    
+
     fclose(file);
     return 0;
 }
@@ -327,7 +326,7 @@ save_infos_t get_save_infos(void) {
     save_infos.length = MAX_SAVE_SLOTS;
 
     for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-        save_infos.dates[i] = NULL; // pre-set the dates to NULL
+        save_infos.dates[i] = NULL;// pre-set the dates to NULL
     }
 
     // go through each save file, if the save file exists, read the length & timestamp string
@@ -362,7 +361,7 @@ save_infos_t get_save_infos(void) {
                 log_msg(ERROR, "Save File Handler", "Failed to read timestamp string");
                 return empty;
             }
-            fclose(file); // close the file
+            fclose(file);// close the file
         } else {
             save_infos.dates[i] = NULL;
         }
@@ -467,7 +466,7 @@ int allocate_maps(const memory_pool_t* pool, map_t** maps, const int length) {
     if (maps == NULL) return 1;
     if (pool == NULL) return 1;
 
-    set_maps_null(maps, length); // pre-set all the maps to NULL
+    set_maps_null(maps, length);// pre-set all the maps to NULL
     // first allocate the maps
     for (int i = 0; i < length; i++) {
         maps[i] = memory_pool_alloc(pool, sizeof(map_t));
@@ -480,7 +479,7 @@ int allocate_maps(const memory_pool_t* pool, map_t** maps, const int length) {
             return 1;
         }
     }
-    set_maps_tiles_null(maps, length); // pre-set all the tiles to NULL
+    set_maps_tiles_null(maps, length);// pre-set all the tiles to NULL
     // allocate the hidden and revealed tiles
     for (int i = 0; i < length; i++) {
         maps[i]->hidden_tiles = memory_pool_alloc(pool, sizeof(map_tile_t) * maps[i]->width * maps[i]->height);
@@ -521,6 +520,4 @@ void free_map_resources(const memory_pool_t* pool, map_t** map, const int length
             memory_pool_free(pool, map[i]);
         }
     }
-
 }
-

@@ -9,10 +9,10 @@
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/language_menu_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
+#include "game_modes/menus/save_game_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
-#include "game_modes/menus/save_game_mode.h"
 
 #define FRAMES_PER_SECONDS 20.0
 
@@ -35,7 +35,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t current = TITLE_SCREEN;
     state_t return_to = TITLE_SCREEN;
     int active_map_index = -1;//-1 means no map is active
-    int max_floor = 0;    // on which floor the player is 1 - 5, 0 - no floor
+    int max_floor = 0;        // on which floor the player is 1 - 5, 0 - no floor
 
     while (running) {
         usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0));// wait for 1 frame
@@ -47,7 +47,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 if (current == LANGUAGE_MODE) return_to = TITLE_SCREEN;
                 break;
             case GENERATE_MAP: {
-                if (max_floor == MAX_MAP_COUNT) break; // last floor reached, can't generate more maps
+                if (max_floor == MAX_MAP_COUNT) break;// last floor reached, can't generate more maps
 
                 active_map_index += 1;
                 max_floor += 1;
@@ -97,7 +97,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     }
                 }
                 active_map_index = -1;
-                max_floor = 1; // reset the max floor
+                max_floor = 1;// reset the max floor
 
                 // change to character creation mode
                 current = CHARACTER_CREATION;
@@ -167,11 +167,10 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 if (current == LANGUAGE_MODE) return_to = MAIN_MENU;
                 if (current == SAVE_GAME) {
                     game_state_t state_to_save = {
-                        .max_floors = max_floor,
-                        .active_map_index = active_map_index,
-                        .maps = maps,
-                        .player = player
-                    };
+                            .max_floors = max_floor,
+                            .active_map_index = active_map_index,
+                            .maps = maps,
+                            .player = player};
                     current = prepare_save_game_mode(&state_to_save);
                 }
                 break;

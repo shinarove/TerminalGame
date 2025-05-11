@@ -59,7 +59,7 @@ state_t update_main_menu(const input_t input) {
             main_menu.selected_index = 0;
             clear_screen();
             break;
-        case 1: // restart the game
+        case 1:// restart the game
             next_state = RESTART_GAME;
             main_menu.selected_index = 0;
             clear_screen();

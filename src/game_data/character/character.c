@@ -39,8 +39,8 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->current_resources = char_res;
 
     const attributes_t char_attr = {
-        DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
-        DEFAULT_ENDURANCE, DEFAULT_LUCK};
+            DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
+            DEFAULT_ENDURANCE, DEFAULT_LUCK};
     character->base_attributes = char_attr;
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
@@ -74,8 +74,8 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     character->current_resources = char_res;
 
     const attributes_t char_attr = {
-        DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
-        DEFAULT_ENDURANCE, DEFAULT_LUCK};
+            DEFAULT_STRENGTH, DEFAULT_INTELLIGENCE, DEFAULT_AGILITY,
+            DEFAULT_ENDURANCE, DEFAULT_LUCK};
     character->base_attributes = char_attr;
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;

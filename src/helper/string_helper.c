@@ -5,7 +5,6 @@
 #include <limits.h>
 #include <math.h>
 #include <stdlib.h>
-
 #include <time.h>
 
 int parse_int(const char* str, int* out) {

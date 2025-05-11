@@ -214,7 +214,7 @@ int generate_map(const memory_pool_t* pool, map_t* map_to_generate, const int ge
         max_attempts--;
     }
 
-    if (generate_exit) { // only generate an exit, when told so!
+    if (generate_exit) {// only generate an exit, when told so!
         int exit_x = 0;
         int exit_y = 0;
         // get a random exit edge that is different from the start edge

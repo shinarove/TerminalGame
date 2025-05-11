@@ -1,7 +1,7 @@
 #include "character_creation_mode.h"
 
-#include "../../io/colors.h"
 #include "../../game_data/character/stats.h"
+#include "../../io/colors.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../logger/logger.h"
@@ -137,7 +137,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
             cc_state = NAME_INPUT;
             break;
         case NAME_INPUT:
-            if (name_input_buffer == NULL) { // start text input if not already started
+            if (name_input_buffer == NULL) {// start text input if not already started
                 name_input_buffer = start_text_input(MAX_NAME_LENGTH);
             }
             print_text(5, 2, WHITE, DEFAULT, cc_mode_strings[INTRODUCTION_TEXT]);
@@ -178,40 +178,40 @@ state_t update_character_creation(const input_t input, character_t* player) {
             break;
         case RESSOURCE_DISTRIBUTION:
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {
-                case 0: // decrease health by one
+                case 0:// decrease health by one
                     update_stats(player->base_resources.health > 1,
-                        &player->base_resources.health, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.health, &player->unspent_res_p, -1, player);
                     break;
-                case 1: // increase health by one
+                case 1:// increase health by one
                     update_stats(player->unspent_res_p > 0,
-                        &player->base_resources.health, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.health, &player->unspent_res_p, 1, player);
                     break;
-                case 2: // decrease stamina by one
+                case 2:// decrease stamina by one
                     update_stats(player->base_resources.stamina > 1,
-                        &player->base_resources.stamina, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.stamina, &player->unspent_res_p, -1, player);
                     break;
-                case 3: // increase stamina by one
+                case 3:// increase stamina by one
                     update_stats(player->unspent_res_p > 0,
-                        &player->base_resources.stamina, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.stamina, &player->unspent_res_p, 1, player);
                     break;
-                case 4: // decrease mana by one
+                case 4:// decrease mana by one
                     update_stats(player->base_resources.mana > 1,
-                        &player->base_resources.mana, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.mana, &player->unspent_res_p, -1, player);
                     break;
-                case 5: // increase mana by one
+                case 5:// increase mana by one
                     update_stats(player->unspent_res_p > 0,
-                        &player->base_resources.mana, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.mana, &player->unspent_res_p, 1, player);
                     break;
-                case MAX_RESOURCES * 2: // nothing was pressed, do nothing
-                case -1: // ESC was pressed, do nothing
+                case MAX_RESOURCES * 2:// nothing was pressed, do nothing
+                case -1:               // ESC was pressed, do nothing
                     break;
-                case -2: // Ctrl + C was pressed
+                case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
                     break;
                 default:
                     log_msg(ERROR, "Character Creation",
-                        "Invalid option returned in `update_character_creation`: %d",
-                        spend_res_p_menu.selected_index);
+                            "Invalid option returned in `update_character_creation`: %d",
+                            spend_res_p_menu.selected_index);
                     break;
             }
 
@@ -234,62 +234,62 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     clear_screen();
                 }
             } else if (spend_res_p_menu.tailing_text[0] != ' ') {
-                clear_line(CC_Y_POS_BODY + 6, 5, CLEAR_X_END); // clear the line with the confirmation text
+                clear_line(CC_Y_POS_BODY + 6, 5, CLEAR_X_END);// clear the line with the confirmation text
                 spend_res_p_menu.tailing_text = " ";
             }
             break;
         case ATTRIBUTE_DISTRIBUTION:
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_attr_p_spinner)) {
-                case 0: // decrease strength by one
+                case 0:// decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
-                        &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
                     break;
-                case 1: // increase strength by one
+                case 1:// increase strength by one
                     update_stats(player->unspent_attr_p > 0,
-                        &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
                     break;
-                case 2: // decrease intelligence by one
+                case 2:// decrease intelligence by one
                     update_stats(player->base_attributes.intelligence > 1,
-                        &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
                     break;
-                case 3: // increase intelligence by one
+                case 3:// increase intelligence by one
                     update_stats(player->unspent_attr_p > 0,
-                        &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
                     break;
-                case 4: // decrease agility by one
+                case 4:// decrease agility by one
                     update_stats(player->base_attributes.agility > 1,
-                        &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
                     break;
-                case 5: // increase agility by one
+                case 5:// increase agility by one
                     update_stats(player->unspent_attr_p > 0,
-                        &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
                     break;
-                case 6: // decrease endurance by one
+                case 6:// decrease endurance by one
                     update_stats(player->base_attributes.endurance > 1,
-                        &player->base_attributes.endurance, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.endurance, &player->unspent_attr_p, -1, player);
                     break;
-                case 7: // increase endurance by one
+                case 7:// increase endurance by one
                     update_stats(player->unspent_attr_p > 0,
-                        &player->base_attributes.endurance, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.endurance, &player->unspent_attr_p, 1, player);
                     break;
-                case 8: // decrease luck by one
+                case 8:// decrease luck by one
                     update_stats(player->base_attributes.luck > 1,
-                        &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
                     break;
-                case 9: // increase luck by one
+                case 9:// increase luck by one
                     update_stats(player->unspent_attr_p > 0,
-                        &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
                     break;
-                case MAX_ATTRIBUTES * 2: // nothing was pressed, do nothing
-                case -1: // ESC was pressed, do nothing
+                case MAX_ATTRIBUTES * 2:// nothing was pressed, do nothing
+                case -1:                // ESC was pressed, do nothing
                     break;
-                case -2: // Ctrl + C was pressed
+                case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
                     break;
                 default:
                     log_msg(ERROR, "Character Creation",
-                        "Invalid option returned in `update_character_creation`: %d",
-                        spend_attr_p_menu.selected_index);
+                            "Invalid option returned in `update_character_creation`: %d",
+                            spend_attr_p_menu.selected_index);
                     break;
             }
 
@@ -311,7 +311,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     clear_screen();
                 }
             } else if (spend_attr_p_menu.tailing_text[0] != ' ') {
-                clear_line(CC_Y_POS_BODY + 8, 5, CLEAR_X_END); // clear the line with the confirmation text
+                clear_line(CC_Y_POS_BODY + 8, 5, CLEAR_X_END);// clear the line with the confirmation text
                 spend_attr_p_menu.tailing_text = " ";
             }
 
@@ -321,9 +321,9 @@ state_t update_character_creation(const input_t input, character_t* player) {
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {
-                add_ability_c(player, PUNCH); // add the default ability
+                add_ability_c(player, PUNCH);// add the default ability
 
-                cc_state = PRE_CREATION; // reset the cc state
+                cc_state = PRE_CREATION;// reset the cc state
                 res = GENERATE_MAP;
                 clear_screen();
             }
@@ -334,7 +334,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
 }
 
 void shutdown_character_creation(void) {
-    if (cc_mode_strings != NULL){
+    if (cc_mode_strings != NULL) {
         for (int i = 0; i < MAX_CC_STRINGS; i++) {
             if (cc_mode_strings[i] != NULL) free(cc_mode_strings[i]);
         }
@@ -418,6 +418,6 @@ void update_spent_p_str(const int unspent_points) {
 
     char* unspent_points_str = malloc(64);
     snprintf(unspent_points_str, 64, UNSPENT_POINTS_FORMAT,
-        cc_mode_strings[UNPENT_POINTS_TEXT], unspent_points);
+             cc_mode_strings[UNPENT_POINTS_TEXT], unspent_points);
     cc_mode_strings[UNSPENT_POINTS_FULL] = unspent_points_str;
 }

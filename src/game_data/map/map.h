@@ -24,13 +24,13 @@ typedef struct vector2d {
 } vector2d_t;
 
 typedef struct map {
-    int floor_nr; // the floor-number this map represents
+    int floor_nr;// the floor-number this map represents
     int width;
     int height;
     int enemy_count;
-    int exit_unlocked; // 0 = no, 1 = yes
-    vector2d_t entry_pos; // the entry position
-    vector2d_t exit_pos;  // the exit position
+    int exit_unlocked;   // 0 = no, 1 = yes
+    vector2d_t entry_pos;// the entry position
+    vector2d_t exit_pos; // the exit position
     vector2d_t player_pos;
     map_tile_t* hidden_tiles;  //the total size being height * width
     map_tile_t* revealed_tiles;//the total size being height * width

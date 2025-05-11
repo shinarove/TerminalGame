@@ -2,8 +2,8 @@
 
 #include "../../game_data/save_file_handler.h"
 #include "../../io/local/local_handler.h"
-#include "../../logger/logger.h"
 #include "../../io/menu.h"
+#include "../../logger/logger.h"
 
 typedef enum {
     SELECT_SLOT,
@@ -88,12 +88,12 @@ state_t prepare_save_game_mode(game_state_t* game_state) {
             if (infos.dates[i] != NULL) {
                 empty_save_slot[i] = 0;
                 snprintf(save_game_mode_strings[i + SAVE_SLOT_1_FULL], 64, "%s [%s]",
-                    save_game_mode_strings[i + SAVE_SLOT_1], infos.dates[i]);
+                         save_game_mode_strings[i + SAVE_SLOT_1], infos.dates[i]);
                 free(infos.dates[i]);
             } else {
                 empty_save_slot[i] = 1;
                 snprintf(save_game_mode_strings[i + SAVE_SLOT_1_FULL], 64, "%s [%s]",
-                    save_game_mode_strings[i + SAVE_SLOT_1], save_game_mode_strings[EMPTY_STR]);
+                         save_game_mode_strings[i + SAVE_SLOT_1], save_game_mode_strings[EMPTY_STR]);
             }
         }
     } else {
@@ -135,7 +135,7 @@ state_t update_save_game_mode(const input_t input) {
                     break;
                 case MAX_SAVE_SLOTS:// nothing was pressed
                     break;
-                case -1:            // esc was pressed
+                case -1:// esc was pressed
                     res = MAIN_MENU;
                     clear_screen();
                     break;
@@ -239,7 +239,7 @@ void save_helper(const save_slot_t slot, const game_state_t* game_state) {
         if (save_game_state(slot, game_state) == 0) {
             sg_state = SHOW_SUCCESS;
             clear_screen();
-        } else  {
+        } else {
             sg_state = SHOW_FAILURE;
             clear_screen();
         }

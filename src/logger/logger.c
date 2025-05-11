@@ -1,9 +1,9 @@
 #include "logger.h"
 
+#include "../helper/string_helper.h"
 #include "../thread/thread_handler.h"
 #include "logger_config.h"
 #include "ringbuffer.h"
-#include "../helper/string_helper.h"
 
 #include <stdarg.h>
 #include <stdio.h>
