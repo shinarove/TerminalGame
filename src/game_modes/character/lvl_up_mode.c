@@ -151,15 +151,6 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
     return res;
 }
 
-void free_prepared_lum_resources(void) {
-    for (int i = PLAYER_NAME_LVL; i < LVL_UP_HEAD; i++) {
-        if (lvl_up_mode_strings[i] != NULL) {
-            free(lvl_up_mode_strings[i]);
-            lvl_up_mode_strings[i] = NULL;
-        }
-    }
-}
-
 void shutdown_lvl_up_mode(void) {
     if (lvl_up_mode_strings != NULL) {
         for (int i = 0; i < MAX_LVL_UP_STRINGS; i++) {

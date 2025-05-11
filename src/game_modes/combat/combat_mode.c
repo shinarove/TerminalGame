@@ -147,6 +147,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     combat_mode_strings[PLAYER_NAME_LVL] = player_name_lvl_str;
 
     // prepare the ability menu
+    if (combat_mode_ability_menu.options != NULL) free(combat_mode_ability_menu.options);
     RETURN_WHEN_TRUE(player->ability_count == 0, EXIT_GAME, "Combat Mode", "In `prepare_combat_mode` player has no abilities.")
     char** ability_names = malloc(sizeof(char*) * player->ability_count);
     combat_mode_ability_menu.options = ability_names;
@@ -161,6 +162,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     combat_mode_ability_menu.selected_index = 0;
 
     // prepare the potion menu
+    if (combat_mode_potion_menu.options != NULL) free(combat_mode_potion_menu.options);
     combat_mode_potion_menu.options = NULL;
     combat_mode_potion_menu.selected_index = 0;
     combat_mode_potion_menu.option_count = 0;
@@ -282,19 +284,6 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     }
 
     return res;
-}
-
-void free_prepared_cm_resources() {
-    for (int i = ENEMY_NAME; i < MAX_COMBAT_MODE_STRINGS; i++) {
-        if (combat_mode_strings[i] != NULL) {
-            free(combat_mode_strings[i]);
-            combat_mode_strings[i] = NULL;
-        }
-    }
-    if (combat_mode_ability_menu.options != NULL) free(combat_mode_ability_menu.options);
-    if (combat_mode_potion_menu.options != NULL) free(combat_mode_potion_menu.options);
-    combat_mode_ability_menu.options = NULL;
-    combat_mode_potion_menu.options = NULL;
 }
 
 void shutdown_combat_mode() {

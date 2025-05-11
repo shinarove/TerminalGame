@@ -101,6 +101,10 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 // change to character creation mode
                 current = CHARACTER_CREATION;
                 break;
+            case SAVE_GAME:
+
+
+                break;
             case LOAD_GAME:
                 // deallocate current player & maps
                 destroy_character(used_pool, player);
@@ -145,7 +149,6 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 current = update_combat_mode(input, player, enemy);
                 if (current != COMBAT_MODE) {
                     // combat mode has ended free / destroy the resources
-                    free_prepared_cm_resources();
                     destroy_character(used_pool, enemy);
                     enemy = NULL;
 
@@ -156,10 +159,6 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             case LVL_UP_MODE:
                 current = update_lvl_up_mode(input, player);
-                if (current != LVL_UP_MODE) {
-                    // level up mode has ended free the prepared resources
-                    free_prepared_lum_resources();
-                }
                 break;
             case INVENTORY_MODE:
             case CHARACTER_MODE:

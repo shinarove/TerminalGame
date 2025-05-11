@@ -50,19 +50,6 @@ state_t prepare_lvl_up_mode(const character_t* player);
 state_t update_lvl_up_mode(input_t input, character_t* player);
 
 /**
- * Releases pre-allocated string resources used during the Level-Up mode.
- * This function is responsible for freeing memory for strings that were
- * prepared in advance for displaying Level-Up related text, specifically
- * those initialized between PLAYER_NAME_LVL and LVL_UP_HEAD. It ensures
- * that the allocated memory is deallocated and corresponding pointers
- * are reset to NULL to prevent memory leaks or dangling pointers.
- *
- * This function is typically called at the end of a Level-Up mode to clean
- * up resources for efficient memory management.
- */
-void free_prepared_lum_resources(void);
-
-/**
  * Shuts down the Level-Up mode of the application.
  * This function deallocates all memory associated with the level-up mode string
  * storage. It iterates through the stored strings, freeing each one, and then

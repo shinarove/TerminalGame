@@ -65,23 +65,6 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
 state_t update_combat_mode(input_t input, character_t* player, character_t* enemy);
 
 /**
- * Frees resources prepared during combat mode initialization.
- *
- * This function ensures proper memory deallocation for dynamically allocated
- * combat-related resources, including pre-generated string data and menu options.
- * It also sets pointers to NULL to avoid dangling references.
- *
- * @details
- * - Iterates over the range of prepared combat mode strings (`ENEMY_NAME` to `MAX_COMBAT_MODE_STRINGS`),
- *   deallocating memory for non-NULL string entries in the `combat_mode_strings` array.
- * - Deallocates memory for the `options` field of both `combat_mode_ability_menu`
- *   and `combat_mode_potion_menu` if they are not NULL.
- * - Resets the `options` pointers for the ability menu and potion menu to NULL
- *   after freeing the memory to prevent reuse.
- */
-void free_prepared_cm_resources();
-
-/**
  * Shuts down and cleans up resources associated with combat mode.
  *
  * This function ensures proper deallocation of memory used in combat mode
