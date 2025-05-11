@@ -56,6 +56,7 @@ state_t update_change_language(const input_t input, const state_t called_from) {
             if (get_language() != LANGE_EN) {
                 local_res = set_language(LANGE_EN);
             }
+            change_language_menu.selected_index = 0;
             clear_screen();
             next_state = local_res == 0 ? called_from : EXIT_GAME;
             break;
@@ -64,11 +65,13 @@ state_t update_change_language(const input_t input, const state_t called_from) {
             if (get_language() != LANGE_DE) {
                 local_res = set_language(LANGE_DE);
             }
+            change_language_menu.selected_index = 0;
             clear_screen();
             next_state = local_res == 0 ? called_from : EXIT_GAME;
             break;
         case -1:
             // go back to the previous menu
+            change_language_menu.selected_index = 0;
             clear_screen();
             next_state = called_from;
             break;

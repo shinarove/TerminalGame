@@ -141,6 +141,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
         print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {
+            lvl_up_menu.selected_index = 0; // reset the menu
             res = MAP_MODE;
             clear_screen();
         }

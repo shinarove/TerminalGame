@@ -56,10 +56,12 @@ state_t update_main_menu(const input_t input) {
     switch (res) {
         case 0:// continue was selected
             next_state = MAP_MODE;
+            main_menu.selected_index = 0;
             clear_screen();
             break;
         case 1: // restart the game
             next_state = RESTART_GAME;
+            main_menu.selected_index = 0;
             clear_screen();
             break;
         case 2:
@@ -78,6 +80,7 @@ state_t update_main_menu(const input_t input) {
             break;
         case -1:// Esc was pressed, return to map mode
             next_state = MAP_MODE;
+            main_menu.selected_index = 0;
             clear_screen();
             break;
         case -2:

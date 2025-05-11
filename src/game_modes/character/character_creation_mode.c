@@ -230,6 +230,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
                     cc_state = ATTRIBUTE_DISTRIBUTION;
                     update_spent_p_str(player->unspent_attr_p);
+                    spend_res_p_menu.selected_index = 0;
                     clear_screen();
                 }
             } else if (spend_res_p_menu.tailing_text[0] != ' ') {
@@ -306,6 +307,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     player->current_attributes = player->base_attributes;
 
                     cc_state = WAIT_AFTER_CREATION;
+                    spend_attr_p_menu.selected_index = 0;
                     clear_screen();
                 }
             } else if (spend_attr_p_menu.tailing_text[0] != ' ') {
