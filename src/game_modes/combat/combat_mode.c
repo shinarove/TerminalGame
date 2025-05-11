@@ -125,6 +125,10 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
             free(combat_mode_strings[i]);
         }
     }
+    // reset the slected index in the menus
+    combat_mode_main_menu.selected_index = 0;
+    combat_mode_ability_menu.selected_index = 0;
+    combat_mode_potion_menu.selected_index = 0;
 
     combat_state = CHOOSE_ABILITY_POTION;
 
@@ -200,6 +204,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             switch (selected_index) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
+                    combat_mode_ability_menu.selected_index = 0;
                     clear_screen();
                     break;
                 case -2:

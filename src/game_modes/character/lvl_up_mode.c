@@ -78,6 +78,8 @@ state_t prepare_lvl_up_mode(const character_t* player) {
             free(lvl_up_mode_strings[i]);
         }
     }
+    // reset the menu selected index
+    lvl_up_menu.selected_index = 0;
 
     char* buffer = malloc(64);
     snprintf(buffer, 64, CHAR_NAME_LVL_FORMAT,
@@ -141,7 +143,6 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
         print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {
-            lvl_up_menu.selected_index = 0; // reset the menu
             res = MAP_MODE;
             clear_screen();
         }
