@@ -70,7 +70,7 @@ menu_t spend_res_p_menu;
 menu_t spend_attr_p_menu;
 spinner_menu_t spend_res_p_spinner;
 spinner_menu_t spend_attr_p_spinner;
-menu_arg_t used_args;
+menu_arg_t cc_menu_args;
 
 char* name_input_buffer = NULL;
 
@@ -96,13 +96,13 @@ int init_character_creation(void) {
     spend_res_p_menu.option_count = MAX_RESOURCES;
     spend_res_p_menu.selected_index = 0;
     spend_res_p_menu.tailing_text = " ";
-    spend_res_p_menu.args = &used_args;
+    spend_res_p_menu.args = &cc_menu_args;
     // initialize the menu: attributes
     spend_attr_p_menu.options = &cc_mode_strings[STRENGTH_STR];
     spend_attr_p_menu.option_count = MAX_ATTRIBUTES;
     spend_attr_p_menu.selected_index = 0;
     spend_attr_p_menu.tailing_text = " ";
-    spend_attr_p_menu.args = &used_args;
+    spend_attr_p_menu.args = &cc_menu_args;
     // initialize the spinner menu: resources
     spend_res_p_spinner.menu = &spend_res_p_menu;
     spend_res_p_spinner.left_symbol = '<';
@@ -114,11 +114,11 @@ int init_character_creation(void) {
     spend_attr_p_spinner.right_symbol = '>';
     spend_attr_p_spinner.max_option_length = MAX_OPTION_LENGTH;
     // initialize the menu args
-    used_args.active = 1;
-    used_args.unselected_fg = WHITE;
-    used_args.unselected_bg = DEFAULT;
-    used_args.selected_fg = BLACK;
-    used_args.selected_bg = WHITE;
+    cc_menu_args.active = 1;
+    cc_menu_args.unselected_fg = WHITE;
+    cc_menu_args.unselected_bg = DEFAULT;
+    cc_menu_args.selected_fg = BLACK;
+    cc_menu_args.selected_bg = WHITE;
 
     update_cc_local();
     observe_local(update_cc_local);

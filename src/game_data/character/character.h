@@ -15,23 +15,20 @@ typedef struct character {
     int current_exp;
     int needed_exp;
     int level;
-    char* name;
-
     int has_map_key; // states if the character has the map key, 0 = no, 1 = yes
-
     int unspent_attr_p;
     int unspent_res_p;
+    int ability_count; // number of abilities
 
     resources_t base_resources;   // base = character without gear
     resources_t max_resources;    // max = base + buffs from gear
     resources_t current_resources;// current usable resources, current <= max
-
     attributes_t base_attributes;   // base = character without gear
     attributes_t max_attributes;    // max = base + buffs from gear
     attributes_t current_attributes;// current = max +- temporary buffs / debuffs
 
+    char* name;
     ability_node_t* abilities;// linked list of abilities
-    int ability_count;        // number of abilities
 } character_t;
 
 /**
