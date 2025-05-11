@@ -9,6 +9,7 @@ typedef enum {
     GENERATE_ENEMY,
     CHARACTER_CREATION,
     RESTART_GAME,
+    SAVE_GAME,
     LOAD_GAME,
     MAP_MODE,
     ENTER_NEXT_FLOOR,

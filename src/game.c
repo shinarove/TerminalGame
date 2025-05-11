@@ -12,6 +12,7 @@
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
+#include "game_modes/menus/save_game_mode.h"
 
 #define FRAMES_PER_SECONDS 20.0
 
@@ -102,8 +103,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 current = CHARACTER_CREATION;
                 break;
             case SAVE_GAME:
-
-
+                current = update_save_game_mode(input);
                 break;
             case LOAD_GAME:
                 // deallocate current player & maps
@@ -165,6 +165,15 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case MAIN_MENU:
                 current = update_main_menu(input);
                 if (current == LANGUAGE_MODE) return_to = MAIN_MENU;
+                if (current == SAVE_GAME) {
+                    game_state_t state_to_save = {
+                        .max_floors = max_floor,
+                        .active_map_index = active_map_index,
+                        .maps = maps,
+                        .player = player
+                    };
+                    current = prepare_save_game_mode(&state_to_save);
+                }
                 break;
             case LANGUAGE_MODE:
                 current = update_change_language(input, return_to);

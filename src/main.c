@@ -13,6 +13,7 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
+#include "game_modes/menus/save_game_mode.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -28,6 +29,7 @@ enum exit_codes {
     ERROR_TITLE_SCREEN_INIT,
     ERROR_MAIN_MENU_INIT,
     ERROR_CHANGE_LANGUAGE_INIT,
+    ERROR_SAVE_GAME_MODE_INIT,
     ERROR_ABILITY_TABLE_INIT,
 };
 
@@ -51,6 +53,7 @@ int init(memory_pool_t** pool) {
     if (init_title_screen() != 0) return ERROR_TITLE_SCREEN_INIT;
     if (init_main_menu() != 0) return ERROR_MAIN_MENU_INIT;
     if (init_change_language() != 0) return ERROR_CHANGE_LANGUAGE_INIT;
+    if (init_save_game_mode() != 0) return ERROR_SAVE_GAME_MODE_INIT;
 
     // init game data tables
     if (init_ability_table(*pool) == NULL) return ERROR_ABILITY_TABLE_INIT;
@@ -85,6 +88,7 @@ void shutdown(memory_pool_t** pool) {
     destroy_ability_table(*pool);
 
     // shutdown the different modes
+    shutdown_save_game_mode();
     shutdown_change_language();
     shutdown_main_menu();
     shutdown_title_screen();
