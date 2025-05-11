@@ -96,16 +96,10 @@ state_t prepare_save_game_mode(game_state_t* game_state) {
                          save_game_mode_strings[i + SAVE_SLOT_1], save_game_mode_strings[EMPTY_STR]);
             }
         }
-    } else {
-        log_msg(ERROR, "Save Game Mode", "Save infos length is not 5, but %d", infos.length);
-        res = EXIT_GAME;
-    }
-
-    // set the game state to save
-    if (game_state != NULL) {
+        free(infos.dates);
         game_state_to_save = game_state;
     } else {
-        log_msg(ERROR, "Save Game Mode", "In `prepare_save_game_mode` given game state is NULL.");
+        log_msg(ERROR, "Save Game Mode", "Save infos length is not 5, but %d", infos.length);
         res = EXIT_GAME;
     }
 

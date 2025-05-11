@@ -339,11 +339,16 @@ save_infos_t get_save_infos(void) {
         if (STAT_FUNC(save_file_path, &st) == 0) {
             // file exists
             FILE* file = fopen(save_file_path, "rb");
+            if (file == NULL) {
+                free(save_infos.dates);
+                log_msg(ERROR, "Save File Handler", "Failed to open save file for reading");
+                return empty;
+            }
             // read the timestamp string length
             int timestamp_len;
             if (fread(&timestamp_len, sizeof(int), 1, file) != 1) {
                 for (int j = 0; j < i; j++) {
-                    free(save_infos.dates[j]);
+                    if (save_infos.dates[j] != NULL) free(save_infos.dates[j]);
                 }
                 free(save_infos.dates);
                 fclose(file);
@@ -351,19 +356,19 @@ save_infos_t get_save_infos(void) {
                 return empty;
             }
             // read the timestamp string
-            save_infos.dates[i] = malloc(timestamp_len);
-            if (fread(&save_infos.dates[i], sizeof(char), timestamp_len, file) != timestamp_len) {
+            save_infos.dates[i] = malloc(timestamp_len + 1);
+            if (fread(save_infos.dates[i], sizeof(char), timestamp_len, file) != timestamp_len) {
                 for (int j = 0; j <= i; j++) {
-                    free(save_infos.dates[j]);
+                    if (save_infos.dates[j] != NULL) free(save_infos.dates[j]);
                 }
                 free(save_infos.dates);
                 fclose(file);
                 log_msg(ERROR, "Save File Handler", "Failed to read timestamp string");
                 return empty;
             }
+            // always add the null terminator!
+            save_infos.dates[i][timestamp_len] = '\0';
             fclose(file);// close the file
-        } else {
-            save_infos.dates[i] = NULL;
         }
     }
 
