@@ -114,6 +114,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
             case LOAD_GAME:
                 current = update_load_game_mode(input, return_to);
                 if (current == TITLE_SCREEN && game_state.player == NULL) { // loading has failed
+                    log_msg(WARNING, "Game", "Loading failed, resetting game state to default values.");
                     game_state.max_floors = 0;
                     game_state.active_map_index = -1;
                     game_state.player = create_empty_character(used_pool);
