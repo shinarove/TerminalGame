@@ -67,8 +67,8 @@ int populate_map(map_t* map_to_populate) {
 }
 
 void place_key(const map_t* map_to_populate) {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 
     do {
         x = rand() % (map_to_populate->width - 2) + 1;
@@ -86,8 +86,8 @@ void place_enemy(map_t* map_to_populate) {
     }
 
     for (int i = 0; i < map_to_populate->enemy_count; i++) {
-        int x;
-        int y;
+        int x = 0;
+        int y = 0;
 
         do {
             x = rand() % (map_to_populate->width - 2) + 1;
@@ -99,8 +99,8 @@ void place_enemy(map_t* map_to_populate) {
 }
 
 void place_fountain(const map_t* map_to_populate) {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 
     do {
         x = rand() % (map_to_populate->width - 2) + 1;

@@ -54,8 +54,6 @@ void* memory_pool_alloc(const memory_pool_t* pool, size_t size) {
             } else {
                 log_msg(FINE, "Memory", "No more space left in the block, using the whole block");
             }
-            // memset the allocated memory to 0
-            memset((char*) current + sizeof(memory_block_t), 0, size);
             //the remaining memory space is too small, so the current block will be used entirely
             current->active = 1;
             return (void*) (current + 1);// return pointer to user data

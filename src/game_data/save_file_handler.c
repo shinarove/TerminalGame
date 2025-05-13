@@ -230,6 +230,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     }
     // malloc player
     game_state->player = memory_pool_alloc(pool, sizeof(character_t));
+    game_state->player->abilities = NULL;
 
     // read character data
     // read id, current_exp, needed_exp, level, has_map_key,
@@ -252,6 +253,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     // read the ability ids
     const int ability_count = game_state->player->ability_count;
     game_state->player->ability_count = 0; // reset the ability count in the character
+
     int ability_ids[ability_count];
     if (fread(&ability_ids, sizeof(int), ability_count, file) != ability_count) {
         memory_pool_free(pool, game_state->player);
