@@ -8,6 +8,11 @@
 
 #define MAX_MAIN_MENU_OPTIONS 6
 
+typedef enum {
+    MENU_VIEW,
+    CONFIRM_DISCARD
+} main_menu_state_t;
+
 enum main_menu_index {
     GAME_TITLE,
     OPTION_CONTINUE,
@@ -16,10 +21,15 @@ enum main_menu_index {
     OPTION_LOAD_GAME,
     OPTION_CHANGE_LANGUAGE,
     OPTION_EXIT_GAME,
+    CONFIRM_DISCARD_MSG,
+    ENTER_CONFIRM,
+    ESC_RETURN,
     MAX_MAIN_MENU_STRINGS
 };
 
 char** main_menu_strings = NULL;
+
+main_menu_state_t main_menu_state = MENU_VIEW;
 
 menu_t main_menu;
 
@@ -50,49 +60,73 @@ state_t update_main_menu(const input_t input) {
     RETURN_WHEN_NULL(main_menu_strings, EXIT_GAME, "Main Menu Mode", "Main menu mode was not initialized.");
     state_t next_state = MAIN_MENU;
 
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, main_menu_strings[GAME_TITLE]);
+    switch (main_menu_state) {
+        case MENU_VIEW:
+            print_text(5, 2, RED, DEFAULT, main_menu_strings[GAME_TITLE]);
 
-    const int res = handle_simple_menu(input, 5, 4, &main_menu);
-    switch (res) {
-        case 0:// continue was selected
-            next_state = MAP_MODE;
-            main_menu.selected_index = 0;
-            clear_screen();
+            switch (handle_simple_menu(input, 5, 4, &main_menu)) {
+                case 0:// continue was selected
+                    next_state = MAP_MODE;
+                    main_menu.selected_index = 0;
+                    clear_screen();
+                    break;
+                case 1:// restart the game
+                    main_menu_state = CONFIRM_DISCARD;
+                    clear_screen();
+                    break;
+                case 2:// save game
+                    next_state = SAVE_GAME;
+                    main_menu.selected_index = 0;
+                    clear_screen();
+                    break;
+                case 3:// load game
+                    next_state = LOAD_GAME;
+                    main_menu.selected_index = 0;
+                    clear_screen();
+                    break;
+                case 4:// change language
+                    next_state = LANGUAGE_MODE;
+                    clear_screen();
+                    break;
+                case 5:// Exit game was selected
+                    next_state = EXIT_GAME;
+                    break;
+                case MAX_MAIN_MENU_OPTIONS:// nothing has changed
+                    break;
+                case -1:// Esc was pressed, return to map mode
+                    next_state = MAP_MODE;
+                    main_menu.selected_index = 0;
+                    clear_screen();
+                    break;
+                case -2:
+                    next_state = EXIT_GAME;
+                    break;
+                default:
+                    log_msg(WARNING, "Main Menu Mode", "Invalid option returned in handle_menu");
+                    break;
+            }
             break;
-        case 1:// restart the game
-            next_state = RESTART_GAME;
-            main_menu.selected_index = 0;
-            clear_screen();
-            break;
-        case 2:
-            next_state = SAVE_GAME;
-            main_menu.selected_index = 0;
-            clear_screen();
-            break;
-        case 3:
-            next_state = LOAD_GAME;
-            main_menu.selected_index = 0;
-            clear_screen();
-            break;
-        case 4:
-            next_state = LANGUAGE_MODE;
-            clear_screen();
-            break;
-        case 5:// Exit game was selected
-            next_state = EXIT_GAME;
-            break;
-        case MAX_MAIN_MENU_OPTIONS:// nothing has changed
-            break;
-        case -1:// Esc was pressed, return to map mode
-            next_state = MAP_MODE;
-            main_menu.selected_index = 0;
-            clear_screen();
-            break;
-        case -2:
-            next_state = EXIT_GAME;
-            break;
-        default:
-            log_msg(WARNING, "Main Menu Mode", "Invalid option returned in handle_menu: %d", res);
+        case CONFIRM_DISCARD:
+            print_text(5, 2, WHITE, DEFAULT, main_menu_strings[CONFIRM_DISCARD_MSG]);
+            print_text(5, 4, WHITE, DEFAULT, main_menu_strings[ENTER_CONFIRM]);
+            print_text(5, 5, WHITE, DEFAULT, main_menu_strings[ESC_RETURN]);
+
+            switch (input) {
+                case ENTER:
+                    next_state = RESTART_GAME;
+                    main_menu.selected_index = 0;
+                    main_menu_state = MENU_VIEW;
+                    clear_screen();
+                    break;
+                case ESCAPE:
+                    main_menu_state = MENU_VIEW;
+                    clear_screen();
+                    break;
+                case QUIT:
+                    next_state = EXIT_GAME;
+                    break;
+                default:;
+            }
             break;
     }
 
@@ -128,4 +162,7 @@ void update_main_menu_local() {
     main_menu_strings[OPTION_LOAD_GAME] = get_local_string("LOAD_GAME");
     main_menu_strings[OPTION_CHANGE_LANGUAGE] = get_local_string("CHANGE_LANGUAGE");
     main_menu_strings[OPTION_EXIT_GAME] = get_local_string("EXIT_GAME");
+    main_menu_strings[CONFIRM_DISCARD_MSG] = get_local_string("MENU.MAIN.DISCARD");
+    main_menu_strings[ENTER_CONFIRM] = get_local_string("PRESS_ENTER.CONFIRM");
+    main_menu_strings[ESC_RETURN] = get_local_string("PRESS_ESC.RETURN");
 }

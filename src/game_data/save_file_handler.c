@@ -229,8 +229,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
             "Player is not NULL, the player pointer will be overwritten with a new allocated pointer.");
     }
     // malloc player
-    game_state->player = memory_pool_alloc(pool, sizeof(character_t));
-    game_state->player->abilities = NULL;
+    game_state->player = create_empty_character(pool);
 
     // read character data
     // read id, current_exp, needed_exp, level, has_map_key,

@@ -43,7 +43,7 @@ int init(memory_pool_t** pool) {
     tb_init();
     init_logger();
     init_input_handler();
-    *pool = init_memory_pool(2 * STANDARD_MEMORY_POOL_SIZE);
+    *pool = init_memory_pool(MIN_MEMORY_POOL_SIZE);
     if (*pool == NULL) return ERROR_MEMORY_POOL_INIT;
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
 
