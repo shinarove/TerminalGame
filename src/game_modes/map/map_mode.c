@@ -43,6 +43,7 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, map_mode_strings[GAME_TITLE]);
     print_map(5, 4, parsed_map);
 
+    free(parsed_map->tiles);
     free(parsed_map);
 
     switch (input) {
