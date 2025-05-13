@@ -15,4 +15,4 @@ state_t update_load_game_mode(input_t input, state_t called_from);
 
 void shutdown_load_game_mode(void);
 
-#endif //LOAD_GAME_MODE_H
+#endif//LOAD_GAME_MODE_H

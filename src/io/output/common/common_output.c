@@ -36,7 +36,7 @@ void clear_line(const int y, const int x_start, const int x_end) {
 
 void print_text(int x, int y, const color_t fg, const color_t bg, const char* text) {
     RETURN_WHEN_NULL(text, , "Common Output",
-        "In `print_text` text is NULL with the following config: x: %d, y: %d, fg: %d, bg: %d", x, y, fg, bg);
+                     "In `print_text` text is NULL with the following config: x: %d, y: %d, fg: %d, bg: %d", x, y, fg, bg);
     check_xy(&x, &y);
 
     tb_printf(x, y, color_mapping[fg].value, color_mapping[bg].value, "%s", text);

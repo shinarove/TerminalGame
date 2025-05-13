@@ -6,7 +6,7 @@
 #include "../../logger/logger.h"
 
 typedef enum {
-    SELECT_SLOT, // only when at least one save file is found
+    SELECT_SLOT,// only when at least one save file is found
     CONFIRM_DISCARD,
     SHOW_NO_SAVES,
     SHOW_SUCCESS,
@@ -29,7 +29,7 @@ enum load_game_index {
     CONTINUE_TEXT,
     CONFIRM_TEXT,
     // strings that are prepared
-    SAVE_SLOT_A_FULL, // these slots are not associated with a numeric save slot
+    SAVE_SLOT_A_FULL,// these slots are not associated with a numeric save slot
     SAVE_SLOT_B_FULL,
     SAVE_SLOT_C_FULL,
     SAVE_SLOT_D_FULL,
@@ -66,7 +66,7 @@ int init_load_game_mode() {
 
     load_game_menu.selected_index = 0;
     load_game_menu.options = &load_game_mode_strings[SAVE_SLOT_A_FULL];
-    load_game_menu.option_count = 0; // default to 0
+    load_game_menu.option_count = 0;// default to 0
     load_game_menu.args = NULL;
 
     update_load_game_local();
@@ -76,7 +76,7 @@ int init_load_game_mode() {
 
 state_t prepare_load_game_mode(memory_pool_t* pool, game_state_t* game_state) {
     RETURN_WHEN_NULL(pool, EXIT_GAME,
-        "Load Game Mode", "In `prepare_load_game_mode` given memory pool is NULL.")
+                     "Load Game Mode", "In `prepare_load_game_mode` given memory pool is NULL.")
     if (check_game_state(game_state) != 0) return EXIT_GAME;
 
     lg_state = SELECT_SLOT;
@@ -132,7 +132,6 @@ state_t update_load_game_mode(const input_t input, const state_t called_from) {
         case CHOOSE_SAVE_SLOT:
             const int selected_index = handle_simple_menu(input, 5, 2, &load_game_menu);
             if (selected_index >= 0 && selected_index < load_game_menu.option_count) {
-
                 // valid save slot selected
                 int real_index = -1;
                 int skipped = 0;

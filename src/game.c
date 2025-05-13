@@ -34,11 +34,10 @@ void start_game_loop(const memory_pool_t* used_pool) {
     state_t return_to = TITLE_SCREEN;
 
     game_state_t game_state = {
-        .max_floors = 0,// on which floor the player is 1 - 5, 0 - no floor
-        .active_map_index = -1,//-1 means no map is active
-        .maps = maps,
-        .player = create_empty_character(used_pool)
-    };
+            .max_floors = 0,       // on which floor the player is 1 - 5, 0 - no floor
+            .active_map_index = -1,//-1 means no map is active
+            .maps = maps,
+            .player = create_empty_character(used_pool)};
     character_t* enemy = NULL;
 
     while (running) {
@@ -71,7 +70,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 maps[game_state.active_map_index]->enemy_count = ENEMY_COUNT;
 
                 if (generate_map(used_pool, maps[game_state.active_map_index],
-                    game_state.max_floors != MAX_MAP_COUNT) != 0) {
+                                 game_state.max_floors != MAX_MAP_COUNT) != 0) {
                     log_msg(ERROR, "Game", "Failed to generate map");
                     running = false;
                 } else {
@@ -113,7 +112,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             case LOAD_GAME:
                 current = update_load_game_mode(input, return_to);
-                if (current == TITLE_SCREEN && game_state.player == NULL) { // loading has failed
+                if (current == TITLE_SCREEN && game_state.player == NULL) {// loading has failed
                     log_msg(WARNING, "Game", "Loading failed, resetting game state to default values.");
                     game_state.max_floors = 0;
                     game_state.active_map_index = -1;
@@ -135,7 +134,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     maps[game_state.active_map_index]->player_pos = maps[game_state.active_map_index]->entry_pos;
                 } else {
                     log_msg(ERROR, "Game",
-                        "Invalid map index: %d", game_state.active_map_index);
+                            "Invalid map index: %d", game_state.active_map_index);
                     current = EXIT_GAME;
                 }
                 break;
@@ -151,7 +150,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     maps[game_state.active_map_index]->player_pos = maps[game_state.active_map_index]->exit_pos;
                 } else {
                     log_msg(ERROR, "Game", "Invalid map index: %d",
-                        game_state.active_map_index);
+                            game_state.active_map_index);
                     current = EXIT_GAME;
                 }
                 break;
@@ -188,7 +187,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             case GAME_OVER:
                 log_msg(INFO, "Game",
-                    "Game Over isn't completed: %d, now exiting game.", current);
+                        "Game Over isn't completed: %d, now exiting game.", current);
             case EXIT_GAME:
                 running = false;
                 break;

@@ -7,6 +7,7 @@
 #include "game_modes/combat/combat_mode.h"
 #include "game_modes/map/map_mode.h"
 #include "game_modes/menus/language_menu_mode.h"
+#include "game_modes/menus/load_game_mode.h"
 #include "game_modes/menus/main_menu_mode.h"
 #include "game_modes/menus/save_game_mode.h"
 #include "game_modes/menus/title_screen_mode.h"
@@ -14,7 +15,6 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
-#include "game_modes/menus/load_game_mode.h"
 
 #include <stdlib.h>
 #include <time.h>

@@ -187,7 +187,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     for (int i = 0; i < game_state->max_floors; i++) {
         if (game_state->maps[i] != NULL) {
             log_msg(WARNING, "Save File Handler",
-                "Map %d is not NULL, the map pointer will be overwritten with a new allocated pointer.", i);
+                    "Map %d is not NULL, the map pointer will be overwritten with a new allocated pointer.", i);
         }
 
         // allocate memory for the map
@@ -226,7 +226,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
 
     if (game_state->player != NULL) {
         log_msg(WARNING, "Save File Handler",
-            "Player is not NULL, the player pointer will be overwritten with a new allocated pointer.");
+                "Player is not NULL, the player pointer will be overwritten with a new allocated pointer.");
     }
     // malloc player
     game_state->player = create_empty_character(pool);
@@ -251,7 +251,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     }
     // read the ability ids
     const int ability_count = game_state->player->ability_count;
-    game_state->player->ability_count = 0; // reset the ability count in the character
+    game_state->player->ability_count = 0;// reset the ability count in the character
 
     int ability_ids[ability_count];
     if (fread(&ability_ids, sizeof(int), ability_count, file) != ability_count) {
@@ -474,7 +474,7 @@ int allocate_maps(const memory_pool_t* pool, map_t** maps, const int length) {
     for (int i = 0; i < length; i++) {
         if (maps[i] == NULL) {
             log_msg(ERROR, "Save File Handler",
-                "Maps are not allocated, probably failed to allocate in `load_game_state`");
+                    "Maps are not allocated, probably failed to allocate in `load_game_state`");
             for (int j = 0; j < length; j++) {
                 // free all the previously allocated maps
                 if (maps[j] != NULL) memory_pool_free(pool, maps[j]);

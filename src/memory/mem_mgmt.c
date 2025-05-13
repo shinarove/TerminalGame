@@ -1,7 +1,8 @@
 #include "mem_mgmt.h"
 
-#include <string.h>
 #include "../logger/logger.h"
+
+#include <string.h>
 
 memory_pool_t* init_memory_pool(size_t size) {
     if (size < MIN_MEMORY_POOL_SIZE) {
