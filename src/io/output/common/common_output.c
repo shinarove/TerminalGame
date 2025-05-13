@@ -57,6 +57,8 @@ void print_simple_menu(int x, int y, const menu_t* menu) {
     tb_printf(x, y++, uns_fg, uns_bg, "%s", menu->title);
 
     for (int i = 0; i < menu->option_count; i++) {
+        // if (menu->options[i] == NULL) continue;
+
         if (i == menu->selected_index && args.active) {
             tb_printf(x, y++, sel_fg, sel_bg, "> %s", menu->options[i]);
         } else {

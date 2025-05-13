@@ -28,9 +28,11 @@ local_files = files('src/io/local/local_handler.c',)
 menu_files = files('src/game_modes/menus/title_screen_mode.c',
                    'src/game_modes/menus/main_menu_mode.c',
                    'src/game_modes/menus/language_menu_mode.c',
-                   'src/game_modes/menus/save_game_mode.c',)
+                   'src/game_modes/menus/save_game_mode.c',
+                   'src/game_modes/menus/load_game_mode.c',)
 
-map_files = files('src/game_modes/map/map_mode.c',
+map_files = files('src/game_data/map/map.c',
+                  'src/game_modes/map/map_mode.c',
                   'src/game_modes/map/map_event_handler.c',
                   'src/game_data/map/map_generator.c',
                   'src/game_data/map/map_populator.c',

@@ -68,8 +68,11 @@ state_t update_main_menu(const input_t input) {
             next_state = SAVE_GAME;
             main_menu.selected_index = 0;
             clear_screen();
+            break;
         case 3:
-            //TODO: add load functionality
+            next_state = LOAD_GAME;
+            main_menu.selected_index = 0;
+            clear_screen();
             break;
         case 4:
             next_state = LANGUAGE_MODE;

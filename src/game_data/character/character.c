@@ -92,6 +92,7 @@ character_t* create_character(const memory_pool_t* pool, const int id, const cha
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_character` given name is NULL")
 
     character_t* character = memory_pool_alloc(pool, sizeof(character_t));
+    RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = id;
     character->current_exp = DEFAULT_CURRENT_EXP;

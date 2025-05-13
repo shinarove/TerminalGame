@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include "../../io/colors.h"
+#include "../../memory/mem_mgmt.h"
 
 typedef enum {
     WALL,
@@ -60,5 +61,7 @@ static struct {
         {PLAYER, '@', RED, BLACK},
         {ENEMY, '!', WHITE, RED},
         {HIDDEN, ' ', WHITE, WHITE}};
+
+void destroy_map(const memory_pool_t* pool, map_t* map_to_destroy);
 
 #endif//MAP_H

@@ -43,7 +43,7 @@ game_state_t* game_state_to_save = NULL;
 menu_t save_game_menu;
 
 // 1 for an empty slot / 0 for not empty
-int empty_save_slot[MAX_SAVE_SLOTS] = {1, 1, 1, 1, 1};
+int empty_save_slot_s[MAX_SAVE_SLOTS] = {1, 1, 1, 1, 1};
 int slot_to_save = 0;
 
 save_game_state_t sg_state = SELECT_SLOT;
@@ -86,12 +86,12 @@ state_t prepare_save_game_mode(game_state_t* game_state) {
             save_game_mode_strings[i + SAVE_SLOT_1_FULL] = malloc(64 * sizeof(char));
 
             if (infos.dates[i] != NULL) {
-                empty_save_slot[i] = 0;
+                empty_save_slot_s[i] = 0;
                 snprintf(save_game_mode_strings[i + SAVE_SLOT_1_FULL], 64, "%s [%s]",
                          save_game_mode_strings[i + SAVE_SLOT_1], infos.dates[i]);
                 free(infos.dates[i]);
             } else {
-                empty_save_slot[i] = 1;
+                empty_save_slot_s[i] = 1;
                 snprintf(save_game_mode_strings[i + SAVE_SLOT_1_FULL], 64, "%s [%s]",
                          save_game_mode_strings[i + SAVE_SLOT_1], save_game_mode_strings[EMPTY_STR]);
             }
@@ -208,12 +208,12 @@ void update_save_game_local(void) {
 
     save_game_mode_strings[CHOOSE_SAVE_SLOT] = get_local_string("SAVE_GAME.CHOOSE.SLOT");
     save_game_menu.title = save_game_mode_strings[CHOOSE_SAVE_SLOT];
-    save_game_mode_strings[SAVE_SLOT_1] = get_local_string("SAVE_GAME.SLOT.1");
-    save_game_mode_strings[SAVE_SLOT_2] = get_local_string("SAVE_GAME.SLOT.2");
-    save_game_mode_strings[SAVE_SLOT_3] = get_local_string("SAVE_GAME.SLOT.3");
-    save_game_mode_strings[SAVE_SLOT_4] = get_local_string("SAVE_GAME.SLOT.4");
-    save_game_mode_strings[SAVE_SLOT_5] = get_local_string("SAVE_GAME.SLOT.5");
-    save_game_mode_strings[EMPTY_STR] = get_local_string("SAVE_GAME.SLOT.EMPTY");
+    save_game_mode_strings[SAVE_SLOT_1] = get_local_string("SAVE.SLOT.1");
+    save_game_mode_strings[SAVE_SLOT_2] = get_local_string("SAVE.SLOT.2");
+    save_game_mode_strings[SAVE_SLOT_3] = get_local_string("SAVE.SLOT.3");
+    save_game_mode_strings[SAVE_SLOT_4] = get_local_string("SAVE.SLOT.4");
+    save_game_mode_strings[SAVE_SLOT_5] = get_local_string("SAVE.SLOT.5");
+    save_game_mode_strings[EMPTY_STR] = get_local_string("SAVE.SLOT.EMPTY");
     save_game_mode_strings[OVERWRITE_INFO_TEXT] = get_local_string("SAVE_GAME.OVERWRITE.INFO");
     save_game_mode_strings[SUCCESS_TEXT] = get_local_string("SAVE_GAME.SAVE.SUCCESS");
     save_game_mode_strings[FAILURE_TEXT] = get_local_string("SAVE_GAME.SAVE.FAILURE");
@@ -225,7 +225,7 @@ void update_save_game_local(void) {
 }
 
 void save_helper(const save_slot_t slot, const game_state_t* game_state) {
-    if (empty_save_slot[slot] == 0) {
+    if (empty_save_slot_s[slot] == 0) {
         sg_state = CONFIRM_OVERWRITE;
         slot_to_save = slot;
         clear_screen();

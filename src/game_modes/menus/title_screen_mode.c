@@ -53,17 +53,20 @@ state_t update_title_screen(const input_t input) {
 
     switch (handle_simple_menu(input, 5, 4, &title_screen_menu)) {
         case 0:// New game was selected
-            clear_screen();
             next_state = CHARACTER_CREATION;
+            clear_screen();
             break;
         case 1:// Load game was selected
-            //TODO: add load functionality
+            next_state = LOAD_GAME;
+            clear_screen();
             break;
         case 2:// Change language was selected
-            clear_screen();
             next_state = LANGUAGE_MODE;
+            clear_screen();
             break;
         case 3: // Exit game was selected
+            next_state = EXIT_GAME;
+            break;
         case -1:// ESC was pressed
             break;
         case -2:
