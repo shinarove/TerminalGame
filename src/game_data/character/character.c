@@ -48,6 +48,9 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->abilities = NULL;
     character->ability_count = 0;
 
+    // inventory will be initialized with a predefined size of 5
+    character->inventory = create_empty_inventory(pool, 5);
+
     return character;
 }
 
@@ -83,46 +86,8 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     character->abilities = NULL;
     character->ability_count = 0;
 
-    return character;
-}
-
-character_t* create_character(const memory_pool_t* pool, const int id, const char* name,
-                              const int level, const resources_t base_res, const attributes_t base_attr) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_character` given mem pool is NULL")
-    RETURN_WHEN_NULL(name, NULL, "Character", "In `create_character` given name is NULL")
-
-    character_t* character = memory_pool_alloc(pool, sizeof(character_t));
-    RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
-
-    character->id = id;
-    character->current_exp = DEFAULT_CURRENT_EXP;
-    character->needed_exp = needed_exp_table[character->level];
-    character->level = (level < 1 ? 1 : level) > 20 ? 20 : level;// level can only be between 1 and 20
-    character->name = strdup(name);
-    character->has_map_key = 0;
-
-    character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
-    character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
-
-    //assign base resources and attributes
-    character->base_resources.health = base_res.health < 1 ? 1 : base_res.health;
-    character->base_resources.stamina = base_res.stamina < 1 ? 1 : base_res.stamina;
-    character->base_resources.mana = base_res.mana < 1 ? 1 : base_res.mana;
-    character->base_attributes.strength = base_attr.strength < 1 ? 1 : base_attr.strength;
-    character->base_attributes.intelligence = base_attr.intelligence < 1 ? 1 : base_attr.intelligence;
-    character->base_attributes.agility = base_attr.agility < 1 ? 1 : base_attr.agility;
-    character->base_attributes.endurance = base_attr.endurance < 1 ? 1 : base_attr.endurance;
-    character->base_attributes.luck = base_attr.luck < 1 ? 1 : base_attr.luck;
-
-    //assign max & current resources and attributes
-    character->max_resources = character->base_resources;
-    character->current_resources = character->base_resources;
-
-    character->max_attributes = character->base_attributes;
-    character->current_attributes = character->base_attributes;
-
-    character->abilities = NULL;
-    character->ability_count = 0;
+    // inventory will be initialized with a predefined size of 5
+    character->inventory = create_empty_inventory(pool, 5);
 
     return character;
 }

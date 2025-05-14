@@ -41,7 +41,12 @@ map_files = files('src/game_data/map/map.c',
 
 combat_files = files('src/game_modes/combat/combat_mode.c')
 
-ability_files = files('src/game_data/ability/ability.c',)
+ability_files = files('src/game_data/ability/ability.c')
+
+item_files = files('src/game_data/item/item.c')
+
+inventory_files = files('src/game_data/inventory/inventory.c',
+                        'src/game_modes/inventory/inventory_mode.c')
 
 character_files = files('src/game_modes/character/lvl_up_mode.c',
                         'src/game_modes/character/character_creation_mode.c',
@@ -71,6 +76,8 @@ TerminalGame = executable('TerminalGame',
                           map_files,
                           combat_files,
                           ability_files,
+                          item_files,
+                          inventory_files,
                           character_files,
                           game_mechanics_files,
                           game_data_files,

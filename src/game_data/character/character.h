@@ -4,6 +4,7 @@
 #include "../../memory/mem_mgmt.h"
 #include "../ability/ability.h"
 #include "stats.h"
+#include "../inventory/inventory.h"
 
 typedef struct ability_node {
     ability_t* ability;
@@ -29,6 +30,8 @@ typedef struct character {
 
     char* name;
     ability_node_t* abilities;// linked list of abilities
+
+    inventory_t* inventory;// the character's inventory
 } character_t;
 
 /**
@@ -50,28 +53,6 @@ character_t* create_empty_character(const memory_pool_t* pool);
  * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
  */
 character_t* create_base_character(const memory_pool_t* pool, int id, const char* name);
-
-/**
- * Creates a character with specified ID, name, level, base resources, and base attributes,
- * using the provided memory pool for memory allocation.
- *
- * The character's resources and attributes are initialized according to the given
- * base values, while ensuring no resource or attribute value is below 1. The level is
- * constrained to the range [1, 20]. All max and current resources and attributes are
- * initialized with the specified base values.
- *
- * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.
- * @param id The unique identifier for the character.
- * @param name A pointer to the name of the character. The name must not be NULL.
- * @param level The initial level of the character. The level is clamped between 1 and 20.
- * @param base_res A set of base resources (health, stamina, mana) to initialize the character with.
- *                 Values below 1 will be adjusted to 1.
- * @param base_attr A set of base attributes (strength, intelligence, agility, endurance, luck)
- *                  to initialize the character with. Values below 1 will be adjusted to 1.
- * @return A pointer to the newly created character structure, or NULL if memory allocation fails
- *         or any mandatory parameter is invalid.
- */
-character_t* create_character(const memory_pool_t* pool, int id, const char* name, int level, resources_t base_res, attributes_t base_attr);
 
 /**
  * Destroys a character object by freeing its allocated memory.
