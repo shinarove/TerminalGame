@@ -41,7 +41,7 @@ void put_attributes_in_csv(char* csv_line, const int* csv_offset, attributes_t a
 void put_int_in_csv(char* csv_line, const int* csv_offset, int value);
 
 char* character_to_csv(const character_t* character) {
-    char* csv_line = (char*) malloc(256);
+    char* csv_line = malloc(256);
     RETURN_WHEN_NULL(csv_line, NULL, "Character Parser", "Failed to allocate memory for CSV line");
 
     char int_str[16];

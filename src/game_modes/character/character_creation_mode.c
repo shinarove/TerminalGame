@@ -78,7 +78,7 @@ void update_cc_local(void);
 
 void prepare_player_name_lvl(const character_t* player);
 
-void update_stats(int bool_exp, unsigned short* updated_stats, int* unspent_points, int diff, const character_t* player);
+void update_stats(int bool_exp, int* updated_stats, int* unspent_points, int diff, const character_t* player);
 
 void update_cc_head(const character_t* player);
 
@@ -380,7 +380,7 @@ void prepare_player_name_lvl(const character_t* player) {
     cc_mode_strings[PLAYER_NAME_LVL] = buffer;
 }
 
-void update_stats(const int bool_exp, unsigned short* updated_stats, int* unspent_points, const int diff, const character_t* player) {
+void update_stats(const int bool_exp, int* updated_stats, int* unspent_points, const int diff, const character_t* player) {
     if (bool_exp) {
         *updated_stats += diff;
         *unspent_points -= diff;

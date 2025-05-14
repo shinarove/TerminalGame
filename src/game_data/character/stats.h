@@ -18,17 +18,17 @@ typedef enum {
 } attr_id_t;
 
 typedef struct resources {
-    unsigned short health;
-    unsigned short stamina;
-    unsigned short mana;
+    int health;
+    int stamina;
+    int mana;
 } resources_t;
 
 typedef struct attributes {
-    unsigned short strength;
-    unsigned short intelligence;
-    unsigned short agility;
-    unsigned short endurance;
-    unsigned short luck;
+    int strength;
+    int intelligence;
+    int agility;
+    int endurance;
+    int luck;
 } attributes_t;
 
 /**

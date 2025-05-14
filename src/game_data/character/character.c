@@ -149,11 +149,11 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
         return;
     }
 
-    character->base_resources.health += (short) ((double) character->base_attributes.strength * 0.5);
+    character->base_resources.health += (int) ((float) character->base_attributes.strength * 0.5);
     character->base_resources.health += character->base_attributes.endurance;
-    character->base_resources.stamina += (short) ((double) character->base_attributes.agility * 0.5);
+    character->base_resources.stamina += (int) ((float) character->base_attributes.agility * 0.5);
     character->base_resources.stamina += character->base_attributes.endurance;
-    character->base_resources.mana += (short) ((double) character->base_attributes.intelligence * 1.5);
+    character->base_resources.mana += (int) ((float) character->base_attributes.intelligence * 1.5);
 
     //TODO: When inventory is implemented, add buffs from gear
     character->max_resources = character->base_resources;
@@ -234,10 +234,9 @@ int remove_ability_c(character_t* character, const ability_id_t ability_id) {
             character->ability_count--;// decrease the ability count
             free(current_node);
             break;
-        } else {
-            prev_node = current_node;
-            current_node = current_node->next;
         }
+        prev_node = current_node;
+        current_node = current_node->next;
     }
     return removed;
 }

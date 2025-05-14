@@ -254,16 +254,16 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
     usage_result_t res = SUCCESS;
     switch (r_target) {
         case HEALTH_CHAR:
-            const short curr_health = target->current_resources.health;
+            const int curr_health = target->current_resources.health;
             target->current_resources.health = damage > curr_health ? 0 : curr_health - damage;
             if (target->current_resources.health == 0) res = TARGET_DIED;
             break;
         case STAMINA_CHAR:
-            const short curr_stamina = target->current_resources.stamina;
+            const int curr_stamina = target->current_resources.stamina;
             target->current_resources.stamina = damage > curr_stamina ? 0 : curr_stamina - damage;
             break;
         case MANA_CHAR:
-            const short curr_mana = target->current_resources.mana;
+            const int curr_mana = target->current_resources.mana;
             target->current_resources.mana = damage > curr_mana ? 0 : curr_mana - damage;
             break;
         default:

@@ -136,8 +136,8 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
     // write id, current_exp, needed_exp, level, has_map_key,
     // unspent_attr_p, unspent_res_p, ability_count
     fwrite(&game_state->player->id, sizeof(int), 8, file);
-    // write the resource structs and attributes structs as shorts
-    fwrite(&game_state->player->base_resources, sizeof(unsigned short), 24, file);
+    // write the resource structs and attributes structs as ints
+    fwrite(&game_state->player->base_resources, sizeof(int), 24, file);
 
     // write the abilities ids
     // iterate through the abilities linked list
@@ -241,8 +241,8 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
         log_msg(ERROR, "Save File Handler", "Failed to read character data");
         return 1;
     }
-    // read the resource structs and attributes structs as shorts
-    if (fread(&game_state->player->base_resources, sizeof(unsigned short), 24, file) != 24) {
+    // read the resource structs and attributes structs as ints
+    if (fread(&game_state->player->base_resources, sizeof(int), 24, file) != 24) {
         memory_pool_free(pool, game_state->player);
         free_map_resources(pool, game_state->maps, game_state->max_floors);
         fclose(file);

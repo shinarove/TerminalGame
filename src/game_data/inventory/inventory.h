@@ -22,6 +22,9 @@ typedef struct inventory {
     int gear_count; // the number of gears in the inventory (with the equipped gears)
     int max_gears; // the maximum number of gears in the inventory
 
+    resources_t total_resource_bonus; // the total resource bonus from all equipped gears
+    attributes_t total_attribute_bonus; // the total attribute bonus from all equipped gears
+
     gear_t* equipped[MAX_GEAR_SLOTS]; // the equipped gears
     gear_t** gears; // the array of gear pointers
 } inventory_t;
