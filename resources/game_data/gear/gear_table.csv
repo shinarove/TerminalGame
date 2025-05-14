@@ -1,0 +1,2 @@
+id,gear_type,name,res_bonus_health,res_bonus_stamina,res_bonus_mana,att_bonus_strength,att_bonus_intelligence,att_bonus_agility,att_bonus_endurance,att_bonus_luck,ability_count,ability_ids,
+0,6,GEAR.IRON_SWORD.NAME,0,0,0,1,0,0,0,0,2,3-4,

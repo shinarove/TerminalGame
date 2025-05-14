@@ -11,10 +11,10 @@
 
 #ifdef _WIN32
     #define PATH_SEP "\\"
-    #define ABILITY_DIRECTORY "ressources\\game_data\\ability"
+    #define ABILITY_DIRECTORY "resources\\game_data\\ability"
 #else
     #define PATH_SEP "/"
-    #define ABILITY_DIRECTORY "ressources/game_data/ability"
+    #define ABILITY_DIRECTORY "resources/game_data/ability"
 #endif//_WIN32
 
 #define ABILITY_FILE_NAME "ability_table.csv"

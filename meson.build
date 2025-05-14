@@ -43,7 +43,7 @@ combat_files = files('src/game_modes/combat/combat_mode.c')
 
 ability_files = files('src/game_data/ability/ability.c')
 
-item_files = files('src/game_data/item/item.c')
+item_files = files('src/game_data/item/gear.c')
 
 inventory_files = files('src/game_data/inventory/inventory.c',
                         'src/game_modes/inventory/inventory_mode.c')

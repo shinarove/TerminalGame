@@ -9,6 +9,8 @@ typedef enum {
     CLAWS,
     PUNCH,
     //sword abilities
+    SWORD_SLASH,
+    POMMEL_STRIKE,
     //...
     MAX_ABILITIES
 } ability_id_t;

@@ -2,7 +2,7 @@
 #define INVENTORY_H
 
 #include "../../memory/mem_mgmt.h"
-#include "../item/item.h"
+#include "../item/gear.h"
 
 typedef enum {
     HEAD_SLOT,
@@ -19,11 +19,11 @@ typedef enum {
 } gear_slot_t;
 
 typedef struct inventory {
-    int item_count; // the number of items in the inventory (with the equipped items)
-    int max_items; // the maximum number of items in the inventory
+    int gear_count; // the number of gears in the inventory (with the equipped gears)
+    int max_gears; // the maximum number of gears in the inventory
 
-    item_t* equipped[MAX_GEAR_SLOTS]; // the equipped items
-    item_t** items; // the array of item pointers
+    gear_t* equipped[MAX_GEAR_SLOTS]; // the equipped gears
+    gear_t** gears; // the array of gear pointers
 } inventory_t;
 
 /**

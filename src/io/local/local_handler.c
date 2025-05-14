@@ -8,10 +8,10 @@
 
 #ifdef _WIN32
     #define PATH_SEP "\\"
-    #define LOCAL_DIRECTORY "ressources\\local"
+    #define LOCAL_DIRECTORY "resources\\local"
 #else
     #define PATH_SEP "/"
-    #define LOCAL_DIRECTORY "ressources/local"
+    #define LOCAL_DIRECTORY "resources/local"
 #endif//_WIN32
 
 typedef struct observer_node observer_node_t;

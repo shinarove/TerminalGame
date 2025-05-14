@@ -1,0 +1,66 @@
+### Documentation for the gear table
+
+Reference: [resources/game_data/gear/gear_table.csv](../game_data/gear/gear_table.csv)
+
+#### Description of the columns
+
+- id:
+  - Type: int
+  - Description: Zero-base unique identifier for the gear. Must be the same as the (row index - 2) of the csv file.
+  - Example: 0, 1, 2, 3, etc.
+- gear_type:
+  - Type: int
+  - Description: The type of the gear.
+  - Valid Values: A value between 0 and 7 where:
+    - 0 = head
+    - 1 = body
+    - 2 = legs
+    - 3 = hand
+    - 4 = ring
+    - 5 = amulet
+    - 6 = tool one-handed
+    - 7 = tool two-handed
+- name:
+  - Type: str
+  - Description: The key name of the gear. This is used to get the local string name of the gear.
+  - Example: "GEAR.HEAD.NAME"
+- res_bonus_health:
+  - Type: int
+  - Description: The bonus to the health resource.
+  - Example: 0, 1, 2, etc.
+- res_bonus_stamina:
+  - Type: int
+  - Description: The bonus to the stamina resource.
+  - Example: 0, 1, 2, etc.
+- res_bonus_mana:
+  - Type: int
+  - Description: The bonus to the mana resource.
+  - Example: 0, 1, 2, etc.
+- att_bonus_strength:
+  - Type: int
+  - Description: The bonus to the strength attribute.
+  - Example: 0, 1, 2, etc.
+- att_bonus_intelligence:
+  - Type: int
+  - Description: The bonus to the intelligence attribute.
+  - Example: 0, 1, 2, etc.
+- att_bonus_agility:
+  - Type: int
+  - Description: The bonus to the agility attribute.
+  - Example: 0, 1, 2, etc.
+- att_bonus_endurance:
+  - Type: int
+  - Description: The bonus to the endurance attribute.
+  - Example: 0, 1, 2, etc.
+- att_bonus_luck:
+  - Type: int
+  - Description: The bonus to the luck attribute.
+  - Example: 0, 1, 2, etc.
+- ability_count:
+  - Type: int
+  - Description: The number of abilities that the gear has.
+  - Example: 0, 1, 2, etc.
+- ability_ids:
+  - Type: str
+  - Description: A list of ability ids, all separated by a dash (-).
+  - Example: "0-1-2-3-4-5-6-7-8-9"

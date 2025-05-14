@@ -48,8 +48,8 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->abilities = NULL;
     character->ability_count = 0;
 
-    // inventory will be initialized with a predefined size of 5
-    character->inventory = create_empty_inventory(pool, 5);
+    // inventory will be initialized with 0
+    character->inventory = create_empty_inventory(pool, 0);
 
     return character;
 }

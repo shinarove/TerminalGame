@@ -1,0 +1,6 @@
+id,name,c_target,r_target,effect_type,effect_scaler,accuracy_scaler,r_cost,effect_dice,accuracy_dice,effect_rolls,accuracy_rolls,effect_scale_value,accuracy_scale_value,v_cost,
+0,ABILITY.BITE.NAME,enemy,health,damage,strength,strength,stamina,8,20,1,1,0.4,0.2,0,
+1,ABILITY.CLAWS.NAME,enemy,health,damage,strength,agility,stamina,6,20,1,1,0.6,0.3,0,
+2,ABILITY.PUNCH.NAME,enemy,health,damage,strength,agility,stamina,6,20,1,1,0.7,0.2,0,
+3,ABILITY.SWORD_SLASH.NAME,enemy,health,damage,strength,agility,stamina,6,20,2,1,0.5,0.5,0,
+4,ABILITY.POMMEL_STRIKE.NAME,enemy,health,damage,endurance,agility,stamina,4,20,3,2,0.3,0.5,2,
