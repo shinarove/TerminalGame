@@ -50,6 +50,13 @@ typedef struct ability {
     int v_cost;// the cost of the ability in the used resource (costs_resources)
 } ability_t;
 
+typedef struct ability_array {
+    int ability_count; // the current number of abilities in the array
+    int allocated_space; // the size of the allocated space for the abilities
+
+    ability_t** abilities; // the array of ability pointers
+} ability_array_t;
+
 typedef struct {
     ability_t abilities[MAX_ABILITIES];
     int count;
@@ -60,5 +67,13 @@ ability_table_t* init_ability_table(const memory_pool_t* pool);
 ability_table_t* get_ability_table(void);
 
 void destroy_ability_table(const memory_pool_t* pool);
+
+ability_array_t* create_ability_array(int pre_length);
+
+int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id);
+
+int remove_ability_a(ability_array_t* ability_array, int index);
+
+void destroy_ability_array(ability_array_t* ability_array);
 
 #endif//ABILITY_H

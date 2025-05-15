@@ -4,6 +4,7 @@
 #include "../../helper/string_helper.h"
 #include "../../io/local/local_handler.h"
 #include "../../logger/logger.h"
+#include "../../game.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -152,6 +153,80 @@ void destroy_ability_table(const memory_pool_t* pool) {
 
     memory_pool_free(pool, singleton_ability_table);
     singleton_ability_table = NULL;
+}
+
+ability_array_t* create_ability_array(int pre_length) {
+    RETURN_WHEN_TRUE(pre_length < 0, NULL, "Ability", "In `create_ability_array` allocated_space is negative")
+
+    ability_array_t* ability_array = (ability_array_t*) memory_pool_alloc(global_memory_pool, sizeof(ability_array_t));
+    RETURN_WHEN_NULL(ability_array, NULL, "Ability", "In `create_ability_array` failed to allocate memory for ability array")
+
+    if (pre_length == 0) {
+        ability_array->abilities = NULL;
+    } else {
+        ability_array->abilities = (ability_t**) memory_pool_alloc(global_memory_pool, sizeof(ability_t*) * pre_length);
+        RETURN_WHEN_NULL(ability_array->abilities, NULL, "Ability", "In `create_ability_array` failed to allocate memory for abilities")
+        for (int i = 0; i < pre_length; i++) {
+            ability_array->abilities[i] = NULL;
+        }
+    }
+    ability_array->ability_count = 0;
+    ability_array->allocated_space = pre_length;
+    return ability_array;
+}
+
+int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id) {
+    RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `add_ability_a` given ability array is NULL")
+
+    RETURN_WHEN_TRUE(ability_array->ability_count > ability_array->allocated_space, 1,
+                     "Ability", "In `add_ability_a` the ability count is greater than the allocated space: %d > %d",
+                     ability_array->ability_count, ability_array->allocated_space)
+
+    RETURN_WHEN_TRUE(ability_array->allocated_space == 0, 1,
+                     "Ability", "In `add_ability_a` the allocated space is 0, cannot add ability")
+
+    if (ability_array->abilities == NULL) {
+        // when NULL allocate the array
+        ability_array->abilities = (ability_t**) memory_pool_alloc(global_memory_pool, sizeof(ability_t*) * 5);
+        for (int i = 0; i < 5; i++) {
+            ability_array->abilities[i] = NULL;
+        }
+    } else if (ability_array->ability_count == ability_array->allocated_space) {
+        // when the array is full, reallocate the array, with double the size
+        ability_array->allocated_space *= 2;
+        ability_array->abilities = (ability_t**) memory_pool_realloc(global_memory_pool, ability_array->abilities,
+                                                                     sizeof(ability_t*) * ability_array->allocated_space);
+        RETURN_WHEN_NULL(ability_array->abilities, 1, "Ability", "In `add_ability_a` failed to reallocate memory for abilities")
+    }
+    // add the ability to the array
+    ability_array->abilities[ability_array->ability_count] = &get_ability_table()->abilities[ability_id];
+    ability_array->ability_count++;
+
+    return 0;
+}
+
+int remove_ability_a(ability_array_t* ability_array, int index) {
+    RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `remove_ability_a` given ability array is NULL")
+    RETURN_WHEN_TRUE(index < 0 || index >= ability_array->ability_count, 1,
+                     "Ability", "In `remove_ability_a` given index is invalid: %d", index)
+
+    // remove the ability from the array
+    for (int i = index; i < ability_array->ability_count - 1; i++) {
+        ability_array->abilities[i] = ability_array->abilities[i + 1];
+    }
+    ability_array->abilities[ability_array->ability_count - 1] = NULL;
+    ability_array->ability_count--;
+
+    return 0;
+}
+
+void destroy_ability_array(ability_array_t* ability_array) {
+    RETURN_WHEN_NULL(ability_array, , "Ability", "In `destroy_ability_array` given ability array is NULL")
+
+    if (ability_array->abilities != NULL) {
+        memory_pool_free(global_memory_pool, ability_array->abilities);
+    }
+    memory_pool_free(global_memory_pool, ability_array);
 }
 
 void update_ability_local() {
