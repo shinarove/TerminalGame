@@ -1,15 +1,9 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include "../../memory/mem_mgmt.h"
 #include "../ability/ability.h"
 #include "stats.h"
 #include "../inventory/inventory.h"
-
-typedef struct ability_node {
-    ability_t* ability;
-    struct ability_node* next;
-} ability_node_t;
 
 typedef struct character {
     int id;//currently not in use
@@ -19,7 +13,6 @@ typedef struct character {
     int has_map_key;// states if the character has the map key, 0 = no, 1 = yes
     int unspent_attr_p;
     int unspent_res_p;
-    int ability_count;// number of abilities
     int max_carry_weight;// the maximum weight the character can carry
 
     resources_t base_resources;     // base = character without gear
@@ -30,38 +23,38 @@ typedef struct character {
     attributes_t current_attributes;// current = max +- temporary buffs / debuffs
 
     char* name;
-    ability_node_t* abilities;// linked list of abilities
-
+    ability_array_t* abilities;
     inventory_t* inventory;// the character's inventory
 } character_t;
 
 /**
- * Creates an empty character structure with initialized default values.
- * The character's attributes, resources, and abilities are all set to their default states.
+ * Creates an empty character with default attributes, resources, and inventory values.
+ * The character's memory is allocated from the global memory pool.
  *
- * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.
- * @return A pointer to the newly created character structure, or NULL if memory allocation fails or the parameter is invalid.
+ * @return A pointer to the newly created character structure, or NULL if memory allocation fails.
  */
-character_t* create_empty_character(const memory_pool_t* pool);
+character_t* create_empty_character(void);
 
 /**
- * Creates a base character with specified ID and name, using the provided memory pool.
- * The character's resources and attributes are initialized to default values.
+ * Creates a base character with default attributes, resources, and inventory values.
+ * Allocates memory for the character structure from the global memory pool and
+ * initializes all properties to their default or provided values.
  *
- * @param pool A pointer to the memory pool used for allocating memory for the character. Must not be NULL.
  * @param id The unique identifier for the character.
- * @param name The name of the character. Must not be NULL.
- * @return A pointer to the newly created character structure, or NULL if memory allocation fails or parameters are invalid.
+ * @param name The name of the character. Must be a non-null string.
+ * @return A pointer to the newly created character structure, or NULL if memory allocation fails
+ *         or if the provided name is NULL.
  */
-character_t* create_base_character(const memory_pool_t* pool, int id, const char* name);
+character_t* create_base_character(int id, const char* name);
 
 /**
- * Destroys a character object by freeing its allocated memory.
+ * Frees all memory associated with the given character, including its name, abilities,
+ * inventory, and any dynamically allocated resources or structures within it.
+ * Once this function is called, the pointer to the character should no longer be used.
  *
- * @param pool A pointer to the memory pool used to manage memory allocation. Must not be NULL.
- * @param character A pointer to the character object to be destroyed. Must be a valid pointer or NULL.
+ * @param character A pointer to the character structure to be destroyed. Must not be NULL.
  */
-void destroy_character(const memory_pool_t* pool, character_t* character);
+void destroy_character(character_t* character);
 
 /**
  * Adds resource values (health, stamina, and mana) to a character, ensuring that
@@ -128,26 +121,30 @@ int check_exp_c(const character_t* character);
 void lvl_up_c(character_t* character, attr_id_t attr_to_increase);
 
 /**
- * Adds a new ability to the character's list of abilities.
- * Allocates memory for a new ability node and appends it to the end
- * of the character's linked list of abilities.
+ * Adds a specified ability to the given character's ability set.
+ * The function ensures that the character is valid before attempting to add the ability.
  *
- * @param character A pointer to the character structure to which the ability is added. Must not be NULL.
- * @param ability_id The identifier of the ability to be added, referencing an entry in the ability table.
+ * @param character A pointer to the character structure to which the ability is to be added.
+ *                  Must not be NULL.
+ * @param ability_id The unique identifier of the ability to be added to the character's abilities.
+ * @return An integer status code, where a non-zero value typically indicates success,
+ *         or 0 in case of failure or invalid input.
  */
-void add_ability_c(character_t* character, ability_id_t ability_id);
+int add_ability_c(character_t* character, ability_id_t ability_id);
 
 /**
- * Removes a specified ability from the character's ability list.
- * The ability is identified by its unique ability ID. If the ability
- * is found, it is removed from the linked list of abilities associated
- * with the character.
+ * Removes a specified ability from a character's ability array.
+ * This function checks if the character pointer is valid and delegates
+ * the removal process to the underlying ability array management function.
  *
- * @param character A pointer to the character structure whose ability is to be removed. Must not be NULL.
- * @param ability_id The unique identifier of the ability to be removed.
- * @return 0 if the ability was successfully removed, 1 if the ability was not found, or -1 if parameters are invalid.
+ * @param character A pointer to the character structure from which the ability is to be removed.
+ *                  Must not be NULL.
+ * @param ability_id The ID of the ability to be removed from the character's abilities.
+ *                   Must represent a valid ability ID.
+ * @return An integer indicating the success or failure of the removal operation.
+ *         Returns 0 if the character is NULL or the removal fails.
  */
-int remove_ability_c(character_t* character, ability_id_t ability_id);
+int remove_ability_c(const character_t* character, ability_id_t ability_id);
 
 /**
  * Retrieves a pointer to an ability with the specified ID from the character's list of abilities.
@@ -159,16 +156,15 @@ int remove_ability_c(character_t* character, ability_id_t ability_id);
 ability_t* get_ability_by_id_c(const character_t* character, ability_id_t ability_id);
 
 /**
- * Retrieves an ability from a character's list of abilities based on the specified index.
+ * Retrieves an ability from the character's ability list based on the provided index.
+ * The function validates the input parameters to ensure the character and its abilities
+ * are properly initialized and the index is within a valid range.
  *
- * This function traverses the character's linked list of abilities and returns the ability at the given index.
- * If the character is NULL or the index is invalid (out of range), the function returns NULL and logs an error.
- *
- * @param character A pointer to the character whose abilities are being accessed. Must not be NULL.
- * @param index The zero-based index of the ability to retrieve. Must be within the range of the character's
- *              abilities (0 to ability_count - 1).
- * @return A pointer to the ability at the specified index, or NULL if the character is NULL or the index is
- *         out of bounds.
+ * @param character A pointer to the character structure containing the ability list.
+ *                  Must not be NULL, and the ability array must be properly initialized.
+ * @param index The index of the ability to retrieve. Must be within the valid bounds of the ability array.
+ * @return A pointer to the ability structure at the specified index, or NULL if the character,
+ *         ability list, or index is invalid.
  */
 ability_t* get_ability_by_index_c(const character_t* character, int index);
 

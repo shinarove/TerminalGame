@@ -1,7 +1,6 @@
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
-#include "../../memory/mem_mgmt.h"
 #include "../item/gear.h"
 
 typedef enum {
@@ -30,22 +29,35 @@ typedef struct inventory {
 } inventory_t;
 
 /**
- * Creates a new, empty inventory using the provided memory pool and a specified pre-allocation length.
+ * @brief Creates and initializes a new inventory structure.
  *
- * @param pool The memory pool to use for allocating the inventory and its associated resources.
- *             This parameter must not be NULL.
- * @param pre_length The initial number of item slots to pre-allocate in the inventory.
- *                   Must be greater than or equal to 0.
- * @return A pointer to the newly created inventory, or NULL if memory allocation fails
- *         or if invalid parameters are provided.
+ * This function allocates memory for an inventory instance and optionally
+ * pre-allocates an array to store gear items. It initializes the gear slots,
+ * equipped gear, and sets the default values for gear count and allocated space.
  *
- * @note If pre_length is 0, no initial item slots will be allocated, and the 'items' pointer
- *       in the inventory will be set to NULL.
- * @note All equipped item slots in the inventory will be initialized to NULL.
- * @note The item count will be initialized to 0, and the maximum number of items will
- *       be set to the value of pre_length.
+ * @param pre_length An integer specifying the initial allocated space for gears.
+ *                   If the value is zero, no array allocation for gears is performed.
+ *                   If negative, the function will return NULL.
+ *
+ * @return A pointer to the newly created inventory_t structure if successful,
+ *         or NULL if memory allocation fails or if pre_length is negative.
+ *
+ * @note If `pre_length` is greater than zero, memory is allocated for `gears`
+ *       and all pointers within the array are initialized to NULL. The same
+ *       initialization is applied to the `equipped` slots. If `pre_length` is zero,
+ *       `gears` is also set to NULL.
  */
-inventory_t* create_empty_inventory(const memory_pool_t* pool, int pre_length);
+inventory_t* create_inventory(int pre_length);
+
+/**
+ * This function releases all memory associated with the given inventory,
+ * including the array of gears (if allocated). It also ensures that
+ * any allocated memory in the global memory pool is properly freed.
+ *
+ * @param inventory A pointer to the inventory_t structure to be destroyed.
+ *                  If NULL, the function does nothing.
+ */
+void destroy_inventory(inventory_t* inventory);
 
 
 #endif//INVENTORY_H

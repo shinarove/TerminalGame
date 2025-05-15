@@ -155,10 +155,10 @@ void destroy_ability_table(const memory_pool_t* pool) {
     singleton_ability_table = NULL;
 }
 
-ability_array_t* create_ability_array(int pre_length) {
+ability_array_t* create_ability_array(const int pre_length) {
     RETURN_WHEN_TRUE(pre_length < 0, NULL, "Ability", "In `create_ability_array` allocated_space is negative")
 
-    ability_array_t* ability_array = (ability_array_t*) memory_pool_alloc(global_memory_pool, sizeof(ability_array_t));
+    ability_array_t* ability_array = memory_pool_alloc(global_memory_pool, sizeof(ability_array_t));
     RETURN_WHEN_NULL(ability_array, NULL, "Ability", "In `create_ability_array` failed to allocate memory for ability array")
 
     if (pre_length == 0) {
@@ -175,18 +175,17 @@ ability_array_t* create_ability_array(int pre_length) {
     return ability_array;
 }
 
-int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id) {
+int add_ability_a(ability_array_t* ability_array, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `add_ability_a` given ability array is NULL")
-
+    RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= singleton_ability_table->count, 1,
+                     "Ability", "In `add_ability_a` given ability id is invalid: %d", ability_id)
     RETURN_WHEN_TRUE(ability_array->ability_count > ability_array->allocated_space, 1,
-                     "Ability", "In `add_ability_a` the ability count is greater than the allocated space: %d > %d",
+                     "Ability", "In `add_ability_a` invalid state encountered,"
+                                "the ability count is greater than the allocated space: %d > %d",
                      ability_array->ability_count, ability_array->allocated_space)
 
-    RETURN_WHEN_TRUE(ability_array->allocated_space == 0, 1,
-                     "Ability", "In `add_ability_a` the allocated space is 0, cannot add ability")
-
-    if (ability_array->abilities == NULL) {
-        // when NULL allocate the array
+    if (ability_array->abilities == NULL || ability_array->allocated_space == 0) {
+        // when the array is not allocated, allocate it with a default size of 5
         ability_array->abilities = (ability_t**) memory_pool_alloc(global_memory_pool, sizeof(ability_t*) * 5);
         for (int i = 0; i < 5; i++) {
             ability_array->abilities[i] = NULL;
@@ -205,7 +204,7 @@ int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id) {
     return 0;
 }
 
-int remove_ability_a(ability_array_t* ability_array, int index) {
+int remove_ability_a(ability_array_t* ability_array, const int index) {
     RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `remove_ability_a` given ability array is NULL")
     RETURN_WHEN_TRUE(index < 0 || index >= ability_array->ability_count, 1,
                      "Ability", "In `remove_ability_a` given index is invalid: %d", index)

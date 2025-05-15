@@ -1,7 +1,6 @@
 #ifndef ENEMY_GENERATOR_H
 #define ENEMY_GENERATOR_H
 
-#include "../../memory/mem_mgmt.h"
 #include "character.h"
 
 enum enemy_id {
@@ -10,22 +9,16 @@ enum enemy_id {
     GOBLIN = 1,
 };
 
-
 /**
- * Generates a goblin character with attributes and level scaling.
+ * Generates a goblin character with the specified level.
  *
- * This function creates and returns a goblin character object. The level of the goblin
- * dictates its attributes' growth, which are adjusted using a predefined level-up table.
- * The level value is clamped between 1 and 20. If the memory pool is NULL or other
- * errors occur during creation, the function returns NULL.
+ * This function creates a goblin character using a base goblin template, assigns an appropriate name based on the level,
+ * and upgrades the goblin's attributes and abilities according to its level. The level is capped between 1 and 20.
+ * An ability "CLAWS" is added to the goblin by default. No random items are currently assigned (TODO).
  *
- * @param pool A pointer to the memory pool used for allocating the goblin character.
- *             The pool must be valid and initialized.
- * @param level An integer representing the desired level of the goblin. The value is
- *              clamped between 1 (minimum) and 20 (maximum).
- * @return A pointer to the created goblin character structure on success, or NULL if
- *         the operation fails (e.g., invalid memory pool or memory allocation error).
+ * @param level The desired level of the goblin character. Values less than 1 are clamped to 1, and values greater than 20 are clamped to 20.
+ * @return A pointer to the created goblin character, or NULL if the creation fails due to memory or other errors.
  */
-character_t* generate_goblin(const memory_pool_t* pool, int level);
+character_t* generate_goblin(int level);
 
 #endif//ENEMY_GENERATOR_H

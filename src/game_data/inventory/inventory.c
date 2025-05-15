@@ -1,19 +1,17 @@
 #include "inventory.h"
 
 #include "../../logger/logger.h"
+#include "../../game.h"
 
-#include <stdlib.h>
-
-inventory_t* create_empty_inventory(const memory_pool_t* pool, int pre_length) {
-    RETURN_WHEN_NULL(pool, NULL, "Inventory", "In `create_empty_inventory` given memory pool is NULL")
+inventory_t* create_inventory(const int pre_length) {
     RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` allocated_space is negative")
-    inventory_t* inventory = (inventory_t*) memory_pool_alloc(pool, sizeof(inventory_t));
+    inventory_t* inventory = memory_pool_alloc(global_memory_pool, sizeof(inventory_t));
     RETURN_WHEN_NULL(inventory, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for inventory")
 
     if (pre_length == 0) {
         inventory->gears = NULL;
     } else {
-        inventory->gears = (gear_t**) memory_pool_alloc(pool, sizeof(gear_t*) * pre_length);
+        inventory->gears = (gear_t**) memory_pool_alloc(global_memory_pool, sizeof(gear_t*) * pre_length);
         RETURN_WHEN_NULL(inventory->gears, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for gears")
 
         for (int i = 0; i < pre_length; i++) {
@@ -27,4 +25,14 @@ inventory_t* create_empty_inventory(const memory_pool_t* pool, int pre_length) {
     inventory->gear_count = 0;
     inventory->allocated_space = pre_length;
     return inventory;
+}
+
+void destroy_inventory(inventory_t* inventory) {
+    RETURN_WHEN_NULL(inventory, , "Inventory", "In `destroy_inventory` inventory is NULL")
+
+    if (inventory->gears != NULL) {
+        memory_pool_free(global_memory_pool, inventory->gears);
+    }
+
+    memory_pool_free(global_memory_pool, inventory);
 }

@@ -2,6 +2,7 @@
 
 #include "../helper/string_helper.h"
 #include "../logger/logger.h"
+#include "character/character_save_handler.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -133,24 +134,7 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
     }
 
     // write character data
-    // write id, current_exp, needed_exp, level, has_map_key,
-    // unspent_attr_p, unspent_res_p, ability_count
-    fwrite(&game_state->player->id, sizeof(int), 8, file);
-    // write the resource structs and attributes structs as ints
-    fwrite(&game_state->player->base_resources, sizeof(int), 24, file);
-
-    // write the abilities ids
-    // iterate through the abilities linked list
-    const ability_node_t* current_node = game_state->player->abilities;
-    while (current_node != NULL) {
-        fwrite(&current_node->ability->id, sizeof(int), 1, file);
-        current_node = current_node->next;
-    }
-
-    // writes the name and length
-    const int name_length = (int) strlen(game_state->player->name) + 1;// +1 for '\0'
-    fwrite(&name_length, sizeof(int), 1, file);
-    fwrite(game_state->player->name, sizeof(char), name_length, file);
+    write_character_data(file, game_state->player);
 
     const long checksum = calculate_checksum(game_state);
     fwrite(&checksum, sizeof(long), 1, file);
@@ -229,69 +213,16 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
                 "Player is not NULL, the player pointer will be overwritten with a new allocated pointer.");
     }
     // malloc player
-    game_state->player = create_empty_character(pool);
-
+    game_state->player = create_empty_character();
+    if (game_state->player == NULL) {
+        free_map_resources(pool, game_state->maps, game_state->max_floors);
+        fclose(file);
+        return 1;
+    }
     // read character data
-    // read id, current_exp, needed_exp, level, has_map_key,
-    // unspent_attr_p, unspent_res_p, ability_count
-    if (fread(&game_state->player->id, sizeof(int), 8, file) != 8) {
-        memory_pool_free(pool, game_state->player);
+    if (read_character_data(file, game_state->player) != 0) {
         free_map_resources(pool, game_state->maps, game_state->max_floors);
         fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to read character data");
-        return 1;
-    }
-    // read the resource structs and attributes structs as ints
-    if (fread(&game_state->player->base_resources, sizeof(int), 24, file) != 24) {
-        memory_pool_free(pool, game_state->player);
-        free_map_resources(pool, game_state->maps, game_state->max_floors);
-        fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to read character resources");
-        return 1;
-    }
-    // read the ability ids
-    const int ability_count = game_state->player->ability_count;
-    game_state->player->ability_count = 0;// reset the ability count in the character
-
-    int ability_ids[ability_count];
-    if (fread(&ability_ids, sizeof(int), ability_count, file) != ability_count) {
-        memory_pool_free(pool, game_state->player);
-        free_map_resources(pool, game_state->maps, game_state->max_floors);
-        fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to read character abilities");
-        return 1;
-    }
-    // add the abilities to the character
-    for (int i = 0; i < ability_count; i++) {
-        add_ability_c(game_state->player, ability_ids[i]);
-    }
-
-    // read the name length
-    int name_length;
-    if (fread(&name_length, sizeof(int), 1, file) != 1) {
-        memory_pool_free(pool, game_state->player);
-        free_map_resources(pool, game_state->maps, game_state->max_floors);
-        fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to read character name length");
-        return 1;
-    }
-
-    // allocate memory for the name
-    game_state->player->name = malloc(name_length);
-    if (game_state->player->name == NULL) {
-        memory_pool_free(pool, game_state->player);
-        free_map_resources(pool, game_state->maps, game_state->max_floors);
-        fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to allocate memory for character name");
-        return 1;
-    }
-    // read the name
-    if (fread(game_state->player->name, sizeof(char), name_length, file) != name_length) {
-        memory_pool_free(pool, game_state->player);
-        free_map_resources(pool, game_state->maps, game_state->max_floors);
-        free(game_state->player->name);
-        fclose(file);
-        log_msg(ERROR, "Save File Handler", "Failed to read character name");
         return 1;
     }
 
@@ -416,52 +347,7 @@ long calculate_checksum(const game_state_t* game_state) {
         }
     }
 
-    checksum += game_state->player->id;
-    checksum += game_state->player->current_exp;
-    checksum += game_state->player->needed_exp;
-    checksum += game_state->player->level;
-    checksum += game_state->player->has_map_key;
-    checksum += game_state->player->unspent_attr_p;
-    checksum += game_state->player->unspent_res_p;
-    checksum += game_state->player->ability_count;
-    // add resources to checksum
-    checksum += game_state->player->base_resources.health;
-    checksum += game_state->player->base_resources.stamina;
-    checksum += game_state->player->base_resources.mana;
-    checksum += game_state->player->max_resources.health;
-    checksum += game_state->player->max_resources.stamina;
-    checksum += game_state->player->max_resources.mana;
-    checksum += game_state->player->current_resources.health;
-    checksum += game_state->player->current_resources.stamina;
-    checksum += game_state->player->current_resources.mana;
-    // add attributes to checksum
-    checksum += game_state->player->base_attributes.strength;
-    checksum += game_state->player->base_attributes.intelligence;
-    checksum += game_state->player->base_attributes.agility;
-    checksum += game_state->player->base_attributes.endurance;
-    checksum += game_state->player->base_attributes.luck;
-    checksum += game_state->player->max_attributes.strength;
-    checksum += game_state->player->max_attributes.intelligence;
-    checksum += game_state->player->max_attributes.agility;
-    checksum += game_state->player->max_attributes.endurance;
-    checksum += game_state->player->max_attributes.luck;
-    checksum += game_state->player->current_attributes.strength;
-    checksum += game_state->player->current_attributes.intelligence;
-    checksum += game_state->player->current_attributes.agility;
-    checksum += game_state->player->current_attributes.endurance;
-    checksum += game_state->player->current_attributes.luck;
-
-    // collect the abilities ids
-    int count = 0;
-    const ability_node_t* current_node = game_state->player->abilities;
-    while (current_node != NULL) {
-        count += 1;
-        checksum += current_node->ability->id;
-        current_node = current_node->next;
-    }
-    if (count != game_state->player->ability_count) {
-        log_msg(ERROR, "Save File Handler", "In `calculate_checksum` ability count mismatch");
-    }
+    checksum += calculate_checksum_c(game_state->player);
 
     return checksum;
 }

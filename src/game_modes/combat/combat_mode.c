@@ -125,7 +125,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
             free(combat_mode_strings[i]);
         }
     }
-    // reset the slected index in the menus
+    // reset the selected index in the menus
     combat_mode_main_menu.selected_index = 0;
     combat_mode_ability_menu.selected_index = 0;
     combat_mode_potion_menu.selected_index = 0;
@@ -148,17 +148,13 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
 
     // prepare the ability menu
     if (combat_mode_ability_menu.options != NULL) free(combat_mode_ability_menu.options);
-    RETURN_WHEN_TRUE(player->ability_count == 0, EXIT_GAME, "Combat Mode", "In `prepare_combat_mode` player has no abilities.")
-    char** ability_names = malloc(sizeof(char*) * player->ability_count);
+    RETURN_WHEN_TRUE(player->abilities->ability_count == 0, EXIT_GAME, "Combat Mode", "In `prepare_combat_mode` player has no abilities.")
+    char** ability_names = malloc(sizeof(char*) * player->abilities->ability_count);
     combat_mode_ability_menu.options = ability_names;
-    const ability_node_t* current_node = player->abilities;
-    for (int i = 0; i < player->ability_count; i++) {
-        RETURN_WHEN_TRUE(current_node == NULL, EXIT_GAME, "Combat Mode",
-                         "In `prepare_combat_mode` the `ability_count` doesn't match the linked list size.")
-        ability_names[i] = current_node->ability->local_name;
-        current_node = current_node->next;
+    for (int i = 0; i < player->abilities->ability_count; i++) {
+        ability_names[i] = player->abilities->abilities[i]->local_name;
     }
-    combat_mode_ability_menu.option_count = player->ability_count;
+    combat_mode_ability_menu.option_count = player->abilities->ability_count;
     combat_mode_ability_menu.selected_index = 0;
 
     // prepare the potion menu
@@ -429,7 +425,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
                      combat_mode_strings[ENEMY_ABILITY_HIT]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             update_combat_head(player, enemy);
@@ -448,7 +444,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
                      combat_mode_strings[ENEMY_ABILITY_MISSED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();
@@ -458,7 +454,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->ability->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
                      combat_mode_strings[ENEMY_ABILITY_FAILED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();

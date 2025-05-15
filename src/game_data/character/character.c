@@ -1,6 +1,7 @@
 #include "character.h"
 
 #include "../../logger/logger.h"
+#include "src/game.h"
 
 #include <string.h>
 
@@ -8,6 +9,7 @@
 #define DEFAULT_CURRENT_EXP 0
 #define DEFAULT_UNSPENT_ATTR_P 0
 #define DEFAULT_UNSPENT_RES_P 0
+#define DEFAULT_MAX_CARRY_WEIGHT 10
 #define DEFAULT_HEALTH 10
 #define DEFAULT_STAMINA 5
 #define DEFAULT_MANA 5
@@ -17,10 +19,8 @@
 #define DEFAULT_ENDURANCE 1
 #define DEFAULT_LUCK 1
 
-character_t* create_empty_character(const memory_pool_t* pool) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
-
-    character_t* character = memory_pool_alloc(pool, sizeof(character_t));
+character_t* create_empty_character() {
+    character_t* character = memory_pool_alloc(global_memory_pool, sizeof(character_t));
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = 0;
@@ -30,7 +30,7 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->name = NULL;
     character->has_map_key = 0;
     // TODO: make this relative to the character's strength
-    character->max_carry_weight = 10;
+    character->max_carry_weight = DEFAULT_MAX_CARRY_WEIGHT;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
@@ -48,19 +48,15 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->current_attributes = char_attr;
 
     character->abilities = NULL;
-    character->ability_count = 0;
-
-    // inventory will be initialized with 0
-    character->inventory = create_empty_inventory(pool, 0);
+    character->inventory = NULL;
 
     return character;
 }
 
-character_t* create_base_character(const memory_pool_t* pool, const int id, const char* name) {
-    RETURN_WHEN_NULL(pool, NULL, "Character", "In `create_base_character` given mem pool is NULL")
+character_t* create_base_character(const int id, const char* name) {
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_base_character` given name is NULL")
 
-    character_t* character = memory_pool_alloc(pool, sizeof(character_t));
+    character_t* character = memory_pool_alloc(global_memory_pool, sizeof(character_t));
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
     character->id = id;
@@ -69,6 +65,7 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     character->level = DEFAULT_LVL;
     character->name = strdup(name);
     character->has_map_key = 0;
+    character->max_carry_weight = DEFAULT_MAX_CARRY_WEIGHT;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;
@@ -85,26 +82,24 @@ character_t* create_base_character(const memory_pool_t* pool, const int id, cons
     character->max_attributes = char_attr;
     character->current_attributes = char_attr;
 
-    character->abilities = NULL;
-    character->ability_count = 0;
-
-    // inventory will be initialized with a predefined size of 5
-    character->inventory = create_empty_inventory(pool, 5);
+    // create the ability array and inventory with default sizes of 5
+    character->abilities = create_ability_array(5);
+    character->inventory = create_inventory(5);
 
     return character;
 }
 
-void destroy_character(const memory_pool_t* pool, character_t* character) {
-    free(character->name);
-
-    ability_node_t* current_node = character->abilities;
-    while (current_node != NULL) {
-        ability_node_t* next_node = current_node->next;
-        free(current_node);
-        current_node = next_node;
+void destroy_character(character_t* character) {
+    if (character == NULL) {
+        log_msg(WARNING, "Character", "In `destroy_character` given character is NULL");
+        return;
     }
 
-    memory_pool_free(pool, character);
+    if (character->name != NULL) free(character->name);
+
+    destroy_ability_array(character->abilities);
+    destroy_inventory(character->inventory);
+    memory_pool_free(global_memory_pool, character);
 }
 
 void add_resources_c(character_t* character, const int health, const int stamina, const int mana) {
@@ -200,72 +195,47 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     }
 }
 
-void add_ability_c(character_t* character, const ability_id_t ability_id) {
+int add_ability_c(character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, , "Character", "In `add_ability_c` given character is NULL")
 
-    ability_node_t* ability_node = malloc(sizeof(ability_node_t));
-    ability_node->ability = &get_ability_table()->abilities[ability_id];
-    ability_node->next = NULL;
-
     if (character->abilities == NULL) {
-        character->abilities = ability_node;
-    } else {
-        ability_node_t* current_node = character->abilities;
-        while (current_node->next != NULL) {
-            current_node = current_node->next;
-        }
-        current_node->next = ability_node;// add the new ability node to the end of the list
+        character->abilities = create_ability_array(5);
     }
-    character->ability_count++;// increase the ability count
+
+    return add_ability_a(character->abilities, ability_id);
 }
 
-int remove_ability_c(character_t* character, const ability_id_t ability_id) {
+int remove_ability_c(const character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, 0, "Character", "In `remove_ability_c` given character is NULL")
 
-    ability_node_t* prev_node = NULL;
-    ability_node_t* current_node = character->abilities;
-    int removed = 0;
-    while (current_node != NULL) {
-        if (current_node->ability->id == (int) ability_id) {
-            removed = 1;
-            if (prev_node == NULL) {
-                character->abilities = current_node->next;// remove the first node
-            } else {
-                prev_node->next = current_node->next;// remove the current node
-            }
-            character->ability_count--;// decrease the ability count
-            free(current_node);
-            break;
-        }
-        prev_node = current_node;
-        current_node = current_node->next;
-    }
-    return removed;
+    return remove_ability_a(character->abilities, ability_id);
 }
 
 ability_t* get_ability_by_id_c(const character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, NULL, "Character", "In `get_ability_by_id_c` given character is NULL")
+    RETURN_WHEN_NULL(character->abilities, NULL, "Character",
+                     "In `get_ability_by_index_c` given character's ability array is NULL")
+    RETURN_WHEN_NULL(character->abilities->abilities, NULL, "Character",
+                     "In `get_ability_by_index_c` given character's ability array is not initialized")
 
-    ability_t* found_ability = NULL;
-    const ability_node_t* current_node = character->abilities;
-    while (current_node != NULL && found_ability == NULL) {
-        if (current_node->ability->id == (int) ability_id) {
-            found_ability = current_node->ability;
+    ability_t* ability = NULL;
+    for (int i = 0; i < character->abilities->ability_count; i++) {
+        if (character->abilities->abilities[i]->id == ability_id) {
+            ability = character->abilities->abilities[i];
+            break;
         }
-        current_node = current_node->next;
     }
-
-    return found_ability;
+    return ability;
 }
 
 ability_t* get_ability_by_index_c(const character_t* character, const int index) {
     RETURN_WHEN_NULL(character, NULL, "Character", "In `get_ability_by_index_c` given character is NULL")
-    RETURN_WHEN_TRUE(index < 0 || index >= character->ability_count, NULL,
+    RETURN_WHEN_NULL(character->abilities, NULL, "Character",
+                     "In `get_ability_by_index_c` given character's ability array is NULL")
+    RETURN_WHEN_NULL(character->abilities->abilities, NULL, "Character",
+                     "In `get_ability_by_index_c` given character's ability array is not initialized")
+    RETURN_WHEN_TRUE(index < 0 || index >= character->abilities->ability_count, NULL,
                      "Character", "In `get_ability_by_index_c` given index is invalid: %d", index)
 
-    const ability_node_t* current_node = character->abilities;
-    for (int i = 0; i < index; i++) {
-        current_node = current_node->next;
-    }
-    return current_node->ability;
+    return character->abilities->abilities[index];
 }

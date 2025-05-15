@@ -62,18 +62,97 @@ typedef struct {
     int count;
 } ability_table_t;
 
+/**
+ * Initializes the ability table singleton object using the given memory pool.
+ * This function creates a singleton instance of the `ability_table_t` if it does not already exist.
+ * It allocates memory for the ability table from the provided memory pool and populates it
+ * with ability data from a predefined file. The function will return the singleton instance
+ * of the ability table.
+ *
+ * @param pool A pointer to the memory pool from which the ability table will be allocated.
+ *             The memory pool must be properly initialized and must have sufficient space
+ *             to allocate the required memory.
+ * @return A pointer to the initialized `ability_table_t` object, or `NULL` if the provided memory pool is `NULL`.
+ */
 ability_table_t* init_ability_table(const memory_pool_t* pool);
 
+/**
+ * Retrieves the singleton instance of the ability table.
+ * This function returns the pointer to the global `ability_table_t` object.
+ * If the ability table has not been initialized, this will return `NULL`.
+ *
+ * @return A pointer to the `ability_table_t` instance, or `NULL` if it has not been initialized.
+ */
 ability_table_t* get_ability_table(void);
 
+/**
+ * Destroys the ability table singleton object and frees all associated memory.
+ * This function cleans up the memory allocated for the ability table, including
+ * the ability data stored within, and releases it back to the specified memory pool.
+ * After cleanup, the ability table singleton is set to `NULL`.
+ *
+ * @param pool A pointer to the memory pool from which the ability table was allocated.
+ *             The memory pool must be properly initialized. If the provided memory pool
+ *             is `NULL`, the function logs an error and returns without doing anything.
+ */
 void destroy_ability_table(const memory_pool_t* pool);
 
+/**
+ * Creates an ability array with a predefined allocated space for abilities.
+ * This function initializes an `ability_array_t` object and allocates memory
+ * for it and its internal abilities array, as specified by the `pre_length` parameter.
+ * The internal abilities array will be filled with `NULL` pointers initially.
+ * If `pre_length` is 0, the internal abilities array will not be allocated.
+ *
+ * @param pre_length The number of abilities to reserve space for in the array.
+ *                   Must be 0 or a non-negative integer. If negative, the function
+ *                   will return `NULL`.
+ * @return A pointer to the initialized `ability_array_t` object, or `NULL` if memory
+ *         allocation fails or the input `pre_length` is negative.
+ */
 ability_array_t* create_ability_array(int pre_length);
 
+/**
+ * Adds an ability to the given ability array.
+ * This function checks whether the ability array is initialized and has sufficient
+ * allocated space. If the array is uninitialized, it allocates an underlying array
+ * from the global memory pool. If the array is full, it reallocates memory to double
+ * the current size. The specified ability, identified by its ID, is then added to
+ * the ability array.
+ *
+ * @param ability_array A pointer to the `ability_array_t` where the ability will be added.
+ *                      Must not be NULL and should have appropriately allocated memory.
+ * @param ability_id The ID of the ability to be added. Must correspond to a valid ability in the ability table.
+ * @return 0 on successful addition of the ability, or 1 if the function fails due to NULL pointers,
+ *         insufficient allocated space, or memory allocation errors.
+ */
 int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id);
 
+/**
+ * Removes an ability from the specified ability array at the given index.
+ * This function eliminates the ability at the specified index within the
+ * `ability_array_t` and shifts later abilities to fill the gap.
+ * The last ability pointer in the array is set to NULL, and the ability count
+ * is decremented. If the `ability_array` is NULL or the `index` is invalid,
+ * the function logs an error and returns a non-zero value.
+ *
+ * @param ability_array A pointer to an `ability_array_t` structure representing
+ *                      the array of abilities. It must be properly initialized.
+ * @param index An integer representing the position of the ability to be removed.
+ *              The index must be within the valid range [0, ability_count - 1].
+ * @return Returns 0 on successful removal of the ability. Returns 1 if the
+ *         `ability_array` is NULL or the `index` is outside the valid range.
+ */
 int remove_ability_a(ability_array_t* ability_array, int index);
 
+/**
+ * Frees the memory associated with the given ability array and its internal resources.
+ * This function releases all dynamically allocated memory used by the ability array,
+ * including the memory for the abilities pointer array and the ability array structure itself.
+ *
+ * @param ability_array A pointer to the `ability_array_t` structure to be destroyed.
+ *                      If the pointer is `NULL`, the function will exit without any action.
+ */
 void destroy_ability_array(ability_array_t* ability_array);
 
 #endif//ABILITY_H

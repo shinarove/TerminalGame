@@ -24,6 +24,9 @@ typedef enum {
     EXIT_GAME
 } state_t;
 
+/**
+ * This global memory pool should be used for all game resources related memory allocation.
+ */
 extern memory_pool_t* global_memory_pool;
 
 void start_game_loop(const memory_pool_t* used_pool);

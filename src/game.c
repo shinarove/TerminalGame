@@ -39,7 +39,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
             .max_floors = 0,       // on which floor the player is 1 - 5, 0 - no floor
             .active_map_index = -1,//-1 means no map is active
             .maps = maps,
-            .player = create_empty_character(used_pool)};
+            .player = create_empty_character()};
     character_t* enemy = NULL;
 
     while (running) {
@@ -83,7 +83,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             }
             case GENERATE_ENEMY:
-                enemy = generate_goblin(used_pool, game_state.player->level);
+                enemy = generate_goblin(game_state.player->level);
                 if (enemy == NULL) {
                     log_msg(ERROR, "Game", "Failed to generate enemy");
                     running = false;
@@ -96,8 +96,8 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 break;
             case RESTART_GAME:
                 // destroy current player & creating empty character
-                destroy_character(used_pool, game_state.player);
-                game_state.player = create_empty_character(used_pool);
+                destroy_character(game_state.player);
+                game_state.player = create_empty_character();
 
                 // free all the previously created maps
                 for (int i = 0; i < game_state.max_floors; i++) {
@@ -118,7 +118,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                     log_msg(WARNING, "Game", "Loading failed, resetting game state to default values.");
                     game_state.max_floors = 0;
                     game_state.active_map_index = -1;
-                    game_state.player = create_empty_character(used_pool);
+                    game_state.player = create_empty_character();
                     // maps already set to NULL, after the loading attempt
                 }
                 break;
@@ -160,7 +160,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
                 current = update_combat_mode(input, game_state.player, enemy);
                 if (current != COMBAT_MODE) {
                     // combat mode has ended free / destroy the resources
-                    destroy_character(used_pool, enemy);
+                    destroy_character(enemy);
                     enemy = NULL;
 
                     if (check_exp_c(game_state.player)) {
@@ -196,7 +196,7 @@ void start_game_loop(const memory_pool_t* used_pool) {
         }
     }
 
-    destroy_character(used_pool, game_state.player);
+    destroy_character(game_state.player);
     for (int i = 0; i < game_state.max_floors; i++) {
         if (maps[i] != NULL) memory_pool_free(used_pool, maps[i]);
     }

@@ -11,7 +11,6 @@ typedef enum {
     MAX_GEARS
 } gear_id_t;
 
-
 typedef enum {
     HEAD_ARMOR,
     BODY_ARMOR,
@@ -39,8 +38,8 @@ typedef struct gear {
 } gear_t;
 
 typedef struct gear_table {
-    gear_t* items[MAX_GEARS];
-    int num_items;
+    gear_t* gears[MAX_GEARS];
+    int num_gears;
 } gear_table_t;
 
 gear_table_t* init_gear_table(const memory_pool_t* pool);
