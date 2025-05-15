@@ -6,7 +6,7 @@
 
 inventory_t* create_empty_inventory(const memory_pool_t* pool, int pre_length) {
     RETURN_WHEN_NULL(pool, NULL, "Inventory", "In `create_empty_inventory` given memory pool is NULL")
-    RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` max_gears is negative")
+    RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` allocated_space is negative")
     inventory_t* inventory = (inventory_t*) memory_pool_alloc(pool, sizeof(inventory_t));
     RETURN_WHEN_NULL(inventory, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for inventory")
 
@@ -25,6 +25,6 @@ inventory_t* create_empty_inventory(const memory_pool_t* pool, int pre_length) {
     }
 
     inventory->gear_count = 0;
-    inventory->max_gears = pre_length;
+    inventory->allocated_space = pre_length;
     return inventory;
 }

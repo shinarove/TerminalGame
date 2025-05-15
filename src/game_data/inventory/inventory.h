@@ -20,7 +20,7 @@ typedef enum {
 
 typedef struct inventory {
     int gear_count; // the number of gears in the inventory (with the equipped gears)
-    int max_gears; // the maximum number of gears in the inventory
+    int allocated_space; // the size of the allocated space for the gears
 
     resources_t total_resource_bonus; // the total resource bonus from all equipped gears
     attributes_t total_attribute_bonus; // the total attribute bonus from all equipped gears
