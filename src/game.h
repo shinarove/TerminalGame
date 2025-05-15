@@ -24,6 +24,8 @@ typedef enum {
     EXIT_GAME
 } state_t;
 
+extern memory_pool_t* global_memory_pool;
+
 void start_game_loop(const memory_pool_t* used_pool);
 
 #endif//DUNGEON_CRAWL_H

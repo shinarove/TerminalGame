@@ -22,6 +22,8 @@
 #define MAP_WIDTH 39
 #define ENEMY_COUNT 4
 
+memory_pool_t* global_memory_pool = NULL;
+
 void start_game_loop(const memory_pool_t* used_pool) {
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
