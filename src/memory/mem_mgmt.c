@@ -89,6 +89,39 @@ void memory_pool_free(const memory_pool_t* pool, void* ptr) {
     }
 }
 
+void* memory_pool_realloc(const memory_pool_t* pool, void* ptr, size_t new_size) {
+    RETURN_WHEN_NULL(ptr, NULL, "Memory", "In `memory_pool_realloc` pointer is NULL")
+    RETURN_WHEN_TRUE(new_size < 0, NULL, "Memory", "In `memory_pool_realloc` new size is negative")
+
+    memory_block_t* block = (memory_block_t*) ptr - 1;
+    if (block < pool->first || block >= (memory_block_t*) ((char*) pool->first + pool->pool_size)) {
+        log_msg(ERROR, "Memory", "Pointer is not in the memory pool");
+        return NULL;
+    }
+
+    if (block->size >= new_size) {
+        // the block is large enough
+        return NULL;
+    }
+
+    // allocate a new block
+    void* new_ptr = memory_pool_alloc(pool, new_size);
+    if (!new_ptr) {
+        log_msg(ERROR, "Memory", "Failed to allocate memory for reallocation");
+        return NULL;
+    }
+
+    memcpy(new_ptr, ptr, block->size);
+    // initialize the new memory space to 0
+    size_t added_size = new_size - block->size;
+    if (added_size > 0) {
+        memset((char*) new_ptr + block->size, 0, added_size);
+    }
+
+    memory_pool_free(pool, ptr);
+    return new_ptr;
+}
+
 void shutdown_memory_pool(memory_pool_t* pool) {
     if (!pool) {
         log_msg(ERROR, "Memory", "Pool is NULL");

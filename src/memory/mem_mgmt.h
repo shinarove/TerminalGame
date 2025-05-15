@@ -48,6 +48,8 @@ void* memory_pool_alloc(const memory_pool_t* pool, size_t size);
  */
 void memory_pool_free(const memory_pool_t* pool, void* ptr);
 
+void* memory_pool_realloc(const memory_pool_t* pool, void* ptr, size_t new_size);
+
 /**
  * Frees the allocated memory pool.
  * @param pool the pool to free
