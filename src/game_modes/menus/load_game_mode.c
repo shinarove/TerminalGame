@@ -264,7 +264,7 @@ void load_helper(const save_slot_t slot, const memory_pool_t* pool, game_state_t
     }
 
     // destroy previous stored character
-    destroy_character(pool, game_state->player);
+    destroy_character(game_state->player);
     game_state->player = NULL;
 
     if (load_game_state(slot, pool, game_state) == 0) {
