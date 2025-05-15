@@ -34,8 +34,9 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
 
         char rel_path[64];
         snprintf(rel_path, sizeof(rel_path),
-                 "%s" PATH_SEP "%s", ABILITY_DIRECTORY, ABILITY_FILE_NAME);
+                 "%s%s%s", ABILITY_DIRECTORY, PATH_SEP, ABILITY_FILE_NAME);
         FILE* ability_file = fopen(rel_path, "r");
+        RETURN_WHEN_NULL(ability_file, NULL, "Ability", "In `init_ability_table` failed to open ability file %s", rel_path)
 
         char line[256];
         int count = -1;
@@ -54,7 +55,7 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
                              NULL, "Ability", "Invalid ability id %d at line %d, should be %d.",
                              singleton_ability_table->abilities[count].id, count + 1, count)
 
-            // read the name
+            // read the key name
             token = strtok(NULL, ",");
             RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability name at line %d", count + 1)
             singleton_ability_table->abilities[count].key_name = strdup(token);
@@ -132,7 +133,6 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
 
             count++;
         }
-
         fclose(ability_file);
         observe_local(update_ability_local);
     }

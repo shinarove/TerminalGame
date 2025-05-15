@@ -15,6 +15,7 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
+#include "game_data/item/gear.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -33,6 +34,7 @@ enum exit_codes {
     ERROR_SAVE_GAME_MODE_INIT,
     ERROR_LOAD_GAME_MODE_INIT,
     ERROR_ABILITY_TABLE_INIT,
+    ERROR_GEAR_TABLE_INIT,
 };
 
 int init(memory_pool_t** pool);
@@ -60,6 +62,7 @@ int init(memory_pool_t** pool) {
 
     // init game data tables
     if (init_ability_table(*pool) == NULL) return ERROR_ABILITY_TABLE_INIT;
+    if (init_gear_table(*pool) == NULL) return ERROR_GEAR_TABLE_INIT;
 
     // Seed the random number generator with a combination of time, process ID, and stack variable address
     unsigned int seed = (unsigned int) time(NULL);// Use current time as seed
@@ -88,6 +91,7 @@ int main(void) {
 
 void shutdown(memory_pool_t** pool) {
     // shutdown game data tables
+    destroy_gear_table(*pool);
     destroy_ability_table(*pool);
 
     // shutdown the different modes

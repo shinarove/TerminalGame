@@ -34,14 +34,18 @@ typedef struct gear {
 
     // connected abilities
     int ability_count;
-    ability_id_t* ability_ids; // an array of ability IDs
+    int* ability_ids; // an array of ability IDs
 } gear_t;
 
 typedef struct gear_table {
-    gear_t* gears[MAX_GEARS];
-    int num_gears;
+    gear_t gears[MAX_GEARS];
+    int count;
 } gear_table_t;
 
 gear_table_t* init_gear_table(const memory_pool_t* pool);
+
+gear_table_t* get_gear_table(void);
+
+void destroy_gear_table(const memory_pool_t* pool);
 
 #endif//ITEM_H
