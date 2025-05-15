@@ -29,6 +29,8 @@ character_t* create_empty_character(const memory_pool_t* pool) {
     character->level = DEFAULT_LVL;
     character->name = NULL;
     character->has_map_key = 0;
+    // TODO: make this relative to the character's strength
+    character->max_carry_weight = 10;
 
     character->unspent_attr_p = DEFAULT_UNSPENT_ATTR_P;
     character->unspent_res_p = DEFAULT_UNSPENT_RES_P;

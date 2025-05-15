@@ -20,6 +20,7 @@ typedef struct character {
     int unspent_attr_p;
     int unspent_res_p;
     int ability_count;// number of abilities
+    int max_carry_weight;// the maximum weight the character can carry
 
     resources_t base_resources;     // base = character without gear
     resources_t max_resources;      // max = base + buffs from gear
