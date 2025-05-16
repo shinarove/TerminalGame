@@ -12,20 +12,20 @@ typedef enum {
     RING_RIGHT_SLOT,
     AMULET_SLOT,
     TOOL_LEFT_SLOT, // the slot for tools held in the left hand
-    TOOL_RIGHT_SLOT, // the slot for tools held in the right hand
+    TOOL_RIGHT_SLOT,// the slot for tools held in the right hand
     TOOL_BOTH_SLOT, // the slot for tools held in both hands
     MAX_GEAR_SLOTS
 } gear_slot_t;
 
 typedef struct inventory {
-    int gear_count; // the number of gears in the inventory (with the equipped gears)
-    int allocated_space; // the size of the allocated space for the gears
+    int gear_count;     // the number of gears in the inventory (with the equipped gears)
+    int allocated_space;// the size of the allocated space for the gears
 
-    resources_t total_resource_bonus; // the total resource bonus from all equipped gears
-    attributes_t total_attribute_bonus; // the total attribute bonus from all equipped gears
+    resources_t total_resource_bonus;  // the total resource bonus from all equipped gears
+    attributes_t total_attribute_bonus;// the total attribute bonus from all equipped gears
 
-    gear_t* equipped[MAX_GEAR_SLOTS]; // the equipped gears
-    gear_t** gears; // the array of gear pointers
+    gear_t* equipped[MAX_GEAR_SLOTS];// the equipped gears
+    gear_t** gears;                  // the array of gear pointers
 } inventory_t;
 
 /**

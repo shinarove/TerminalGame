@@ -1,7 +1,7 @@
 #include "inventory.h"
 
-#include "../../logger/logger.h"
 #include "../../game.h"
+#include "../../logger/logger.h"
 
 inventory_t* create_inventory(const int pre_length) {
     RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` allocated_space is negative")
@@ -15,7 +15,7 @@ inventory_t* create_inventory(const int pre_length) {
         RETURN_WHEN_NULL(inventory->gears, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for gears")
 
         for (int i = 0; i < pre_length; i++) {
-        inventory->gears[i] = NULL;
+            inventory->gears[i] = NULL;
         }
         for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
             inventory->equipped[i] = NULL;

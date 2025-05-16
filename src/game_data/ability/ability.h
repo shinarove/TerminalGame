@@ -51,10 +51,10 @@ typedef struct ability {
 } ability_t;
 
 typedef struct ability_array {
-    int ability_count; // the current number of abilities in the array
-    int allocated_space; // the size of the allocated space for the abilities
+    int ability_count;  // the current number of abilities in the array
+    int allocated_space;// the size of the allocated space for the abilities
 
-    ability_t** abilities; // the array of ability pointers
+    ability_t** abilities;// the array of ability pointers
 } ability_array_t;
 
 typedef struct {

@@ -2,6 +2,7 @@
 #include "../termbox2/termbox2.h"
 #include "game.h"
 #include "game_data/ability/ability.h"
+#include "game_data/item/gear.h"
 #include "game_modes/character/character_creation_mode.h"
 #include "game_modes/character/lvl_up_mode.h"
 #include "game_modes/combat/combat_mode.h"
@@ -15,7 +16,6 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
-#include "game_data/item/gear.h"
 
 #include <stdlib.h>
 #include <time.h>

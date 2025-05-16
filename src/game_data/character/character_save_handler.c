@@ -1,7 +1,8 @@
 #include "character_save_handler.h"
 
-#include "../ability/ability.h"
 #include "../../logger/logger.h"
+#include "../ability/ability.h"
+
 #include <string.h>
 
 int write_character_data(FILE* file, const character_t* character) {
@@ -46,7 +47,7 @@ int read_character_data(FILE* file, character_t* character) {
         log_msg(ERROR, "Save File Handler", "Failed to read character resources");
         return 1;
     }
-    
+
     // read the name length
     int name_length;
     if (fread(&name_length, sizeof(int), 1, file) != 1) {
@@ -67,7 +68,7 @@ int read_character_data(FILE* file, character_t* character) {
         log_msg(ERROR, "Save File Handler", "Failed to read character name");
         return 1;
     }
-    
+
     // read the ability array data
     // read the ability count & allocated space
     int ability_count = 0;
@@ -111,10 +112,10 @@ int read_character_data(FILE* file, character_t* character) {
 
 long calculate_checksum_c(const character_t* character) {
     RETURN_WHEN_NULL(character, 0, "Character Save Handler",
-        "In `calculate_checksum_c` given character is NULL")
-    
+                     "In `calculate_checksum_c` given character is NULL")
+
     long checksum = 0;
-    
+
     checksum += character->id;
     checksum += character->current_exp;
     checksum += character->needed_exp;

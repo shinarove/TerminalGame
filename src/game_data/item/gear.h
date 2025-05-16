@@ -2,8 +2,8 @@
 #define ITEM_H
 
 #include "../../memory/mem_mgmt.h"
-#include "../character/stats.h"
 #include "../ability/ability.h"
+#include "../character/stats.h"
 
 typedef enum {
     IRON_SWORD,
@@ -34,7 +34,7 @@ typedef struct gear {
 
     // connected abilities
     int ability_count;
-    int* ability_ids; // an array of ability IDs
+    int* ability_ids;// an array of ability IDs
 } gear_t;
 
 typedef struct gear_table {

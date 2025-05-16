@@ -42,4 +42,4 @@ int read_character_data(FILE* file, character_t* character);
  */
 long calculate_checksum_c(const character_t* character);
 
-#endif //CHARACTER_SAVE_HANDLER_H
+#endif//CHARACTER_SAVE_HANDLER_H

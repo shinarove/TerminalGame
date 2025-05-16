@@ -2,8 +2,8 @@
 #define CHARACTER_H
 
 #include "../ability/ability.h"
-#include "stats.h"
 #include "../inventory/inventory.h"
+#include "stats.h"
 
 typedef struct character {
     int id;//currently not in use
