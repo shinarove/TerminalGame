@@ -191,7 +191,7 @@ ability_array_t* create_ability_array(const int pre_length) {
 
 int add_ability_a(ability_array_t* ability_array, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `add_ability_a` given ability array is NULL")
-    RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= singleton_ability_table->count, 1,
+    RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= MAX_ABILITIES, 1,
                      "Ability", "In `add_ability_a` given ability id is invalid: %d", ability_id)
     RETURN_WHEN_TRUE(ability_array->ability_count > ability_array->allocated_space, 1,
                      "Ability", "In `add_ability_a` invalid state encountered,"
@@ -204,6 +204,7 @@ int add_ability_a(ability_array_t* ability_array, const ability_id_t ability_id)
         for (int i = 0; i < 5; i++) {
             ability_array->abilities[i] = NULL;
         }
+        ability_array->allocated_space = 5;
     } else if (ability_array->ability_count == ability_array->allocated_space) {
         // when the array is full, reallocate the array, with double the size
         ability_array->allocated_space *= 2;
@@ -218,23 +219,38 @@ int add_ability_a(ability_array_t* ability_array, const ability_id_t ability_id)
     return 0;
 }
 
-int remove_ability_a(ability_array_t* ability_array, const int index) {
+int remove_ability_a(ability_array_t* ability_array, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `remove_ability_a` given ability array is NULL")
-    RETURN_WHEN_TRUE(index < 0 || index >= ability_array->ability_count, 1,
-                     "Ability", "In `remove_ability_a` given index is invalid: %d", index)
+    RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= MAX_ABILITIES, 1,
+                     "Ability", "In `add_ability_a` given ability id is invalid: %d", ability_id)
+    RETURN_WHEN_TRUE(ability_array->ability_count > ability_array->allocated_space, 1,
+                     "Ability", "In `add_ability_a` invalid state encountered,"
+                                "the ability count is greater than the allocated space: %d > %d",
+                     ability_array->ability_count, ability_array->allocated_space)
 
-    // remove the ability from the array
-    for (int i = index; i < ability_array->ability_count - 1; i++) {
-        ability_array->abilities[i] = ability_array->abilities[i + 1];
+    // find the ability in the array
+    int index = -1;
+    for (int i = 0; i < ability_array->ability_count; i++) {
+        if (ability_array->abilities[i]->id == ability_id) {
+            index = i;
+            break;
+        }
     }
-    ability_array->abilities[ability_array->ability_count - 1] = NULL;
-    ability_array->ability_count--;
 
-    return 0;
+    if (index != -1) {
+        // remove the ability from the array
+        for (int i = index; i < ability_array->ability_count - 1; i++) {
+            ability_array->abilities[i] = ability_array->abilities[i + 1];
+        }
+        ability_array->abilities[ability_array->ability_count - 1] = NULL;
+        ability_array->ability_count--;
+        return 0;
+    }
+    return 1;// ability not found
 }
 
 void destroy_ability_array(ability_array_t* ability_array) {
-    RETURN_WHEN_NULL(ability_array, , "Ability", "In `destroy_ability_array` given ability array is NULL")
+    if (ability_array == NULL) return;
 
     if (ability_array->abilities != NULL) {
         memory_pool_free(global_memory_pool, ability_array->abilities);

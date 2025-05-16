@@ -129,21 +129,24 @@ ability_array_t* create_ability_array(int pre_length);
 int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id);
 
 /**
- * Removes an ability from the specified ability array at the given index.
- * This function eliminates the ability at the specified index within the
- * `ability_array_t` and shifts later abilities to fill the gap.
- * The last ability pointer in the array is set to NULL, and the ability count
- * is decremented. If the `ability_array` is NULL or the `index` is invalid,
- * the function logs an error and returns a non-zero value.
+ * Removes an ability from the specified ability array based on the given ability ID.
  *
- * @param ability_array A pointer to an `ability_array_t` structure representing
- *                      the array of abilities. It must be properly initialized.
- * @param index An integer representing the position of the ability to be removed.
- *              The index must be within the valid range [0, ability_count - 1].
- * @return Returns 0 on successful removal of the ability. Returns 1 if the
- *         `ability_array` is NULL or the `index` is outside the valid range.
+ * This function searches the provided ability array for an ability with the specified ID.
+ * If the ability is found, it is removed, and the array is adjusted to maintain contiguous
+ * storage of abilities. The function ensures the input parameters are valid and reports
+ * errors using logging mechanisms if invalid states are encountered.
+ *
+ * @param ability_array A pointer to the `ability_array_t` object from which the ability
+ *                      should be removed. If this pointer is `NULL` or references invalid data,
+ *                      the function will log an error and return a failure code.
+ * @param ability_id    The unique identifier of the ability to be removed. Valid IDs must
+ *                      be within the range `[0, MAX_ABILITIES - 1]`. Invalid IDs will result
+ *                      in a logged error and termination of the operation.
+ * @return Returns `0` if the ability was successfully removed. Returns `1` if no ability
+ *         with the specified ID exists in the array, if the provided ability array is `NULL`,
+ *         or if other invalid input states are detected.
  */
-int remove_ability_a(ability_array_t* ability_array, int index);
+int remove_ability_a(ability_array_t* ability_array, ability_id_t ability_id);
 
 /**
  * Frees the memory associated with the given ability array and its internal resources.

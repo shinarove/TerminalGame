@@ -195,11 +195,60 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     }
 }
 
+int add_gear_c(character_t* character, const gear_id_t gear_id) {
+    RETURN_WHEN_NULL(character, , "Character", "In `add_gear_c` given character is NULL")
+
+    if (character->inventory == NULL) {
+        character->inventory = create_inventory(5);
+    } else if (character->max_carry_weight == character->inventory->gear_count) {
+        return 1;// inventory is full
+    }
+
+    // check if the gear is already in the inventory
+    if (get_gear_by_id_c(character, gear_id) != NULL) {
+        log_msg(INFO, "Character",
+            "In `add_gear_c` gear %d is already in the character's inventory", gear_id);
+        return 1;
+    }
+
+    return add_gear_i(character->inventory, gear_id);
+}
+
+int remove_gear_c(const character_t* character, const gear_id_t gear_id) {
+    RETURN_WHEN_NULL(character, 1, "Character", "In `remove_gear_c` given character is NULL")
+
+    return remove_gear_i(character->inventory, gear_id);
+}
+
+gear_t* get_gear_by_id_c(const character_t* character, gear_id_t gear_id) {
+    RETURN_WHEN_NULL(character, NULL, "Character", "In `get_gear_by_id_c` given character is NULL")
+    RETURN_WHEN_NULL(character->inventory, NULL, "Character",
+                     "In `get_gear_by_id_c` given character's inventory is NULL")
+    RETURN_WHEN_NULL(character->inventory->gears, NULL, "Character",
+                     "In `get_gear_by_id_c` given character's inventory is not initialized")
+
+    gear_t* gear = NULL;
+    for (int i = 0; i < character->inventory->gear_count; i++) {
+        if (character->inventory->gears[i]->id == gear_id) {
+            gear = character->inventory->gears[i];
+            break;
+        }
+    }
+    return gear;
+}
+
 int add_ability_c(character_t* character, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(character, , "Character", "In `add_ability_c` given character is NULL")
 
     if (character->abilities == NULL) {
         character->abilities = create_ability_array(5);
+    }
+
+    // check if the ability is already in the array
+    if (get_ability_by_id_c(character, ability_id) != NULL) {
+        log_msg(INFO, "Character",
+            "In `add_ability_c` ability %d is already in the character's ability array", ability_id);
+        return 1;
     }
 
     return add_ability_a(character->abilities, ability_id);

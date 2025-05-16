@@ -52,6 +52,8 @@ inventory_t* create_inventory(int pre_length);
 
 int add_gear_i(inventory_t* inventory, gear_id_t gear_id);
 
+int remove_gear_i(inventory_t* inventory, gear_id_t gear_id);
+
 /**
  * This function releases all memory associated with the given inventory,
  * including the array of gears (if allocated). It also ensures that

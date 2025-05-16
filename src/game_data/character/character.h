@@ -120,15 +120,20 @@ int check_exp_c(const character_t* character);
  */
 void lvl_up_c(character_t* character, attr_id_t attr_to_increase);
 
+int add_gear_c(character_t* character, gear_id_t gear_id);
+
+int remove_gear_c(const character_t* character, gear_id_t gear_id);
+
+gear_t* get_gear_by_id_c(const character_t* character, gear_id_t gear_id);
+
 /**
- * Adds a specified ability to the given character's ability set.
- * The function ensures that the character is valid before attempting to add the ability.
+ * Adds a specified ability to a character's ability array. If the ability array is not initialized,
+ * it will be created with a default size of 5.
+ * If the ability already exists in the array, it will not be added again.
  *
- * @param character A pointer to the character structure to which the ability is to be added.
- *                  Must not be NULL.
- * @param ability_id The unique identifier of the ability to be added to the character's abilities.
- * @return An integer status code, where a non-zero value typically indicates success,
- *         or 0 in case of failure or invalid input.
+ * @param character The character to which the ability is to be added. Must not be NULL.
+ * @param ability_id The ID of the ability to be added to the character's abilities.
+ * @return 0 on success, non-zero on failure
  */
 int add_ability_c(character_t* character, ability_id_t ability_id);
 
@@ -141,8 +146,7 @@ int add_ability_c(character_t* character, ability_id_t ability_id);
  *                  Must not be NULL.
  * @param ability_id The ID of the ability to be removed from the character's abilities.
  *                   Must represent a valid ability ID.
- * @return An integer indicating the success or failure of the removal operation.
- *         Returns 0 if the character is NULL or the removal fails.
+ * @return 0 on success, non-zero on failure
  */
 int remove_ability_c(const character_t* character, ability_id_t ability_id);
 
