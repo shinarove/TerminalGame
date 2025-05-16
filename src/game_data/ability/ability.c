@@ -20,6 +20,20 @@
 
 #define ABILITY_FILE_NAME "ability_table.csv"
 
+#define INIT_ERROR_NULL(ptr, file, msg, ...) \
+    if (ptr == NULL) { \
+        fclose(file); \
+        log_msg(ERROR, "Ability", msg, ##__VA_ARGS__); \
+        return NULL; \
+    }
+
+#define INIT_ERROR_TRUE(condition, file, msg, ...) \
+    if (condition) { \
+        fclose(file); \
+        log_msg(ERROR, "Ability", msg, ##__VA_ARGS__); \
+        return NULL; \
+    }
+
 ability_table_t* singleton_ability_table = NULL;
 
 void update_ability_local(void);
@@ -47,89 +61,89 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
             }
             // read the id, convert it to int, and assign it to the ability
             const char* token = strtok(line, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability id at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].id) != 0, NULL,
-                             "Ability", "Failed to read ability id at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read ability id at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].id) != 0, ability_file,
+                             "Failed to read ability id at line %d", count + 1)
             // check if the id is valid
-            RETURN_WHEN_TRUE(singleton_ability_table->abilities[count].id != count,
-                             NULL, "Ability", "Invalid ability id %d at line %d, should be %d.",
+            INIT_ERROR_TRUE(singleton_ability_table->abilities[count].id != count,
+                             ability_file, "Invalid ability id %d at line %d, should be %d.",
                              singleton_ability_table->abilities[count].id, count + 1, count)
 
             // read the key name
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability name at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read ability name at line %d", count + 1)
             singleton_ability_table->abilities[count].key_name = strdup(token);
             singleton_ability_table->abilities[count].local_name = get_local_string(token);
 
             // read target character
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read c_target at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read c_target at line %d", count + 1)
             singleton_ability_table->abilities[count].c_target = token[0];
             // read target resource
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read r_target at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read r_target at line %d", count + 1)
             singleton_ability_table->abilities[count].r_target = token[0];
             // read effect type
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect type at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read effect type at line %d", count + 1)
             singleton_ability_table->abilities[count].effect_type = token[0];
             // read effect scaler
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect scaler at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read effect scaler at line %d", count + 1)
             singleton_ability_table->abilities[count].effect_scaler = token[0];
             // read accuracy scaler
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy scaler at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read accuracy scaler at line %d", count + 1)
             singleton_ability_table->abilities[count].accuracy_scaler = token[0];
             // read resource cost
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read r_cost at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read r_cost at line %d", count + 1)
             singleton_ability_table->abilities[count].r_cost = token[0];
 
             int dice_size = 0;
             // read effect dice
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read ability effect dice at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_dice) != 0,
-                             NULL, "Ability", "Failed to read ability effect dice at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read ability effect dice at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_dice) != 0,
+                             ability_file, "Failed to read ability effect dice at line %d", count + 1)
             dice_size = singleton_ability_table->abilities[count].effect_dice;
-            RETURN_WHEN_TRUE(check_dice(dice_size) != 0,
-                             NULL, "Ability", "Invalid effect dice %d at line %d", dice_size, count + 1)
+            INIT_ERROR_TRUE(check_dice(dice_size) != 0,
+                             ability_file, "Invalid effect dice %d at line %d", dice_size, count + 1)
             // read accuracy dice
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy dice at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_dice) != 0,
-                             NULL, "Ability", "Failed to parse accuracy dice at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read accuracy dice at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_dice) != 0,
+                             ability_file, "Failed to parse accuracy dice at line %d", count + 1)
             dice_size = singleton_ability_table->abilities[count].accuracy_dice;
-            RETURN_WHEN_TRUE(check_dice(dice_size) != 0,
-                             NULL, "Ability", "Invalid accuracy dice %d at line %d", dice_size, count + 1)
+            INIT_ERROR_TRUE(check_dice(dice_size) != 0,
+                             ability_file, "Invalid accuracy dice %d at line %d", dice_size, count + 1)
             // read effect rolls
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read  effect rolls at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_rolls) != 0,
-                             NULL, "Ability", "Failed to parse effect rolls at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read  effect rolls at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].effect_rolls) != 0,
+                             ability_file, "Failed to parse effect rolls at line %d", count + 1)
             // read accuracy rolls
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy rolls at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_rolls) != 0,
-                             NULL, "Ability", "Failed to parse accuracy rolls at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read accuracy rolls at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].accuracy_rolls) != 0,
+                             ability_file, "Failed to parse accuracy rolls at line %d", count + 1)
 
             // read effect scale value
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read effect scale value at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_float(token, &singleton_ability_table->abilities[count].effect_scale_value) != 0,
-                             NULL, "Ability", "Failed to parse effect scale value at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read effect scale value at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_float(token, &singleton_ability_table->abilities[count].effect_scale_value) != 0,
+                             ability_file, "Failed to parse effect scale value at line %d", count + 1)
             // read accuracy scale value
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read accuracy scale value at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_float(token, &singleton_ability_table->abilities[count].accuracy_scale_value) != 0,
-                             NULL, "Ability", "Failed to parse accuracy scale value at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read accuracy scale value at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_float(token, &singleton_ability_table->abilities[count].accuracy_scale_value) != 0,
+                             ability_file, "Failed to parse accuracy scale value at line %d", count + 1)
 
             // read resource cost
             token = strtok(NULL, ",");
-            RETURN_WHEN_NULL(token, NULL, "Ability", "Failed to read v_cost at line %d", count + 1)
-            RETURN_WHEN_TRUE(parse_int(token, &singleton_ability_table->abilities[count].v_cost) != 0,
-                             NULL, "Ability", "Failed to parse v_cost at line %d", count + 1)
+            INIT_ERROR_NULL(token, ability_file, "Failed to read v_cost at line %d", count + 1)
+            INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].v_cost) != 0,
+                             ability_file, "Failed to parse v_cost at line %d", count + 1)
 
             count++;
         }
