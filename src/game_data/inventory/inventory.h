@@ -11,9 +11,9 @@ typedef enum {
     RING_LEFT_SLOT,
     RING_RIGHT_SLOT,
     AMULET_SLOT,
-    MAIN_HAND_SLOT, // the main hand slot
-    OFF_HAND_SLOT,// the off hand slot
-    BOTH_HAND_SLOT, // the two handed slot
+    MAIN_HAND_SLOT,// the main hand slot
+    OFF_HAND_SLOT, // the off hand slot
+    BOTH_HAND_SLOT,// the two handed slot
     MAX_GEAR_SLOTS
 } gear_slot_t;
 
@@ -21,17 +21,16 @@ static const struct {
     gear_slot_t slot;
     gear_type_t type;
 } gear_slot_type_mapping[MAX_GEAR_SLOTS] = {
-    {HEAD_SLOT, HEAD_ARMOR},
-    {BODY_SLOT, BODY_ARMOR},
-    {LEG_SLOT, LEG_ARMOR},
-    {HAND_SLOT, HAND_ARMOR},
-    {RING_LEFT_SLOT, RING},
-    {RING_RIGHT_SLOT, RING},
-    {AMULET_SLOT, AMULET},
-    {MAIN_HAND_SLOT, MAIN_HAND},
-    {OFF_HAND_SLOT, OFF_HAND},
-    {BOTH_HAND_SLOT, BOTH_HAND}
-};
+        {HEAD_SLOT, HEAD_ARMOR},
+        {BODY_SLOT, BODY_ARMOR},
+        {LEG_SLOT, LEG_ARMOR},
+        {HAND_SLOT, HAND_ARMOR},
+        {RING_LEFT_SLOT, RING},
+        {RING_RIGHT_SLOT, RING},
+        {AMULET_SLOT, AMULET},
+        {MAIN_HAND_SLOT, MAIN_HAND},
+        {OFF_HAND_SLOT, OFF_HAND},
+        {BOTH_HAND_SLOT, BOTH_HAND}};
 
 typedef struct inventory {
     int gear_count;     // the number of gears in the inventory (with the equipped gears)

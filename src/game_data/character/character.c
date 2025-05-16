@@ -1,7 +1,7 @@
 #include "character.h"
 
-#include "../../logger/logger.h"
 #include "../../game.h"
+#include "../../logger/logger.h"
 
 #include <string.h>
 
@@ -207,7 +207,7 @@ int add_gear_c(character_t* character, const gear_id_t gear_id) {
     // check if the gear is already in the inventory
     if (get_gear_by_id_c(character, gear_id) != NULL) {
         log_msg(INFO, "Character",
-            "In `add_gear_c` gear %d is already in the character's inventory", gear_id);
+                "In `add_gear_c` gear %d is already in the character's inventory", gear_id);
         return 1;
     }
 
@@ -247,7 +247,7 @@ int add_ability_c(character_t* character, const ability_id_t ability_id) {
     // check if the ability is already in the array
     if (get_ability_by_id_c(character, ability_id) != NULL) {
         log_msg(INFO, "Character",
-            "In `add_ability_c` ability %d is already in the character's ability array", ability_id);
+                "In `add_ability_c` ability %d is already in the character's ability array", ability_id);
         return 1;
     }
 

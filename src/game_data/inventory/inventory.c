@@ -51,7 +51,7 @@ int add_gear_i(inventory_t* inventory, const gear_id_t gear_id) {
         // when the inventory is full, double the size
         inventory->allocated_space *= 2;
         inventory->gears = (gear_t**) memory_pool_realloc(global_memory_pool, inventory->gears,
-            sizeof(gear_t*) * inventory->allocated_space);
+                                                          sizeof(gear_t*) * inventory->allocated_space);
         RETURN_WHEN_NULL(inventory->gears, 1, "Inventory", "In `add_gear_i` failed to reallocate memory for gears")
     }
     // add the gear to the inventory
@@ -83,10 +83,10 @@ int remove_gear_i(inventory_t* inventory, const gear_id_t gear_id) {
 
 int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slot_t target_slot) {
     RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `equip_gear_i` inventory is NULL")
-    if (inventory->gear_count == 0) return 1; // no gears to equip in the inventory
+    if (inventory->gear_count == 0) return 1;// no gears to equip in the inventory
     // find the gear in the inventory
     const int index = find_gear_by_id(inventory, gear_id);
-    if (index == -1) return 1; // gear isn't found in the inventory
+    if (index == -1) return 1;// gear isn't found in the inventory
 
     // check if the gear matches with the slot
     gear_t* gear_to_equip = inventory->gears[index];
@@ -97,19 +97,19 @@ int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slo
     }
 
     switch (target_slot) {
-        case HEAD_SLOT: // do nothing special
-        case BODY_SLOT: // do nothing special
-        case LEG_SLOT: // do nothing special
-        case HAND_SLOT: // do nothing special
+        case HEAD_SLOT:      // do nothing special
+        case BODY_SLOT:      // do nothing special
+        case LEG_SLOT:       // do nothing special
+        case HAND_SLOT:      // do nothing special
         case RING_LEFT_SLOT: // do nothing special
-        case RING_RIGHT_SLOT: // do nothing special
-        case AMULET_SLOT: // do nothing special
+        case RING_RIGHT_SLOT:// do nothing special
+        case AMULET_SLOT:    // do nothing special
             break;
-        case MAIN_HAND_SLOT: // unequip the both hand slot
+        case MAIN_HAND_SLOT:// unequip the both hand slot
         case OFF_HAND_SLOT: // unequip the both hand slot
             inventory->equipped[BOTH_HAND_SLOT] = NULL;
             break;
-        case BOTH_HAND_SLOT: // unequip the items in the main hand and off hand slots
+        case BOTH_HAND_SLOT:// unequip the items in the main hand and off hand slots
             inventory->equipped[MAIN_HAND_SLOT] = NULL;
             inventory->equipped[OFF_HAND_SLOT] = NULL;
             break;
