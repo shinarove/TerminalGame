@@ -18,8 +18,9 @@ Reference: [resources/game_data/gear/gear_table.csv](../game_data/gear/gear_tabl
     - 3 = hand
     - 4 = ring
     - 5 = amulet
-    - 6 = tool one-handed
-    - 7 = tool two-handed
+    - 6 = main hand
+    - 7 = off hand
+    - 8 = two handed
 - name:
   - Type: str
   - Description: The key name of the gear. This is used to get the local string name of the gear.

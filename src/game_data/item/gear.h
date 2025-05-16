@@ -18,8 +18,9 @@ typedef enum {
     HAND_ARMOR,
     RING,
     AMULET,
-    TOOL_ONE_HANDED,
-    TOOL_TWO_HANDED,
+    MAIN_HAND,
+    OFF_HAND,
+    BOTH_HAND,
     MAX_GEAR_TYPES
 } gear_type_t;
 
