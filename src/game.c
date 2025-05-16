@@ -24,7 +24,9 @@
 
 memory_pool_t* global_memory_pool = NULL;
 
-void start_game_loop(const memory_pool_t* used_pool) {
+void start_game_loop(memory_pool_t* used_pool) {
+    global_memory_pool = used_pool;
+
     //allocate maps in the memory pool, with max number of maps
     map_t** maps = memory_pool_alloc(used_pool, MAX_MAP_COUNT * sizeof(map_t*));
     for (int i = 0; i < MAX_MAP_COUNT; i++) {

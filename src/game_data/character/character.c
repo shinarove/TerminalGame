@@ -1,7 +1,7 @@
 #include "character.h"
 
 #include "../../logger/logger.h"
-#include "src/game.h"
+#include "../../game.h"
 
 #include <string.h>
 
