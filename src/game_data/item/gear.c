@@ -110,7 +110,7 @@ gear_table_t* init_gear_table(const memory_pool_t* pool) {
                             gear_file, "Failed to parse attribute bonuses (agility) at line %d", count + 1)
             token = strtok(NULL, ",");
             INIT_ERROR_NULL(token, gear_file, "Failed to read attribute bonuses (endurance) at line %d", count + 1)
-            INIT_ERROR_TRUE(parse_int(token, &singleton_gear_table->gears[count].attribute_bonus.endurance),
+            INIT_ERROR_TRUE(parse_int(token, &singleton_gear_table->gears[count].attribute_bonus.constitution),
                             gear_file, "Failed to parse attribute bonuses (endurance) at line %d", count + 1)
             token = strtok(NULL, ",");
             INIT_ERROR_NULL(token, gear_file, "Failed to read attribute bonuses (luck) at line %d", count + 1)

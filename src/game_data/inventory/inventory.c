@@ -34,7 +34,7 @@ inventory_t* create_inventory(const int pre_length) {
     inventory->total_attribute_bonus.strength = 0;
     inventory->total_attribute_bonus.intelligence = 0;
     inventory->total_attribute_bonus.agility = 0;
-    inventory->total_attribute_bonus.endurance = 0;
+    inventory->total_attribute_bonus.constitution = 0;
     inventory->total_attribute_bonus.luck = 0;
     return inventory;
 }
@@ -148,7 +148,7 @@ int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slo
     inventory->total_attribute_bonus.strength += gear_to_equip->attribute_bonus.strength;
     inventory->total_attribute_bonus.intelligence += gear_to_equip->attribute_bonus.intelligence;
     inventory->total_attribute_bonus.agility += gear_to_equip->attribute_bonus.agility;
-    inventory->total_attribute_bonus.endurance += gear_to_equip->attribute_bonus.endurance;
+    inventory->total_attribute_bonus.constitution += gear_to_equip->attribute_bonus.constitution;
     inventory->total_attribute_bonus.luck += gear_to_equip->attribute_bonus.luck;
 
     return 0;
@@ -169,7 +169,7 @@ int unequip_gear_i(inventory_t* inventory, const gear_slot_t target_slot) {
     inventory->total_attribute_bonus.strength -= gear_to_unequip->attribute_bonus.strength;
     inventory->total_attribute_bonus.intelligence -= gear_to_unequip->attribute_bonus.intelligence;
     inventory->total_attribute_bonus.agility -= gear_to_unequip->attribute_bonus.agility;
-    inventory->total_attribute_bonus.endurance -= gear_to_unequip->attribute_bonus.endurance;
+    inventory->total_attribute_bonus.constitution -= gear_to_unequip->attribute_bonus.constitution;
     inventory->total_attribute_bonus.luck -= gear_to_unequip->attribute_bonus.luck;
 
     return 0;

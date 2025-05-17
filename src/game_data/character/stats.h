@@ -12,7 +12,7 @@ typedef enum {
     STRENGTH,
     INTELLIGENCE,
     AGILITY,
-    ENDURANCE,
+    CONSTITUTION,
     LUCK,
     MAX_ATTRIBUTES
 } attr_id_t;
@@ -27,7 +27,7 @@ typedef struct attributes {
     int strength;
     int intelligence;
     int agility;
-    int endurance;
+    int constitution;
     int luck;
 } attributes_t;
 

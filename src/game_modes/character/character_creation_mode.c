@@ -265,12 +265,12 @@ state_t update_character_creation(const input_t input, character_t* player) {
                                  &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
                     break;
                 case 6:// decrease endurance by one
-                    update_stats(player->base_attributes.endurance > 1,
-                                 &player->base_attributes.endurance, &player->unspent_attr_p, -1, player);
+                    update_stats(player->base_attributes.constitution > 1,
+                                 &player->base_attributes.constitution, &player->unspent_attr_p, -1, player);
                     break;
                 case 7:// increase endurance by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.endurance, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.constitution, &player->unspent_attr_p, 1, player);
                     break;
                 case 8:// decrease luck by one
                     update_stats(player->base_attributes.luck > 1,
@@ -405,7 +405,7 @@ void update_cc_head(const character_t* player) {
              cc_mode_strings[STRENGTH_STR], player->base_attributes.strength,
              cc_mode_strings[INTELLIGENCE_STR], player->base_attributes.intelligence,
              cc_mode_strings[AGILITY_STR], player->base_attributes.agility,
-             cc_mode_strings[ENDURANCE_STR], player->base_attributes.endurance,
+             cc_mode_strings[ENDURANCE_STR], player->base_attributes.constitution,
              cc_mode_strings[LUCK_STR], player->base_attributes.luck);
     cc_mode_strings[CC_HEAD] = cc_head_str;
 }

@@ -83,7 +83,7 @@ void put_attributes_in_csv(char* csv_line, const int* csv_offset, const attribut
     put_int_in_csv(csv_line, csv_offset, attributes.strength);
     put_int_in_csv(csv_line, csv_offset, attributes.intelligence);
     put_int_in_csv(csv_line, csv_offset, attributes.agility);
-    put_int_in_csv(csv_line, csv_offset, attributes.endurance);
+    put_int_in_csv(csv_line, csv_offset, attributes.constitution);
     put_int_in_csv(csv_line, csv_offset, attributes.luck);
 }
 

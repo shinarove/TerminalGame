@@ -4,7 +4,7 @@
 #include "../ability/ability.h"
 #include "../inventory/inventory.h"
 #include "stats.h"
-#include "enemy_generator.h"
+#include "enemy_id.h"
 
 typedef struct character {
     int id;

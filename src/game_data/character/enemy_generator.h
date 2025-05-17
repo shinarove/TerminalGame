@@ -3,12 +3,6 @@
 
 #include "character.h"
 
-enum enemy_id {
-    // player id = 0
-
-    GOBLIN = 1,
-};
-
 /**
  * Generates a goblin character with the specified level.
  *

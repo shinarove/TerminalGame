@@ -3,6 +3,7 @@
 #include "../../logger/logger.h"
 #include "../ability/ability.h"
 #include "goblin.h"
+#include "enemy_id.h"
 
 #include <stdio.h>
 

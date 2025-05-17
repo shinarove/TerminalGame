@@ -11,6 +11,13 @@ typedef enum {
     //sword abilities
     SWORD_SLASH,
     POMMEL_STRIKE,
+    MURDER_STRIKE,
+    // shield abilities
+    SHIELD_BASH,
+    // amulette abilities
+    HEAL_HEALTH,
+    HEAL_STAMINA,
+    HEAL_MANA,
     //...
     MAX_ABILITIES
 } ability_id_t;
@@ -25,7 +32,7 @@ typedef enum {
 #define STRENGTH_CHAR 's'
 #define INTELLIGENCE_CHAR 'i'
 #define AGILITY_CHAR 'a'
-#define ENDURANCE_CHAR 'e'
+#define CONSTITUTION_CHAR 'c'
 #define LUCK_CHAR 'l'
 
 typedef struct ability {

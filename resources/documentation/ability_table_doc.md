@@ -31,12 +31,12 @@ Reference: [resources/game_data/ability/ability_table.csv](../game_data/ability/
   - Type: char
   - Remarks: Strings are allowed, but only the first character is used. This is to improve readability.
   - Description: The effect scaler of the ability.
-  - Valid Values: 's' for strength, 'i' for intelligence, 'a' for agility, 'e' for endurance, 'l' for luck
+  - Valid Values: 's' for strength, 'i' for intelligence, 'a' for agility, 'c' for constitution, 'l' for luck
 - accuracy_scaler:
   - Type: char
   - Remarks: Strings are allowed, but only the first character is used. This is to improve readability.
   - Description: The accuracy scaler of the ability.
-  - Valid Values: 's' for strength, 'i' for intelligence, 'a' for agility, 'e' for endurance, 'l' for luck
+  - Valid Values: 's' for strength, 'i' for intelligence, 'a' for agility, 'c' for constitution, 'l' for luck
 - r_cost:
   - Type: char
   - Remarks: Strings are allowed, but only the first character is used. This is to improve readability.

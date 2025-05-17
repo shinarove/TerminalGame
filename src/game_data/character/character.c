@@ -149,9 +149,9 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     }
 
     character->base_resources.health += (int) ((float) character->base_attributes.strength * 0.5);
-    character->base_resources.health += character->base_attributes.endurance;
+    character->base_resources.health += character->base_attributes.constitution;
     character->base_resources.stamina += (int) ((float) character->base_attributes.agility * 0.5);
-    character->base_resources.stamina += character->base_attributes.endurance;
+    character->base_resources.stamina += character->base_attributes.constitution;
     character->base_resources.mana += (int) ((float) character->base_attributes.intelligence * 1.5);
 
     character->max_resources = character->base_resources;
@@ -182,10 +182,10 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
             character->max_attributes.agility++;
             character->current_attributes.agility++;
             break;
-        case ENDURANCE:
-            character->base_attributes.endurance++;
-            character->max_attributes.endurance++;
-            character->current_attributes.endurance++;
+        case CONSTITUTION:
+            character->base_attributes.constitution++;
+            character->max_attributes.constitution++;
+            character->current_attributes.constitution++;
             break;
         case LUCK:
             character->base_attributes.luck++;
@@ -369,7 +369,7 @@ void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, c
     character->max_attributes.strength = character->base_attributes.strength + bonus_att->strength;
     character->max_attributes.intelligence = character->base_attributes.intelligence + bonus_att->intelligence;
     character->max_attributes.agility = character->base_attributes.agility + bonus_att->agility;
-    character->max_attributes.endurance = character->base_attributes.endurance + bonus_att->endurance;
+    character->max_attributes.constitution = character->base_attributes.constitution + bonus_att->constitution;
     character->max_attributes.luck = character->base_attributes.luck + bonus_att->luck;
 
     // add difference prev max / new max to current stats
@@ -379,6 +379,6 @@ void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, c
     character->current_attributes.strength += character->max_attributes.strength - prev_max_att.strength;
     character->current_attributes.intelligence += character->max_attributes.intelligence - prev_max_att.intelligence;
     character->current_attributes.agility += character->max_attributes.agility - prev_max_att.agility;
-    character->current_attributes.endurance += character->max_attributes.endurance - prev_max_att.endurance;
+    character->current_attributes.constitution += character->max_attributes.constitution - prev_max_att.constitution;
     character->current_attributes.luck += character->max_attributes.luck - prev_max_att.luck;
 }

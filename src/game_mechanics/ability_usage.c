@@ -239,8 +239,8 @@ int get_scaler_value(const character_t* user, const char scaler_char) {
             return user->current_attributes.intelligence;
         case AGILITY_CHAR:
             return user->current_attributes.agility;
-        case ENDURANCE_CHAR:
-            return user->current_attributes.endurance;
+        case CONSTITUTION_CHAR:
+            return user->current_attributes.constitution;
         case LUCK_CHAR:
             return user->current_attributes.luck;
         default:

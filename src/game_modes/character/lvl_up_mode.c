@@ -118,8 +118,8 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 update_lvl_up_head(player);
                 clear_screen();
                 break;
-            case ENDURANCE:
-                lvl_up_c(player, ENDURANCE);
+            case CONSTITUTION:
+                lvl_up_c(player, CONSTITUTION);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 update_lvl_up_head(player);
                 clear_screen();
@@ -201,7 +201,7 @@ void update_lvl_up_head(const character_t* player) {
              lvl_up_mode_strings[STRENGTH_STR], player->current_attributes.strength,
              lvl_up_mode_strings[INTELLIGENCE_STR], player->current_attributes.intelligence,
              lvl_up_mode_strings[AGILITY_STR], player->current_attributes.agility,
-             lvl_up_mode_strings[ENDURANCE_STR], player->current_attributes.endurance,
+             lvl_up_mode_strings[ENDURANCE_STR], player->current_attributes.constitution,
              lvl_up_mode_strings[LUCK_STR], player->current_attributes.luck);
     lvl_up_mode_strings[LVL_UP_HEAD] = lvl_up_head_str;
 }

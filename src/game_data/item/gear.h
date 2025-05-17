@@ -6,8 +6,35 @@
 #include "../character/stats.h"
 
 typedef enum {
+    // main-hand
     IRON_SWORD,
-
+    STEEL_SWORD,
+    // off-hand
+    IRON_SHIELD,
+    STEEL_SHIELD,
+    // head
+    IRON_HELMET,
+    STEEL_HELMET,
+    // body
+    IRON_ARMOR,
+    STEEL_ARMOR,
+    // legs
+    IRON_LEGGINGS,
+    STEEL_LEGGINGS,
+    // hands
+    IRON_GLOVES,
+    STEEL_GLOVES,
+    // rings
+    RING_OF_STRENGTH,
+    RING_OF_INTELLIGENCE,
+    RING_OF_AGILITY,
+    RING_OF_ENDURANCE,
+    RING_OF_LUCK,
+    // amulets
+    AMULET_OF_HEALING_HEALTH,
+    AMULET_OF_HEALING_STAMINA,
+    AMULET_OF_HEALING_MANA,
+    //...
     MAX_GEARS
 } gear_id_t;
 

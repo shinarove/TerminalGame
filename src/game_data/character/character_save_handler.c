@@ -138,17 +138,17 @@ long calculate_checksum_c(const character_t* character) {
     checksum += character->base_attributes.strength;
     checksum += character->base_attributes.intelligence;
     checksum += character->base_attributes.agility;
-    checksum += character->base_attributes.endurance;
+    checksum += character->base_attributes.constitution;
     checksum += character->base_attributes.luck;
     checksum += character->max_attributes.strength;
     checksum += character->max_attributes.intelligence;
     checksum += character->max_attributes.agility;
-    checksum += character->max_attributes.endurance;
+    checksum += character->max_attributes.constitution;
     checksum += character->max_attributes.luck;
     checksum += character->current_attributes.strength;
     checksum += character->current_attributes.intelligence;
     checksum += character->current_attributes.agility;
-    checksum += character->current_attributes.endurance;
+    checksum += character->current_attributes.constitution;
     checksum += character->current_attributes.luck;
     // add name length and name to checksum
     checksum += (long) strlen(character->name);
