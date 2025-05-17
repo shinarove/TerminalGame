@@ -128,6 +128,7 @@ ability_array_t* create_ability_array(int pre_length);
  */
 int add_ability_a(ability_array_t* ability_array, ability_id_t ability_id);
 
+ability_t* get_ability_a(const ability_array_t* ability_array, ability_id_t ability_id);
 /**
  * Removes an ability from the specified ability array based on the given ability ID.
  *

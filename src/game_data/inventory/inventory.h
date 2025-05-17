@@ -96,7 +96,50 @@ int add_gear_i(inventory_t* inventory, gear_id_t gear_id);
  */
 int remove_gear_i(inventory_t* inventory, gear_id_t gear_id);
 
+/**
+ * This function attempts to equip a gear item in the specified slot of the inventory.
+ * It validates the inventory, checks if the gear exists in the inventory, and ensures
+ * the gear is compatible with the target slot. If the specified slot has any currently
+ * equipped gear, it will be unequipped before equipping the new gear. Resource and
+ * attribute bonuses from the equipped gear are added to the inventory totals.
+ *
+ * @param inventory A pointer to the inventory structure where the gear will be equipped.
+ *                  Must not be NULL.
+ * @param gear_id The identifier of the gear to equip. Must exist within the inventory for
+ *                successful equipping.
+ * @param target_slot The gear slot where the gear is to be equipped. Must be a valid slot
+ *                    type defined in `gear_slot_t` and match the type of the gear.
+ *
+ * @return 0 if the gear was successfully equipped, or 1 in case of an error such as:
+ *         - `inventory` is NULL.
+ *         - The target slot is invalid.
+ *         - The gear does not exist in the inventory.
+ *         - The gear type does not match the target slot type.
+ *
+ * @note If the target slot is MAIN_HAND_SLOT, OFF_HAND_SLOT, or BOTH_HAND_SLOT, appropriate
+ *       handling is performed, including checking pre-existing gear in related slots.
+ */
 int equip_gear_i(inventory_t* inventory, gear_id_t gear_id, gear_slot_t target_slot);
+
+/**
+ * This function unequips the gear from the specified slot in the inventory,
+ * removes its bonuses from the total bonuses within the inventory, and clears
+ * the reference to the gear in the respective slot.
+ *
+ * @param inventory A pointer to the inventory_t structure representing the
+ *                   inventory from which the gear should be unequipped.
+ *                   This parameter cannot be NULL.
+ * @param target_slot The gear_slot_t enumeration value representing the slot
+ *                    from which the gear should be unequipped.
+ *
+ * @return An integer indicating the result of the operation:
+ *         - 0 if successful.
+ *         - 1 if the slot is empty or inventory is NULL.
+ *
+ * @note If the `target_slot` does not contain any gear, the function will
+ *       return without performing any changes.
+ */
+int unequip_gear_i(inventory_t* inventory, gear_slot_t target_slot);
 
 /**
  * This function releases all memory associated with the given inventory,

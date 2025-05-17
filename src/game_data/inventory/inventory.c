@@ -28,6 +28,14 @@ inventory_t* create_inventory(const int pre_length) {
 
     inventory->gear_count = 0;
     inventory->allocated_space = pre_length;
+    inventory->total_resource_bonus.health = 0;
+    inventory->total_resource_bonus.stamina = 0;
+    inventory->total_resource_bonus.mana = 0;
+    inventory->total_attribute_bonus.strength = 0;
+    inventory->total_attribute_bonus.intelligence = 0;
+    inventory->total_attribute_bonus.agility = 0;
+    inventory->total_attribute_bonus.endurance = 0;
+    inventory->total_attribute_bonus.luck = 0;
     return inventory;
 }
 
@@ -96,22 +104,35 @@ int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slo
         return 1;
     }
 
+    // ensure the correct inventory state
     switch (target_slot) {
-        case HEAD_SLOT:      // do nothing special
-        case BODY_SLOT:      // do nothing special
-        case LEG_SLOT:       // do nothing special
-        case HAND_SLOT:      // do nothing special
-        case RING_LEFT_SLOT: // do nothing special
-        case RING_RIGHT_SLOT:// do nothing special
-        case AMULET_SLOT:    // do nothing special
+        case HEAD_SLOT:
+        case BODY_SLOT:
+        case LEG_SLOT:
+        case HAND_SLOT:
+        case RING_LEFT_SLOT:
+        case RING_RIGHT_SLOT:
+        case AMULET_SLOT:
+            unequip_gear_i(inventory, target_slot);
             break;
-        case MAIN_HAND_SLOT:// unequip the both hand slot
-        case OFF_HAND_SLOT: // unequip the both hand slot
-            inventory->equipped[BOTH_HAND_SLOT] = NULL;
+        case MAIN_HAND_SLOT:
+            if (unequip_gear_i(inventory, MAIN_HAND_SLOT)) {
+                // if nothing was unequipped, try to unequip the both hand slot
+                unequip_gear_i(inventory, BOTH_HAND_SLOT);
+            }
             break;
-        case BOTH_HAND_SLOT:// unequip the items in the main hand and off hand slots
-            inventory->equipped[MAIN_HAND_SLOT] = NULL;
-            inventory->equipped[OFF_HAND_SLOT] = NULL;
+        case OFF_HAND_SLOT:
+            if (unequip_gear_i(inventory, OFF_HAND_SLOT)) {
+                // if nothing was unequipped, try to unequip the both hand slot
+                unequip_gear_i(inventory, BOTH_HAND_SLOT);
+            }
+            break;
+        case BOTH_HAND_SLOT:// unequip the items in the main-hand and off-hand slots
+            if (unequip_gear_i(inventory, BOTH_HAND_SLOT)) {
+                // if nothing was unequipped, try to unequip the main-hand and off-hand slots
+                unequip_gear_i(inventory, MAIN_HAND_SLOT);
+                unequip_gear_i(inventory, OFF_HAND_SLOT);
+            }
             break;
         default:
             log_msg(WARNING, "Inventory", "In `equip_gear_i` invalid slot type %d", target_slot);
@@ -119,6 +140,37 @@ int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slo
     }
     // equip the gear
     inventory->equipped[target_slot] = gear_to_equip;
+
+    // add ressource & attribute bonuses in total
+    inventory->total_resource_bonus.health += gear_to_equip->resource_bonus.health;
+    inventory->total_resource_bonus.stamina += gear_to_equip->resource_bonus.stamina;
+    inventory->total_resource_bonus.mana += gear_to_equip->resource_bonus.mana;
+    inventory->total_attribute_bonus.strength += gear_to_equip->attribute_bonus.strength;
+    inventory->total_attribute_bonus.intelligence += gear_to_equip->attribute_bonus.intelligence;
+    inventory->total_attribute_bonus.agility += gear_to_equip->attribute_bonus.agility;
+    inventory->total_attribute_bonus.endurance += gear_to_equip->attribute_bonus.endurance;
+    inventory->total_attribute_bonus.luck += gear_to_equip->attribute_bonus.luck;
+
+    return 0;
+}
+
+int unequip_gear_i(inventory_t* inventory, const gear_slot_t target_slot) {
+    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `unequip_gear_i` inventory is NULL")
+
+    if (inventory->equipped[target_slot] == NULL) return 1;// no gear to unequip in the inventory
+
+    const gear_t* gear_to_unequip = inventory->equipped[target_slot];
+    inventory->equipped[target_slot] = NULL;
+
+    // remove ressource & attribute bonuses in total
+    inventory->total_resource_bonus.health -= gear_to_unequip->resource_bonus.health;
+    inventory->total_resource_bonus.stamina -= gear_to_unequip->resource_bonus.stamina;
+    inventory->total_resource_bonus.mana -= gear_to_unequip->resource_bonus.mana;
+    inventory->total_attribute_bonus.strength -= gear_to_unequip->attribute_bonus.strength;
+    inventory->total_attribute_bonus.intelligence -= gear_to_unequip->attribute_bonus.intelligence;
+    inventory->total_attribute_bonus.agility -= gear_to_unequip->attribute_bonus.agility;
+    inventory->total_attribute_bonus.endurance -= gear_to_unequip->attribute_bonus.endurance;
+    inventory->total_attribute_bonus.luck -= gear_to_unequip->attribute_bonus.luck;
 
     return 0;
 }

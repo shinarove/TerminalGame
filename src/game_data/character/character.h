@@ -4,9 +4,10 @@
 #include "../ability/ability.h"
 #include "../inventory/inventory.h"
 #include "stats.h"
+#include "enemy_generator.h"
 
 typedef struct character {
-    int id;//currently not in use
+    int id;
     int current_exp;
     int needed_exp;
     int level;
@@ -26,6 +27,13 @@ typedef struct character {
     ability_array_t* abilities;
     inventory_t* inventory;// the character's inventory
 } character_t;
+
+static const struct {
+    int id;
+    ability_id_t basic_ability_id;// when no weapons are equipped, use these abilities
+} character_base_ability[] = {
+        {0, PUNCH},
+        {GOBLIN, CLAWS}};
 
 /**
  * Creates an empty character with default attributes, resources, and inventory values.
@@ -120,10 +128,78 @@ int check_exp_c(const character_t* character);
  */
 void lvl_up_c(character_t* character, attr_id_t attr_to_increase);
 
+/**
+ * Adds a gear item to the character's inventory if possible.
+ * Automatically creates an inventory for the character if none exists.
+ * Ensures that the same gear is not added twice and checks if the inventory is full.
+ *
+ * @param character A pointer to the character structure to which the gear will be added.
+ *                  Must not be NULL.
+ * @param gear_id The ID of the gear to be added to the character's inventory.
+ *
+ * @return 0 if the gear was successfully added,
+ *         1 if the gear could not be added (e.g., inventory is full or gear already exists),
+ *         or other values for error scenarios.
+ */
 int add_gear_c(character_t* character, gear_id_t gear_id);
 
+/**
+ * Removes a specific piece of gear from the specified character's inventory and equipment.
+ * Ensures the character's inventory and attributes are updated after gear removal.
+ *
+ * @param character A pointer to the character structure from which the gear will be removed. Must not be NULL.
+ * @param gear_id The unique identifier of the gear to be removed.
+ * @return An integer indicating the success or failure of the removal process.
+ *         Returns 1 if the character is NULL or the gear removal fails, otherwise 0.
+ */
 int remove_gear_c(const character_t* character, gear_id_t gear_id);
 
+/**
+ * Equips a specific gear item to a designated gear slot on the given character.
+ * If the target slot or related slots are already occupied, the previously equipped gear
+ * will be unequipped before equipping the new item. After equipping, any bonuses or
+ * abilities associated with the gear item will be applied to the character.
+ *
+ * @param character A pointer to the character structure on which the gear will be equipped.
+ *                  Must not be NULL.
+ * @param gear_id The ID of the gear item to be equipped. Must correspond to a valid gear ID.
+ * @param target_slot The gear slot where the item will be equipped. Must be within the
+ *                    valid range of gear slots.
+ * @return 0 if the gear is successfully equipped, or a non-zero value if an error occurs
+ *         (e.g., invalid input or failure to equip the gear).
+ */
+int equip_gear_c(character_t* character, gear_id_t gear_id, gear_slot_t target_slot);
+
+/**
+ * Unequips the gear from a specific slot in the character's inventory.
+ * Removes all abilities associated with the gear being unequipped and recalculates
+ * the character's attributes and resources. If unequipping results in no weapon being equipped
+ * in the main or both-hand slot, a base ability is added to the character.
+ *
+ * @param character A pointer to the character structure from which the gear will be unequipped.
+ *                  Must not be NULL.
+ * @param target_slot The gear slot from which the gear is to be unequipped. Must be a valid
+ *                    gear slot defined in the gear_slot_t enumeration.
+ * @return An integer indicating the success of the unequip operation:
+ *         - 0 if successful.
+ *         - 1 if the provided target slot is invalid, the character pointer is NULL, or
+ *           no gear is equipped in the specified slot.
+ */
+int unequip_gear_c(character_t* character, gear_slot_t target_slot);
+
+/**
+ * Retrieves a gear from the character's inventory by its ID.
+ * Searches through the character's inventory to find and return a pointer
+ * to the gear structure matching the specified gear ID. If the gear does not exist
+ * in the inventory or if the character or inventory is null, the method will return NULL.
+ *
+ * @param character A pointer to the character whose inventory will be searched.
+ *                  Must not be NULL.
+ * @param gear_id   The ID of the gear to be located in the character's inventory.
+ *
+ * @return A pointer to the gear structure if found, or NULL if the gear is not present,
+ *         if the character or inventory is NULL, or if the inventory is not initialized.
+ */
 gear_t* get_gear_by_id_c(const character_t* character, gear_id_t gear_id);
 
 /**

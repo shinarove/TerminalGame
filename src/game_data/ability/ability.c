@@ -219,6 +219,19 @@ int add_ability_a(ability_array_t* ability_array, const ability_id_t ability_id)
     return 0;
 }
 
+ability_t* get_ability_a(const ability_array_t* ability_array, const ability_id_t ability_id) {
+    RETURN_WHEN_NULL(ability_array, NULL, "Ability", "In `get_ability_a` given ability array is NULL")
+    RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= MAX_ABILITIES, NULL,
+                     "Ability", "In `add_ability_a` given ability id is invalid: %d", ability_id)
+
+    for (int i = 0; i < ability_array->ability_count; i++) {
+        if (ability_array->abilities[i]->id == ability_id) {
+            return ability_array->abilities[i];
+        }
+    }
+    return NULL;// ability not found
+}
+
 int remove_ability_a(ability_array_t* ability_array, const ability_id_t ability_id) {
     RETURN_WHEN_NULL(ability_array, 1, "Ability", "In `remove_ability_a` given ability array is NULL")
     RETURN_WHEN_TRUE(ability_id < 0 || ability_id >= MAX_ABILITIES, 1,

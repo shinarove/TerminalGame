@@ -19,6 +19,8 @@
 #define DEFAULT_ENDURANCE 1
 #define DEFAULT_LUCK 1
 
+void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, const attributes_t* bonus_att);
+
 character_t* create_empty_character() {
     character_t* character = memory_pool_alloc(global_memory_pool, sizeof(character_t));
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
@@ -152,9 +154,11 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     character->base_resources.stamina += character->base_attributes.endurance;
     character->base_resources.mana += (int) ((float) character->base_attributes.intelligence * 1.5);
 
-    //TODO: When inventory is implemented, add buffs from gear
     character->max_resources = character->base_resources;
     character->current_resources = character->base_resources;
+    // add equipment bonuses
+    apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
+                        &character->inventory->total_attribute_bonus);
 
     character->level++;
     // ensure that exp over the limit is not lost
@@ -218,6 +222,71 @@ int remove_gear_c(const character_t* character, const gear_id_t gear_id) {
     RETURN_WHEN_NULL(character, 1, "Character", "In `remove_gear_c` given character is NULL")
 
     return remove_gear_i(character->inventory, gear_id);
+}
+
+int equip_gear_c(character_t* character, const gear_id_t gear_id, const gear_slot_t target_slot) {
+    RETURN_WHEN_NULL(character, 1, "Character", "In `equip_gear_c` given character is NULL")
+    RETURN_WHEN_TRUE(target_slot < 0 || target_slot >= MAX_GEAR_SLOTS, 1,
+                     "Character", "In `equip_gear_c` given target slot is invalid: %d", target_slot)
+
+    // unequip potential gear
+    if (target_slot == MAIN_HAND_SLOT || target_slot == OFF_HAND_SLOT) {
+        if (character->inventory->equipped[BOTH_HAND_SLOT] != NULL) {
+            unequip_gear_c(character, BOTH_HAND_SLOT);
+        }
+    } else if (target_slot == BOTH_HAND_SLOT) {
+        if (character->inventory->equipped[MAIN_HAND_SLOT] != NULL) {
+            unequip_gear_c(character, MAIN_HAND_SLOT);
+        }
+        if (character->inventory->equipped[OFF_HAND_SLOT] != NULL) {
+            unequip_gear_c(character, OFF_HAND_SLOT);
+        }
+    }
+    unequip_gear_c(character, target_slot);
+
+    const int equip_success = equip_gear_i(character->inventory, gear_id, target_slot);
+
+    if (equip_success == 0) {
+        apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
+            &character->inventory->total_attribute_bonus);
+
+        // add abilities connected to the gear
+        const int ability_count = character->inventory->equipped[target_slot]->ability_count;
+        for (int i = 0; i < ability_count; i++) {
+            add_ability_c(character, character->inventory->equipped[target_slot]->ability_ids[i]);
+        }
+    }
+
+    return equip_success;
+}
+
+int unequip_gear_c(character_t* character, const gear_slot_t target_slot) {
+    RETURN_WHEN_NULL(character, 1, "Character", "In `unequip_gear_c` given character is NULL")
+    RETURN_WHEN_TRUE(target_slot < 0 || target_slot >= MAX_GEAR_SLOTS, 1,
+                     "Character", "In `unequip_gear_c` given target slot is invalid: %d", target_slot)
+
+    // check if a gear is equipped in the target slot
+    if (character->inventory->equipped[target_slot] == NULL) {
+        return 1;
+    }
+
+    // remove abilities connected to the gear
+    const int ability_count = character->inventory->equipped[target_slot]->ability_count;
+    for (int i = 0; i < ability_count; i++) {
+        remove_ability_c(character, character->inventory->equipped[target_slot]->ability_ids[i]);
+    }
+
+    const int unequip_success = unequip_gear_i(character->inventory, target_slot);
+    apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
+        &character->inventory->total_attribute_bonus);
+
+    // add base ability if no weapons are equipped (off hand is here excluded)
+    if (character->inventory->equipped[MAIN_HAND_SLOT] == NULL &&
+        character->inventory->equipped[BOTH_HAND_SLOT] == NULL) {
+        add_ability_c(character, character_base_ability[character->id].basic_ability_id);
+    }
+
+    return unequip_success;
 }
 
 gear_t* get_gear_by_id_c(const character_t* character, gear_id_t gear_id) {
@@ -287,4 +356,29 @@ ability_t* get_ability_by_index_c(const character_t* character, const int index)
                      "Character", "In `get_ability_by_index_c` given index is invalid: %d", index)
 
     return character->abilities->abilities[index];
+}
+
+void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, const attributes_t* bonus_att) {
+    const resources_t prev_max_res = character->max_resources;
+    const attributes_t prev_max_att = character->max_attributes;
+
+    // reapply bonus on max stats
+    character->max_resources.health = character->base_resources.health + bonus_res->health;
+    character->max_resources.stamina = character->base_resources.stamina + bonus_res->stamina;
+    character->max_resources.mana = character->base_resources.mana + bonus_res->mana;
+    character->max_attributes.strength = character->base_attributes.strength + bonus_att->strength;
+    character->max_attributes.intelligence = character->base_attributes.intelligence + bonus_att->intelligence;
+    character->max_attributes.agility = character->base_attributes.agility + bonus_att->agility;
+    character->max_attributes.endurance = character->base_attributes.endurance + bonus_att->endurance;
+    character->max_attributes.luck = character->base_attributes.luck + bonus_att->luck;
+
+    // add difference prev max / new max to current stats
+    character->current_resources.health += character->max_resources.health - prev_max_res.health;
+    character->current_resources.stamina += character->max_resources.stamina - prev_max_res.stamina;
+    character->current_resources.mana += character->max_resources.mana - prev_max_res.mana;
+    character->current_attributes.strength += character->max_attributes.strength - prev_max_att.strength;
+    character->current_attributes.intelligence += character->max_attributes.intelligence - prev_max_att.intelligence;
+    character->current_attributes.agility += character->max_attributes.agility - prev_max_att.agility;
+    character->current_attributes.endurance += character->max_attributes.endurance - prev_max_att.endurance;
+    character->current_attributes.luck += character->max_attributes.luck - prev_max_att.luck;
 }
