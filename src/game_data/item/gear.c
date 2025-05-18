@@ -127,7 +127,7 @@ gear_table_t* init_gear_table(const memory_pool_t* pool) {
             if (singleton_gear_table->gears[count].ability_count > 0) {
                 // prepare the ability ids array
                 singleton_gear_table->gears[count].ability_ids = memory_pool_alloc(pool,
-                                                                                   sizeof(int) * singleton_gear_table->gears[count].ability_count);
+                    sizeof(int) * singleton_gear_table->gears[count].ability_count);
 
                 token = strtok(NULL, ",");
                 INIT_ERROR_NULL(token, gear_file, "Failed to read ability ids at line %d", count + 1)
@@ -149,6 +149,8 @@ gear_table_t* init_gear_table(const memory_pool_t* pool) {
                         token = strtok(NULL, "-");
                     }
                 }
+            } else {
+                singleton_gear_table->gears[count].ability_ids = NULL;
             }
             count++;
         }

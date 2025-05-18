@@ -74,7 +74,7 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
             break;
         case I:
             clear_screen();
-            next_state = INVENTORY_MODE;// open inventory
+            next_state = CHARACTER_MODE;// open inventory
             break;
         case C:
             clear_screen();

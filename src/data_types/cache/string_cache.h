@@ -20,6 +20,6 @@ int reset_entity_string_cache(const string_cache_t* cache, const void* entity);
 
 void reset_string_cache(const string_cache_t* cache);
 
-void destroy_string_cache(const string_cache_t* cache);
+void destroy_string_cache(string_cache_t* cache);
 
 #endif//STRING_CACHE_H

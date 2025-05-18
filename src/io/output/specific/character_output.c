@@ -55,6 +55,10 @@ int init_character_output() {
     character_cache = create_string_cache(NUM_CACHED_CHARS, MAX_CACHED_CO_STRINGS);
     RETURN_WHEN_NULL(character_cache, 1, "Character Output", "Failed to create a string cache for character output.")
 
+    for (int i = 0; i < MAX_CO_STRINGS; i++) {
+        co_strings[i] = NULL;
+    }
+
     update_character_output_local();
     observe_local(update_character_output_local);
     return 0;
@@ -124,10 +128,11 @@ char** prepare_char_strings(const character_t* character, const bool show_res_ma
     }
 
     // either use the character name or the local string (when enemy)
-    char* character_name = character->id == 0 ? character->name : get_local_string(character->name);
+    const bool player = character->id == 0;
+    char* character_name = player ? character->name : get_local_string(character->name);
     snprintf(temp_strings[NAME_LVL_STR], 32, NAME_LVL_FORMAT_C,
              character_name, co_strings[LEVEL_STR], character->level);
-    free(character_name);
+    if (!player) free(character_name);
 
     // prepare the resource strings
     if (show_res_max) {

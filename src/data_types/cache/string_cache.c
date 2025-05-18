@@ -134,17 +134,16 @@ void reset_string_cache(const string_cache_t* cache) {
     }
 }
 
-void destroy_string_cache(const string_cache_t* cache) {
+void destroy_string_cache(string_cache_t* cache) {
     if (cache == NULL) return;
 
     for (int i = 0; i < cache->num_of_entities; i++) {
         for (int j = 0; j < cache->num_of_str_per_entity; j++) {
             free(cache->strings[i * cache->num_of_str_per_entity + j]);
         }
-
-        free(cache->entities[i]);
     }
     free(cache->cache_called);
     free(cache->entities);
     free(cache->strings);
+    free(cache);
 }
