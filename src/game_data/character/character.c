@@ -157,8 +157,10 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     character->max_resources = character->base_resources;
     character->current_resources = character->base_resources;
     // add equipment bonuses
-    apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
-                        &character->inventory->total_attribute_bonus);
+    if (character->inventory != NULL) {
+        apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
+                            &character->inventory->total_attribute_bonus);
+    }
 
     character->level++;
     // ensure that exp over the limit is not lost
@@ -359,6 +361,7 @@ ability_t* get_ability_by_index_c(const character_t* character, const int index)
 }
 
 void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, const attributes_t* bonus_att) {
+    if (bonus_res == NULL || bonus_att == NULL) return;
     const resources_t prev_max_res = character->max_resources;
     const attributes_t prev_max_att = character->max_attributes;
 

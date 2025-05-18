@@ -153,6 +153,8 @@ state_t update_character_creation(const input_t input, character_t* player) {
                         update_spent_p_str(player->unspent_res_p);
                         cc_state = RESSOURCE_DISTRIBUTION;
                         clear_screen();
+                        // print the character info (with update) once before ressource distribution
+                        print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     }
                     break;
                 case QUIT:
