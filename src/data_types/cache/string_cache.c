@@ -1,6 +1,7 @@
 #include "string_cache.h"
 
 #include "../../logger/logger.h"
+
 #include <stdlib.h>
 
 string_cache_t* create_string_cache(const int num_of_entities, const int num_of_str_per_entity) {
@@ -45,7 +46,7 @@ char** get_strings_from_cache(const string_cache_t* cache, const void* entity) {
             return &cache->strings[i * cache->num_of_str_per_entity];
         }
     }
-    return NULL; // entity is not cached
+    return NULL;// entity is not cached
 }
 
 char** put_strings_in_cache(const string_cache_t* cache, void* entity, char** strings, const int num_of_strings) {
@@ -53,7 +54,7 @@ char** put_strings_in_cache(const string_cache_t* cache, void* entity, char** st
     RETURN_WHEN_NULL(entity, NULL, "String Cache", "In `put_strings_in_cache` given entity is NULL")
     RETURN_WHEN_NULL(strings, NULL, "String Cache", "In `put_strings_in_cache` given strings are NULL")
     RETURN_WHEN_TRUE(num_of_strings <= 0, NULL, "String Cache",
-        "In `put_strings_in_cache` number of strings must be greater than 0")
+                     "In `put_strings_in_cache` number of strings must be greater than 0")
 
     if (num_of_strings > cache->num_of_str_per_entity) {
         log_msg(WARNING, "String Cache",
@@ -114,10 +115,10 @@ int reset_entity_string_cache(const string_cache_t* cache, const void* entity) {
                 free(cache->strings[i * cache->num_of_str_per_entity + j]);
                 cache->strings[i * cache->num_of_str_per_entity + j] = NULL;
             }
-            return 0; // entity was found and reset
+            return 0;// entity was found and reset
         }
     }
-    return 1; // entity was not found
+    return 1;// entity was not found
 }
 
 void reset_string_cache(const string_cache_t* cache) {

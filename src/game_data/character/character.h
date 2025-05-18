@@ -3,8 +3,8 @@
 
 #include "../ability/ability.h"
 #include "../inventory/inventory.h"
-#include "stats.h"
 #include "enemy_id.h"
+#include "stats.h"
 
 typedef struct character {
     int id;

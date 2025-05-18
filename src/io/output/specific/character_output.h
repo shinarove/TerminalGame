@@ -31,4 +31,4 @@ void print_info_c(int x, int y, const character_t* character, int update);
  */
 void shutdown_character_output(void);
 
-#endif //CHARACTER_OUTPUT_H
+#endif//CHARACTER_OUTPUT_H

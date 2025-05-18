@@ -7,4 +7,4 @@ enum enemy_id {
     GOBLIN = 1,
 };
 
-#endif //ENEMY_ID_H
+#endif//ENEMY_ID_H

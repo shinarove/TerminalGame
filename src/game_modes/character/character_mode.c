@@ -25,5 +25,4 @@ state_t update_character_mode(input_t input, character_t* player) {
 }
 
 void shutdown_character_mode(void) {
-
 }

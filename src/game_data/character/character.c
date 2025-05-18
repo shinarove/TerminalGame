@@ -248,7 +248,7 @@ int equip_gear_c(character_t* character, const gear_id_t gear_id, const gear_slo
 
     if (equip_success == 0) {
         apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
-            &character->inventory->total_attribute_bonus);
+                            &character->inventory->total_attribute_bonus);
 
         // add abilities connected to the gear
         const int ability_count = character->inventory->equipped[target_slot]->ability_count;
@@ -278,7 +278,7 @@ int unequip_gear_c(character_t* character, const gear_slot_t target_slot) {
 
     const int unequip_success = unequip_gear_i(character->inventory, target_slot);
     apply_bonus_stats_c(character, &character->inventory->total_resource_bonus,
-        &character->inventory->total_attribute_bonus);
+                        &character->inventory->total_attribute_bonus);
 
     // add base ability if no weapons are equipped (off hand is here excluded)
     if (character->inventory->equipped[MAIN_HAND_SLOT] == NULL &&

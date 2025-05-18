@@ -14,9 +14,9 @@
 #include "game_modes/menus/title_screen_mode.h"
 #include "io/input/input_handler.h"
 #include "io/local/local_handler.h"
+#include "io/output/output.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
-#include "io/output/output.h"
 
 #include <stdlib.h>
 #include <time.h>

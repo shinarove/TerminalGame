@@ -8,4 +8,4 @@
 #define RES_LINE_FORMAT_C "%s\t| %s\t| %s"
 #define ATTR_LINE_FORMAT_C "%s\t| %s\t| %s\t| %s\t| %s"
 
-#endif //STRING_FORMATS_H
+#endif//STRING_FORMATS_H

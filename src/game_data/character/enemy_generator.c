@@ -2,8 +2,8 @@
 
 #include "../../logger/logger.h"
 #include "../ability/ability.h"
-#include "goblin.h"
 #include "enemy_id.h"
+#include "goblin.h"
 
 #include <stdio.h>
 

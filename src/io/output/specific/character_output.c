@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#define NUM_CACHED_CHARS 3 // number of cached characters
+#define NUM_CACHED_CHARS 3// number of cached characters
 
 typedef struct {
     character_t* character;
@@ -72,14 +72,14 @@ void print_info_c(const int x, int y, const character_t* character, const int up
 
         strings = put_strings_in_cache(character_cache, (void*) character, temp_strings, MAX_CACHED_CO_STRINGS);
         RETURN_WHEN_NULL(strings, , "Character Output", "In `print_info_c` failed to put strings in cache.")
-        free(temp_strings); // only the pointer to pointers needs to be freed, the rest is now cached
+        free(temp_strings);// only the pointer to pointers needs to be freed, the rest is now cached
     }
 
     print_text(x, y++, WHITE, DEFAULT, strings[NAME_LVL_STR]);
     print_text_f(x, y++, WHITE, DEFAULT, RES_LINE_FORMAT_C, strings[RES_HEALTH_STR],
-        strings[RES_STAMINA_STR], strings[RES_MANA_STR]);
+                 strings[RES_STAMINA_STR], strings[RES_MANA_STR]);
     print_text_f(x, y, WHITE, DEFAULT, ATTR_LINE_FORMAT_C, strings[ATTR_STRENGTH_STR],
-        strings[ATTR_INTELLIGENCE_STR], strings[ATTR_AGILITY_STR], strings[ATTR_CONSTITUTION_STR], strings[ATTR_LUCK_STR]);
+                 strings[ATTR_INTELLIGENCE_STR], strings[ATTR_AGILITY_STR], strings[ATTR_CONSTITUTION_STR], strings[ATTR_LUCK_STR]);
 }
 
 void shutdown_character_output(void) {
@@ -126,28 +126,28 @@ char** prepare_char_strings(const character_t* character) {
     // either use the character name or the local string (when enemy)
     char* character_name = character->id == 0 ? character->name : get_local_string(character->name);
     snprintf(temp_strings[NAME_LVL_STR], 32, NAME_LVL_FORMAT_C,
-        character_name, co_strings[LEVEL_STR], character->level);
+             character_name, co_strings[LEVEL_STR], character->level);
     free(character_name);
 
     // prepare the resource strings
     snprintf(temp_strings[RES_HEALTH_STR], 32, RESOURCE_FORMAT_C,
-        co_strings[HEALTH_STR], character->current_resources.health, character->max_resources.health);
+             co_strings[HEALTH_STR], character->current_resources.health, character->max_resources.health);
     snprintf(temp_strings[RES_STAMINA_STR], 32, RESOURCE_FORMAT_C,
-        co_strings[STAMINA_STR], character->current_resources.stamina, character->max_resources.stamina);
+             co_strings[STAMINA_STR], character->current_resources.stamina, character->max_resources.stamina);
     snprintf(temp_strings[RES_MANA_STR], 32, RESOURCE_FORMAT_C,
-        co_strings[MANA_STR], character->current_resources.mana, character->max_resources.mana);
+             co_strings[MANA_STR], character->current_resources.mana, character->max_resources.mana);
 
     // prepare the attribute strings
     snprintf(temp_strings[ATTR_STRENGTH_STR], 32, ATTRIBUTE_FORMAT_C,
-        co_strings[STRENGTH_STR], character->current_attributes.strength);
+             co_strings[STRENGTH_STR], character->current_attributes.strength);
     snprintf(temp_strings[ATTR_INTELLIGENCE_STR], 32, ATTRIBUTE_FORMAT_C,
-        co_strings[INTELLIGENCE_STR], character->current_attributes.intelligence);
+             co_strings[INTELLIGENCE_STR], character->current_attributes.intelligence);
     snprintf(temp_strings[ATTR_AGILITY_STR], 32, ATTRIBUTE_FORMAT_C,
-        co_strings[AGILITY_STR], character->current_attributes.agility);
+             co_strings[AGILITY_STR], character->current_attributes.agility);
     snprintf(temp_strings[ATTR_CONSTITUTION_STR], 32, ATTRIBUTE_FORMAT_C,
-        co_strings[CONSTITUTION_STR], character->current_attributes.constitution);
+             co_strings[CONSTITUTION_STR], character->current_attributes.constitution);
     snprintf(temp_strings[ATTR_LUCK_STR], 32, ATTRIBUTE_FORMAT_C,
-        co_strings[LUCK_STR], character->current_attributes.luck);
+             co_strings[LUCK_STR], character->current_attributes.luck);
 
     return temp_strings;
 }

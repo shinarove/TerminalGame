@@ -15,4 +15,4 @@ int init_output(void);
  */
 void shutdown_output(void);
 
-#endif //OUTPUT_H
+#endif//OUTPUT_H

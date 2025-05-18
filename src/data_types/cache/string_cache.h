@@ -5,9 +5,9 @@ typedef struct string_cache {
     int num_of_entities;
     int num_of_str_per_entity;
 
-    int* cache_called; // an array of integers that counts how many times each entity is used
-    void** entities; // entities stored by reference
-    char** strings; // array of pointers to strings
+    int* cache_called;// an array of integers that counts how many times each entity is used
+    void** entities;  // entities stored by reference
+    char** strings;   // array of pointers to strings
 } string_cache_t;
 
 string_cache_t* create_string_cache(int num_of_entities, int num_of_str_per_entity);
@@ -22,4 +22,4 @@ void reset_string_cache(const string_cache_t* cache);
 
 void destroy_string_cache(const string_cache_t* cache);
 
-#endif //STRING_CACHE_H
+#endif//STRING_CACHE_H
