@@ -5,6 +5,7 @@
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../logger/logger.h"
+#include "../../io/output/specific/character_output.h"
 
 #define CC_Y_POS_HEAD 2
 #define CC_Y_POS_UNSPENT_P 6
@@ -21,12 +22,6 @@
 
 #define UNSPENT_POINTS_FORMAT "%s: %d   "
 
-#define CHAR_NAME_LVL_FORMAT "%s | %s: %d"
-#define CHAR_RESOURCES_FORMAT "%s: %d | %s: %d | %s: %d   "
-#define CHAR_ATTRIBUTES_FORMAT "%s: %d | %s: %d | %s: %d | %s: %d | %s: %d   "
-#define HORIZONTAL_LINE "--------------------------------------------------"
-#define CC_HEAD_FORMAT "%s\n" CHAR_RESOURCES_FORMAT "\n" CHAR_ATTRIBUTES_FORMAT "\n" HORIZONTAL_LINE
-
 typedef enum {
     PRE_CREATION,
     NAME_INPUT,
@@ -34,7 +29,6 @@ typedef enum {
     ATTRIBUTE_DISTRIBUTION,
     WAIT_AFTER_CREATION
 } cc_mode_state_t;
-
 
 enum cc_mode_index {
     // strings that are updated via local
@@ -54,10 +48,7 @@ enum cc_mode_index {
     CONTINUE_ENTER,
     CONFIRM_ENTER,
     CONFIRM_Y,
-    // strings that are prepared after exiting the NAME_INPUT state
-    PLAYER_NAME_LVL,
     // strings that are updated after an action
-    CC_HEAD,
     UNSPENT_POINTS_FULL,
     MAX_CC_STRINGS
 };
@@ -76,11 +67,7 @@ char* name_input_buffer = NULL;
 
 void update_cc_local(void);
 
-void prepare_player_name_lvl(const character_t* player);
-
 void update_stats(int bool_exp, int* updated_stats, int* unspent_points, int diff, const character_t* player);
-
-void update_cc_head(const character_t* player);
 
 void update_spent_p_str(int unspent_points);
 
@@ -129,6 +116,9 @@ state_t update_character_creation(const input_t input, character_t* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Creation", "In `update_character_creation` given player is NULL.");
     state_t res = CHARACTER_CREATION;
 
+    const output_args_c_t args_no_update = {false, false, false};
+    const output_args_c_t args_update = {true, false, false};
+
     switch (cc_state) {
         case PRE_CREATION:
             player->id = 0;
@@ -160,8 +150,6 @@ state_t update_character_creation(const input_t input, character_t* player) {
                         end_text_input();
                         name_input_buffer = NULL;
 
-                        prepare_player_name_lvl(player);
-                        update_cc_head(player);
                         update_spent_p_str(player->unspent_res_p);
                         cc_state = RESSOURCE_DISTRIBUTION;
                         clear_screen();
@@ -181,29 +169,36 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 case 0:// decrease health by one
                     update_stats(player->base_resources.health > 1,
                                  &player->base_resources.health, &player->unspent_res_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 1:// increase health by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.health, &player->unspent_res_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 2:// decrease stamina by one
                     update_stats(player->base_resources.stamina > 1,
                                  &player->base_resources.stamina, &player->unspent_res_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 3:// increase stamina by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.stamina, &player->unspent_res_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 4:// decrease mana by one
                     update_stats(player->base_resources.mana > 1,
                                  &player->base_resources.mana, &player->unspent_res_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 5:// increase mana by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.mana, &player->unspent_res_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case MAX_RESOURCES * 2:// nothing was pressed, do nothing
                 case -1:               // ESC was pressed, do nothing
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -215,7 +210,6 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
             }
 
-            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_res_p == 0) {
@@ -243,45 +237,56 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 case 0:// decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
                                  &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 1:// increase strength by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 2:// decrease intelligence by one
                     update_stats(player->base_attributes.intelligence > 1,
                                  &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 3:// increase intelligence by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 4:// decrease agility by one
                     update_stats(player->base_attributes.agility > 1,
                                  &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 5:// increase agility by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 6:// decrease endurance by one
                     update_stats(player->base_attributes.constitution > 1,
                                  &player->base_attributes.constitution, &player->unspent_attr_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 7:// increase endurance by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.constitution, &player->unspent_attr_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 8:// decrease luck by one
                     update_stats(player->base_attributes.luck > 1,
                                  &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 9:// increase luck by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case MAX_ATTRIBUTES * 2:// nothing was pressed, do nothing
                 case -1:                // ESC was pressed, do nothing
+                    print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -293,7 +298,6 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
             }
 
-            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_attr_p == 0) {
@@ -317,7 +321,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
             break;
         case WAIT_AFTER_CREATION:
-            print_text(5, CC_Y_POS_HEAD, WHITE, DEFAULT, cc_mode_strings[CC_HEAD]);
+            print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {
@@ -345,7 +349,7 @@ void shutdown_character_creation(void) {
 
 void update_cc_local(void) {
     // free the previous local strings
-    for (int i = 0; i < PLAYER_NAME_LVL; i++) {
+    for (int i = 0; i < UNSPENT_POINTS_FULL; i++) {
         if (cc_mode_strings[i] != NULL) {
             free(cc_mode_strings[i]);
         }
@@ -373,41 +377,12 @@ void update_cc_local(void) {
     cc_mode_strings[CONFIRM_Y] = get_local_string("PRESS_Y.CONFIRM");
 }
 
-void prepare_player_name_lvl(const character_t* player) {
-    char* buffer = malloc(64);
-    snprintf(buffer, 64, CHAR_NAME_LVL_FORMAT,
-             player->name, cc_mode_strings[LEVEL_STR], player->level);
-    cc_mode_strings[PLAYER_NAME_LVL] = buffer;
-}
-
 void update_stats(const int bool_exp, int* updated_stats, int* unspent_points, const int diff, const character_t* player) {
     if (bool_exp) {
         *updated_stats += diff;
         *unspent_points -= diff;
-        update_cc_head(player);
         update_spent_p_str(*unspent_points);
     }
-}
-
-void update_cc_head(const character_t* player) {
-    // free the previous head string
-    if (cc_mode_strings[CC_HEAD] != NULL) {
-        free(cc_mode_strings[CC_HEAD]);
-    }
-
-    // update the cc head string
-    char* cc_head_str = malloc(256);
-    snprintf(cc_head_str, 256, CC_HEAD_FORMAT,
-             cc_mode_strings[PLAYER_NAME_LVL],
-             cc_mode_strings[HEALTH_STR], player->base_resources.health,
-             cc_mode_strings[STAMINA_STR], player->base_resources.stamina,
-             cc_mode_strings[MANA_STR], player->base_resources.mana,
-             cc_mode_strings[STRENGTH_STR], player->base_attributes.strength,
-             cc_mode_strings[INTELLIGENCE_STR], player->base_attributes.intelligence,
-             cc_mode_strings[AGILITY_STR], player->base_attributes.agility,
-             cc_mode_strings[CONSTITUTION_STR], player->base_attributes.constitution,
-             cc_mode_strings[LUCK_STR], player->base_attributes.luck);
-    cc_mode_strings[CC_HEAD] = cc_head_str;
 }
 
 void update_spent_p_str(const int unspent_points) {

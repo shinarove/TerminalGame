@@ -6,8 +6,8 @@
 #define RES_CURR_MAX_FORMAT_C "%s: %d/%d"
 #define ATTRIBUTE_FORMAT_C "%s: %d"
 
-#define RES_LINE_FORMAT_C "%s | %s | %s"
-#define ATTR_LINE_FORMAT_C "%s | %s | %s | %s | %s"
+#define RES_LINE_FORMAT_C "%s | %s | %s  "
+#define ATTR_LINE_FORMAT_C "%s | %s | %s | %s | %s  "
 
 #define CHARACTER_HEAD_FORMAT_C "%s  \n%s   \n%s"
 

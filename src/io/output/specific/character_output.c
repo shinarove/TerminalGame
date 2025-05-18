@@ -47,7 +47,7 @@ string_cache_t* character_cache = NULL;
 
 void update_character_output_local(void);
 
-char** prepare_char_strings(const character_t* character, bool show_res_max);
+char** prepare_char_strings(const character_t* character, output_args_c_t args);
 
 int init_character_output() {
     co_strings = (char**) malloc(sizeof(char*) * MAX_CO_STRINGS);
@@ -71,7 +71,7 @@ void print_info_c(const int x, int y, const character_t* character, const output
     char** strings = get_strings_from_cache(character_cache, (void*) character);
     if (strings == NULL || args.update) {
         // update the strings in the cache if they are not cached or if the update flag is set
-        char** temp_strings = prepare_char_strings(character, args.show_res_max);
+        char** temp_strings = prepare_char_strings(character, args);
         RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_info_c` failed to prepare strings.")
 
         strings = put_strings_in_cache(character_cache, (void*) character, temp_strings, MAX_CACHED_CO_STRINGS);
@@ -118,7 +118,7 @@ void update_character_output_local(void) {
     co_strings[LUCK_STR] = get_local_string("LUCK");
 }
 
-char** prepare_char_strings(const character_t* character, const bool show_res_max) {
+char** prepare_char_strings(const character_t* character, const output_args_c_t args) {
     char** temp_strings = malloc(sizeof(char*) * MAX_CACHED_CO_STRINGS);
     if (temp_strings == NULL) return NULL;
 
@@ -135,7 +135,7 @@ char** prepare_char_strings(const character_t* character, const bool show_res_ma
     if (!player) free(character_name);
 
     // prepare the resource strings
-    if (show_res_max) {
+    if (args.show_res_curr_max) {
         snprintf(temp_strings[RES_HEALTH_STR], 32, RES_CURR_MAX_FORMAT_C,
                 co_strings[HEALTH_STR], character->current_resources.health, character->max_resources.health);
         snprintf(temp_strings[RES_STAMINA_STR], 32, RES_CURR_MAX_FORMAT_C,
@@ -144,24 +144,37 @@ char** prepare_char_strings(const character_t* character, const bool show_res_ma
                  co_strings[MANA_STR], character->current_resources.mana, character->max_resources.mana);
     } else {
         snprintf(temp_strings[RES_HEALTH_STR], 32, RES_CURR_FORMAT_C,
-                co_strings[HEALTH_STR], character->current_resources.health);
+                co_strings[HEALTH_STR], character->base_resources.health);
         snprintf(temp_strings[RES_STAMINA_STR], 32, RES_CURR_FORMAT_C,
-                 co_strings[STAMINA_STR], character->current_resources.stamina);
+                 co_strings[STAMINA_STR], character->base_resources.stamina);
         snprintf(temp_strings[RES_MANA_STR], 32, RES_CURR_FORMAT_C,
-                 co_strings[MANA_STR], character->current_resources.mana);
+                 co_strings[MANA_STR], character->base_resources.mana);
     }
 
     // prepare the attribute strings
-    snprintf(temp_strings[ATTR_STRENGTH_STR], 32, ATTRIBUTE_FORMAT_C,
-             co_strings[STRENGTH_STR], character->current_attributes.strength);
-    snprintf(temp_strings[ATTR_INTELLIGENCE_STR], 32, ATTRIBUTE_FORMAT_C,
-             co_strings[INTELLIGENCE_STR], character->current_attributes.intelligence);
-    snprintf(temp_strings[ATTR_AGILITY_STR], 32, ATTRIBUTE_FORMAT_C,
-             co_strings[AGILITY_STR], character->current_attributes.agility);
-    snprintf(temp_strings[ATTR_CONSTITUTION_STR], 32, ATTRIBUTE_FORMAT_C,
-             co_strings[CONSTITUTION_STR], character->current_attributes.constitution);
-    snprintf(temp_strings[ATTR_LUCK_STR], 32, ATTRIBUTE_FORMAT_C,
-             co_strings[LUCK_STR], character->current_attributes.luck);
+    if (args.show_attr_max) {
+        snprintf(temp_strings[ATTR_STRENGTH_STR], 32, ATTRIBUTE_FORMAT_C,
+                co_strings[STRENGTH_STR], character->max_attributes.strength);
+        snprintf(temp_strings[ATTR_INTELLIGENCE_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[INTELLIGENCE_STR], character->max_attributes.intelligence);
+        snprintf(temp_strings[ATTR_AGILITY_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[AGILITY_STR], character->max_attributes.agility);
+        snprintf(temp_strings[ATTR_CONSTITUTION_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[CONSTITUTION_STR], character->max_attributes.constitution);
+        snprintf(temp_strings[ATTR_LUCK_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[LUCK_STR], character->max_attributes.luck);
+    } else {
+        snprintf(temp_strings[ATTR_STRENGTH_STR], 32, ATTRIBUTE_FORMAT_C,
+                co_strings[STRENGTH_STR], character->base_attributes.strength);
+        snprintf(temp_strings[ATTR_INTELLIGENCE_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[INTELLIGENCE_STR], character->base_attributes.intelligence);
+        snprintf(temp_strings[ATTR_AGILITY_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[AGILITY_STR], character->base_attributes.agility);
+        snprintf(temp_strings[ATTR_CONSTITUTION_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[CONSTITUTION_STR], character->base_attributes.constitution);
+        snprintf(temp_strings[ATTR_LUCK_STR], 32, ATTRIBUTE_FORMAT_C,
+                 co_strings[LUCK_STR], character->base_attributes.luck);
+    }
 
     return temp_strings;
 }

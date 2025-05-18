@@ -8,7 +8,8 @@
  */
 typedef struct output_args_c {
     bool update; // if true the character information is updated in the cache
-    bool show_res_max; // if true the max resources are shown
+    bool show_res_curr_max; // if true the max resources are shown
+    bool show_attr_max; // if true the max attributes are shown, otherwise the base attributes are shown
 } output_args_c_t;
 
 /**
