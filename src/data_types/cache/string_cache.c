@@ -67,6 +67,9 @@ char** put_strings_in_cache(const string_cache_t* cache, void* entity, char** st
         if (cache->entities[i] == entity) {
             // update the strings
             for (int j = 0; j < max_iter; j++) {
+                if (cache->strings[i * cache->num_of_str_per_entity + j] != NULL) {
+                    free(cache->strings[i * cache->num_of_str_per_entity + j]);
+                }
                 cache->strings[i * cache->num_of_str_per_entity + j] = strings[j];
             }
             cache->cache_called[i]++;
@@ -98,6 +101,9 @@ char** put_strings_in_cache(const string_cache_t* cache, void* entity, char** st
     cache->entities[index] = entity;
     cache->cache_called[index] = 1;
     for (int j = 0; j < max_iter; j++) {
+        if (cache->strings[index * cache->num_of_str_per_entity + j] != NULL) {
+            free(cache->strings[index * cache->num_of_str_per_entity + j]);
+        }
         cache->strings[index * cache->num_of_str_per_entity + j] = strings[j];
     }
     return &cache->strings[index * cache->num_of_str_per_entity];

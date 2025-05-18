@@ -285,8 +285,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
 void shutdown_combat_mode() {
     if (combat_mode_strings != NULL) {
         for (int i = 0; i < MAX_COMBAT_MODE_STRINGS; i++) {
-            if (i == NOT_ENOUGH_RES_INFO) break; // this string always has a copy of a local string
-            if (i == PLAYER_ABILITY_USAGE_INFO) break; // this string always has a copy of a local string
+            if (i == NOT_ENOUGH_RES_INFO) continue; // this string always has a copy of a local string
+            if (i == PLAYER_ABILITY_USAGE_INFO) continue; // this string always has a copy of a local string
             if (combat_mode_strings[i] != NULL) free(combat_mode_strings[i]);
         }
         free(combat_mode_strings);
