@@ -47,7 +47,7 @@ string_cache_t* character_cache = NULL;
 
 void update_character_output_local(void);
 
-char** prepare_char_strings(const character_t* character);
+char** prepare_char_strings(const character_t* character, bool show_res_max);
 
 int init_character_output() {
     co_strings = (char**) malloc(sizeof(char*) * MAX_CO_STRINGS);
@@ -60,14 +60,14 @@ int init_character_output() {
     return 0;
 }
 
-void print_info_c(const int x, int y, const character_t* character, const int update) {
+void print_info_c(const int x, int y, const character_t* character, const output_args_c_t args) {
     RETURN_WHEN_NULL(co_strings, , "Character Output", "Module not initialized.")
     RETURN_WHEN_NULL(character, , "Character Output", "In `print_info_c` given player is NULL.")
 
     char** strings = get_strings_from_cache(character_cache, (void*) character);
-    if (strings == NULL || update == 1) {
+    if (strings == NULL || args.update) {
         // update the strings in the cache if they are not cached or if the update flag is set
-        char** temp_strings = prepare_char_strings(character);
+        char** temp_strings = prepare_char_strings(character, args.show_res_max);
         RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_info_c` failed to prepare strings.")
 
         strings = put_strings_in_cache(character_cache, (void*) character, temp_strings, MAX_CACHED_CO_STRINGS);
@@ -114,7 +114,7 @@ void update_character_output_local(void) {
     co_strings[LUCK_STR] = get_local_string("LUCK");
 }
 
-char** prepare_char_strings(const character_t* character) {
+char** prepare_char_strings(const character_t* character, const bool show_res_max) {
     char** temp_strings = malloc(sizeof(char*) * MAX_CACHED_CO_STRINGS);
     if (temp_strings == NULL) return NULL;
 
@@ -130,12 +130,21 @@ char** prepare_char_strings(const character_t* character) {
     free(character_name);
 
     // prepare the resource strings
-    snprintf(temp_strings[RES_HEALTH_STR], 32, RESOURCE_FORMAT_C,
-             co_strings[HEALTH_STR], character->current_resources.health, character->max_resources.health);
-    snprintf(temp_strings[RES_STAMINA_STR], 32, RESOURCE_FORMAT_C,
-             co_strings[STAMINA_STR], character->current_resources.stamina, character->max_resources.stamina);
-    snprintf(temp_strings[RES_MANA_STR], 32, RESOURCE_FORMAT_C,
-             co_strings[MANA_STR], character->current_resources.mana, character->max_resources.mana);
+    if (show_res_max) {
+        snprintf(temp_strings[RES_HEALTH_STR], 32, RES_CURR_MAX_FORMAT_C,
+                co_strings[HEALTH_STR], character->current_resources.health, character->max_resources.health);
+        snprintf(temp_strings[RES_STAMINA_STR], 32, RES_CURR_MAX_FORMAT_C,
+                 co_strings[STAMINA_STR], character->current_resources.stamina, character->max_resources.stamina);
+        snprintf(temp_strings[RES_MANA_STR], 32, RES_CURR_MAX_FORMAT_C,
+                 co_strings[MANA_STR], character->current_resources.mana, character->max_resources.mana);
+    } else {
+        snprintf(temp_strings[RES_HEALTH_STR], 32, RES_CURR_FORMAT_C,
+                co_strings[HEALTH_STR], character->current_resources.health);
+        snprintf(temp_strings[RES_STAMINA_STR], 32, RES_CURR_FORMAT_C,
+                 co_strings[STAMINA_STR], character->current_resources.stamina);
+        snprintf(temp_strings[RES_MANA_STR], 32, RES_CURR_FORMAT_C,
+                 co_strings[MANA_STR], character->current_resources.mana);
+    }
 
     // prepare the attribute strings
     snprintf(temp_strings[ATTR_STRENGTH_STR], 32, ATTRIBUTE_FORMAT_C,

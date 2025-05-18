@@ -4,6 +4,14 @@
 #include "../../../game_data/character/character.h"
 
 /**
+ * A structure to hold the arguments for the character output subsystem.
+ */
+typedef struct output_args_c {
+    bool update; // if true the character information is updated in the cache
+    bool show_res_max; // if true the max resources are shown
+} output_args_c_t;
+
+/**
  * Initializes the character output subsystem.
  *
  * @return 0 on successful initialization of the character output subsystem.
@@ -19,9 +27,9 @@ int init_character_output(void);
  * @param x The x-coordinate on the screen where the information is printed.
  * @param y The y-coordinate on the screen where the information starts printing. It increments with each line.
  * @param character Pointer to the character whose information needs to be displayed.
- * @param update A flag indicating whether the character's information in the cache should be updated (1 to update, 0 to use cached data).
+ * @param args A structure containing diverse flags.
  */
-void print_info_c(int x, int y, const character_t* character, int update);
+void print_info_c(int x, int y, const character_t* character, output_args_c_t args);
 
 /**
  * Shuts down the character output subsystem, releasing all associated resources.
