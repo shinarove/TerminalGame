@@ -43,6 +43,19 @@ void print_text(int x, int y, const color_t fg, const color_t bg, const char* te
     tb_present();
 }
 
+void print_text_f(int x, int y, const color_t fg, const color_t bg, const char* format, ...) {
+    check_xy(&x, &y);
+
+    va_list args;
+    va_start(args, format);
+    char buffer[1024];
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    tb_printf(x, y, color_mapping[fg].value, color_mapping[bg].value, "%s", buffer);
+    va_end(args);
+
+    tb_present();
+}
+
 void print_simple_menu(int x, int y, const menu_t* menu) {
     RETURN_WHEN_NULL(menu, , "Common Output", "In `print_simple_menu` menu is NULL");
     check_xy(&x, &y);

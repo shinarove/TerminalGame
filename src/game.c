@@ -173,7 +173,6 @@ void start_game_loop(memory_pool_t* used_pool) {
             case LVL_UP_MODE:
                 current = update_lvl_up_mode(input, game_state.player);
                 break;
-            case INVENTORY_MODE:
             case CHARACTER_MODE:
             case MAIN_MENU:
                 current = update_main_menu(input);

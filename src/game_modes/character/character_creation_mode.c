@@ -45,7 +45,7 @@ enum cc_mode_index {
     STRENGTH_STR,
     INTELLIGENCE_STR,
     AGILITY_STR,
-    ENDURANCE_STR,
+    CONSTITUTION_STR,
     LUCK_STR,
     LEVEL_STR,
     HEALTH_STR,
@@ -361,7 +361,7 @@ void update_cc_local(void) {
     cc_mode_strings[STRENGTH_STR] = get_local_string("STRENGTH");
     cc_mode_strings[INTELLIGENCE_STR] = get_local_string("INTELLIGENCE");
     cc_mode_strings[AGILITY_STR] = get_local_string("AGILITY");
-    cc_mode_strings[ENDURANCE_STR] = get_local_string("ENDURANCE");
+    cc_mode_strings[CONSTITUTION_STR] = get_local_string("CONSTITUTION");
     cc_mode_strings[LUCK_STR] = get_local_string("LUCK");
     cc_mode_strings[LEVEL_STR] = get_local_string("LEVEL");
     cc_mode_strings[HEALTH_STR] = get_local_string("HEALTH");
@@ -405,7 +405,7 @@ void update_cc_head(const character_t* player) {
              cc_mode_strings[STRENGTH_STR], player->base_attributes.strength,
              cc_mode_strings[INTELLIGENCE_STR], player->base_attributes.intelligence,
              cc_mode_strings[AGILITY_STR], player->base_attributes.agility,
-             cc_mode_strings[ENDURANCE_STR], player->base_attributes.constitution,
+             cc_mode_strings[CONSTITUTION_STR], player->base_attributes.constitution,
              cc_mode_strings[LUCK_STR], player->base_attributes.luck);
     cc_mode_strings[CC_HEAD] = cc_head_str;
 }

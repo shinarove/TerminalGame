@@ -6,6 +6,8 @@ termbox_file = files('termbox2/termbox2.c')
 
 helper_files = files('src/helper/string_helper.c',)
 
+data_types_files = files('src/data_types/cache/string_cache.c')
+
 src_files = files('src/main.c',
                   'src/game.c',)
 
@@ -20,8 +22,10 @@ io_files = files('src/io/menu.c')
 
 input_files = files('src/io/input/input_handler.c')
 
-output_files = files('src/io/output/common/common_output.c',
-                     'src/io/output/specific/map_output.c',)
+output_files = files('src/io/output/output.c',
+                     'src/io/output/common/common_output.c',
+                     'src/io/output/specific/map_output.c',
+                     'src/io/output/specific/character_output.c',)
 
 local_files = files('src/io/local/local_handler.c',)
 
@@ -50,6 +54,7 @@ inventory_files = files('src/game_data/inventory/inventory.c',
 
 character_files = files('src/game_modes/character/lvl_up_mode.c',
                         'src/game_modes/character/character_creation_mode.c',
+                        'src/game_modes/character/character_mode.c',
                         'src/game_data/character/character.c',
                         'src/game_data/character/character_parser.c',
                         'src/game_data/character/character_save_handler.c',
@@ -64,6 +69,7 @@ game_data_files = files('src/game_data/save_file_handler.c')
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
+                          data_types_files,
                           helper_files,
                           src_files,
                           memory_files,

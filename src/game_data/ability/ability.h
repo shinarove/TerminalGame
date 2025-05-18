@@ -42,8 +42,8 @@ typedef struct ability {
     char c_target;       // 's' for self, 'e' for enemy
     char r_target;       // 'h' for health, 's' for stamina, 'm' for mana
     char effect_type;    // 'd' for damage, 'h' for heal
-    char effect_scaler;  // 's' for strength, 'i' for intelligence, 'a' for agility, 'e' for endurance, 'l' for luck
-    char accuracy_scaler;// 's' for strength, 'i' for intelligence, 'a' for agility, 'e' for endurance, 'l' for luck
+    char effect_scaler;  // 's' for strength, 'i' for intelligence, 'a' for agility, 'c' for constitution, 'l' for luck
+    char accuracy_scaler;// 's' for strength, 'i' for intelligence, 'a' for agility, 'c' for constitution, 'l' for luck
     char r_cost;         // 'h' for health, 's' for stamina, 'm' for mana
 
     int effect_dice;   // dice to calculate the base effect

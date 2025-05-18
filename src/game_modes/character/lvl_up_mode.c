@@ -27,7 +27,7 @@ enum lvl_up_mode_index {
     STRENGTH_STR,
     INTELLIGENCE_STR,
     AGILITY_STR,
-    ENDURANCE_STR,
+    CONSTITUTION_STR,
     LUCK_STR,
     LEVEL_STR,
     HEALTH_STR,
@@ -175,7 +175,7 @@ void update_lvl_up_mode_local(void) {
     lvl_up_mode_strings[STRENGTH_STR] = get_local_string("STRENGTH");
     lvl_up_mode_strings[INTELLIGENCE_STR] = get_local_string("INTELLIGENCE");
     lvl_up_mode_strings[AGILITY_STR] = get_local_string("AGILITY");
-    lvl_up_mode_strings[ENDURANCE_STR] = get_local_string("ENDURANCE");
+    lvl_up_mode_strings[CONSTITUTION_STR] = get_local_string("CONSTITUTION");
     lvl_up_mode_strings[LUCK_STR] = get_local_string("LUCK");
     lvl_up_mode_strings[LEVEL_STR] = get_local_string("LEVEL");
     lvl_up_mode_strings[HEALTH_STR] = get_local_string("HEALTH");
@@ -201,7 +201,7 @@ void update_lvl_up_head(const character_t* player) {
              lvl_up_mode_strings[STRENGTH_STR], player->current_attributes.strength,
              lvl_up_mode_strings[INTELLIGENCE_STR], player->current_attributes.intelligence,
              lvl_up_mode_strings[AGILITY_STR], player->current_attributes.agility,
-             lvl_up_mode_strings[ENDURANCE_STR], player->current_attributes.constitution,
+             lvl_up_mode_strings[CONSTITUTION_STR], player->current_attributes.constitution,
              lvl_up_mode_strings[LUCK_STR], player->current_attributes.luck);
     lvl_up_mode_strings[LVL_UP_HEAD] = lvl_up_head_str;
 }

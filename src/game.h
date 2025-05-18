@@ -16,7 +16,6 @@ typedef enum {
     ENTER_PREV_FLOOR,
     COMBAT_MODE,
     LVL_UP_MODE,
-    INVENTORY_MODE,
     CHARACTER_MODE,
     MAIN_MENU,
     LANGUAGE_MODE,

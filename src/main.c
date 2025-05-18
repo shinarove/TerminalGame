@@ -16,6 +16,7 @@
 #include "io/local/local_handler.h"
 #include "logger/logger.h"
 #include "memory/mem_mgmt.h"
+#include "io/output/output.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -24,6 +25,7 @@ enum exit_codes {
     SUCCESS,
     ERROR_MEMORY_POOL_INIT,
     ERROR_LOCAL_INIT,
+    ERROR_OUTPUT_INIT,
     ERROR_CHARACTER_CREATION_INIT,
     ERROR_MAP_MODE_INIT,
     ERROR_COMBAT_MODE_INIT,
@@ -48,6 +50,7 @@ int init(memory_pool_t** pool) {
     *pool = init_memory_pool(MIN_MEMORY_POOL_SIZE);
     if (*pool == NULL) return ERROR_MEMORY_POOL_INIT;
     if (init_local_handler(LANGE_EN) != 0) return ERROR_LOCAL_INIT;
+    if (init_output() != 0) return ERROR_OUTPUT_INIT;
 
     // init of the different modes
     if (init_character_creation() != 0) return ERROR_CHARACTER_CREATION_INIT;
@@ -106,6 +109,7 @@ void shutdown(memory_pool_t** pool) {
     shutdown_character_creation();
 
     // shutdown core components
+    shutdown_output();
     shutdown_local_handler();
     shutdown_memory_pool(*pool);
     shutdown_input_handler();

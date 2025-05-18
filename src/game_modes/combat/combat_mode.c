@@ -425,7 +425,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO print used ability
                      combat_mode_strings[ENEMY_ABILITY_HIT]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             update_combat_head(player, enemy);
@@ -444,7 +444,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO print used ability
                      combat_mode_strings[ENEMY_ABILITY_MISSED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();
@@ -454,7 +454,7 @@ state_t evaluate_enemy_ability_usage(const usage_result_t result, const characte
             if (combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] != NULL) free(combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
             char_buffer = malloc(64);
             snprintf(char_buffer, 64, ENEMY_ABILITY_USAGE_FORMAT,
-                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO
+                     combat_mode_strings[ENEMY_NAME], combat_mode_strings[USED_STR], enemy->abilities->abilities[0]->local_name,//TODO print used ability
                      combat_mode_strings[ENEMY_ABILITY_FAILED]);
             combat_mode_strings[ENEMY_ABILITY_USAGE_INFO] = char_buffer;
             clear_screen();

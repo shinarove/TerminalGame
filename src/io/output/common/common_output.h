@@ -59,6 +59,7 @@ void clear_line(int y, int x_start, int x_end);
  */
 void print_text(int x, int y, color_t fg, color_t bg, const char* text);
 
+void print_text_f(int x, int y, color_t fg, color_t bg, const char* format, ...);
 
 /**
  * Displays a simple menu at specified screen coordinates using termbox for rendering.
