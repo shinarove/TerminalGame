@@ -26,6 +26,15 @@ typedef struct character {
     char* name;
     ability_array_t* abilities;
     inventory_t* inventory;// the character's inventory
+
+    unsigned int health_u_flag : 1; // when either the base, max or current health was changed
+    unsigned int stamina_u_flag : 1; // when either the base, max or current stamina was changed
+    unsigned int mana_u_flag : 1; // when either the base, max or current mana was changed
+    unsigned int strength_u_flag : 1; // when either the base, max or current strength was changed
+    unsigned int intelligence_u_flag : 1; // when either the base, max or current intelligence was changed
+    unsigned int agility_u_flag : 1; // when either the base, max or current agility was changed
+    unsigned int constitution_u_flag : 1; // when either the base, max or current constitution was changed
+    unsigned int luck_u_flag : 1; // when either the base, max or current luck was changed
 } character_t;
 
 static const struct {
@@ -247,5 +256,7 @@ ability_t* get_ability_by_id_c(const character_t* character, ability_id_t abilit
  *         ability list, or index is invalid.
  */
 ability_t* get_ability_by_index_c(const character_t* character, int index);
+
+void reset_update_flags_c(character_t* character);
 
 #endif//CHARACTER_H
