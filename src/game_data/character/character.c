@@ -116,44 +116,42 @@ void add_resources_c(character_t* character, const int health, const int stamina
     character->current_resources.stamina = cur_res.stamina + stamina > max_res.stamina ? max_res.stamina : cur_res.stamina + stamina;
     character->current_resources.mana = cur_res.mana + mana > max_res.mana ? max_res.mana : cur_res.mana + mana;
 
-    // update the update flags
-    if (health != 0) character->health_u_flag = 1;
-    if (stamina != 0) character->stamina_u_flag = 1;
-    if (mana != 0) character->mana_u_flag = 1;
+    // update the ressource flag
+    if (health != 0 || stamina != 0 || mana != 0) {
+        character->u_flag_resources = 1;
+    }
 }
 
 void reset_resources_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_resources_c` given character is NULL")
     character->current_resources = character->max_resources;
 
-    // update the update flags
-    character->health_u_flag = 1;
-    character->stamina_u_flag = 1;
-    character->mana_u_flag = 1;
+    // update the ressource flags
+    character->u_flag_resources = 1;
 }
 
 void reset_health_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_health_c` given character is NULL")
     character->current_resources.health = character->max_resources.health;
 
-    // update the update flags
-    character->health_u_flag = 1;
+    // update the ressource flags
+    character->u_flag_resources = 1;
 }
 
 void reset_stamina_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_stamina_c` given character is NULL")
     character->current_resources.stamina = character->max_resources.stamina;
 
-    // update the update flags
-    character->stamina_u_flag = 1;
+    // update the ressource flags
+    character->u_flag_resources = 1;
 }
 
 void reset_mana_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_mana_c` given character is NULL")
     character->current_resources.mana = character->max_resources.mana;
 
-    // update the update flags
-    character->mana_u_flag = 1;
+    // update the ressource flags
+    character->u_flag_resources = 1;
 }
 
 int check_exp_c(const character_t* character) {
@@ -194,31 +192,26 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
             character->base_attributes.strength++;
             character->max_attributes.strength++;
             character->current_attributes.strength++;
-            character->strength_u_flag = 1;
             break;
         case INTELLIGENCE:
             character->base_attributes.intelligence++;
             character->max_attributes.intelligence++;
             character->current_attributes.intelligence++;
-            character->intelligence_u_flag = 1;
             break;
         case AGILITY:
             character->base_attributes.agility++;
             character->max_attributes.agility++;
             character->current_attributes.agility++;
-            character->agility_u_flag = 1;
             break;
         case CONSTITUTION:
             character->base_attributes.constitution++;
             character->max_attributes.constitution++;
             character->current_attributes.constitution++;
-            character->constitution_u_flag = 1;
             break;
         case LUCK:
             character->base_attributes.luck++;
             character->max_attributes.luck++;
             character->current_attributes.luck++;
-            character->luck_u_flag = 1;
             break;
         default:
             //general error handling, when the given attribute id is not supported
@@ -226,10 +219,9 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
             break;
     }
 
-    // update the ressource update flags
-    character->health_u_flag = 1;
-    character->stamina_u_flag = 1;
-    character->mana_u_flag = 1;
+    // update the ressource and attribute flags
+    character->u_flag_resources = 1;
+    character->u_flag_attributes = 1;
 }
 
 int add_gear_c(character_t* character, const gear_id_t gear_id) {
@@ -418,25 +410,15 @@ void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, c
     character->current_attributes.luck += character->max_attributes.luck - prev_max_att.luck;
 
     // update the update flags
-    character->health_u_flag = 1;
-    character->stamina_u_flag = 1;
-    character->mana_u_flag = 1;
-    character->strength_u_flag = 1;
-    character->intelligence_u_flag = 1;
-    character->agility_u_flag = 1;
-    character->constitution_u_flag = 1;
-    character->luck_u_flag = 1;
+    character->u_flag_resources = 1;
+    character->u_flag_attributes = 1;
 }
 
 void reset_update_flags_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_update_flags_c` given character is NULL")
 
-    character->health_u_flag = 0;
-    character->stamina_u_flag = 0;
-    character->mana_u_flag = 0;
-    character->strength_u_flag = 0;
-    character->intelligence_u_flag = 0;
-    character->agility_u_flag = 0;
-    character->constitution_u_flag = 0;
-    character->luck_u_flag = 0;
+    character->u_flag_resources = 0;
+    character->u_flag_attributes = 0;
+    character->u_flag_abilities = 0;
+    character->u_flag_inventory = 0;
 }
