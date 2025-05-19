@@ -154,7 +154,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                         cc_state = RESSOURCE_DISTRIBUTION;
                         clear_screen();
                         // print the character info (with update) once before ressource distribution
-                        print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                        print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     }
                     break;
                 case QUIT:
@@ -171,36 +171,36 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 case 0:// decrease health by one
                     update_stats(player->base_resources.health > 1,
                                  &player->base_resources.health, &player->unspent_res_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 1:// increase health by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.health, &player->unspent_res_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 2:// decrease stamina by one
                     update_stats(player->base_resources.stamina > 1,
                                  &player->base_resources.stamina, &player->unspent_res_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 3:// increase stamina by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.stamina, &player->unspent_res_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 4:// decrease mana by one
                     update_stats(player->base_resources.mana > 1,
                                  &player->base_resources.mana, &player->unspent_res_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 5:// increase mana by one
                     update_stats(player->unspent_res_p > 0,
                                  &player->base_resources.mana, &player->unspent_res_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case MAX_RESOURCES * 2:// nothing was pressed, do nothing
                 case -1:               // ESC was pressed, do nothing
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_no_update);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -239,56 +239,56 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 case 0:// decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
                                  &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 1:// increase strength by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 2:// decrease intelligence by one
                     update_stats(player->base_attributes.intelligence > 1,
                                  &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 3:// increase intelligence by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 4:// decrease agility by one
                     update_stats(player->base_attributes.agility > 1,
                                  &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 5:// increase agility by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 6:// decrease endurance by one
                     update_stats(player->base_attributes.constitution > 1,
                                  &player->base_attributes.constitution, &player->unspent_attr_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 7:// increase endurance by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.constitution, &player->unspent_attr_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 8:// decrease luck by one
                     update_stats(player->base_attributes.luck > 1,
                                  &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case 9:// increase luck by one
                     update_stats(player->unspent_attr_p > 0,
                                  &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_update);
                     break;
                 case MAX_ATTRIBUTES * 2:// nothing was pressed, do nothing
                 case -1:                // ESC was pressed, do nothing
-                    print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
+                    print_c_hori(5, CC_Y_POS_HEAD, player, args_no_update);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -323,7 +323,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
             break;
         case WAIT_AFTER_CREATION:
-            print_info_c(5, CC_Y_POS_HEAD, player, args_no_update);
+            print_c_hori(5, CC_Y_POS_HEAD, player, args_no_update);
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {
