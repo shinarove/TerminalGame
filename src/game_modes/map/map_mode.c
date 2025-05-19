@@ -7,6 +7,7 @@
 #include "../../io/output/specific/map_output.h"
 #include "../../logger/logger.h"
 #include "map_event_handler.h"
+#include "../../io/output/specific/character_output.h"
 
 enum map_mode_index {
     GAME_TITLE,
@@ -20,7 +21,7 @@ void update_map_mode_local(void);
 int init_map_mode() {
     // allocate memory for the local strings
     map_mode_strings = (char**) malloc(sizeof(char*) * MAX_MAP_MODE_INDEX);
-    RETURN_WHEN_NULL(map_mode_strings, 1, "Map Mode", "Failed to allocate memory for map mode strings.");
+    RETURN_WHEN_NULL(map_mode_strings, 1, "Map Mode", "Failed to allocate memory for map mode strings.")
 
     for (int i = 0; i < MAX_MAP_MODE_INDEX; i++) {
         map_mode_strings[i] = NULL;
@@ -37,11 +38,14 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     const int player_on_map_idx = map->player_pos.dx * map->height + map->player_pos.dy;
 
     parsed_map_t* parsed_map = create_parsed_map(map->width, map->height, map->revealed_tiles, map->player_pos);
-    RETURN_WHEN_NULL(parsed_map, EXIT_GAME, "Map Mode", "Failed to parse map");
+    RETURN_WHEN_NULL(parsed_map, EXIT_GAME, "Map Mode", "Failed to parse map")
 
-    // clear_screen();
-    print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, map_mode_strings[GAME_TITLE]);
+    print_text(5, 2, RED, DEFAULT, map_mode_strings[GAME_TITLE]);
     print_map(5, 4, parsed_map);
+
+    const output_args_c_t args_not_update = {false, true, true};
+    const output_args_c_t args_update = {true, true, true};
+    print_c_vert(5 + map->width + 2, 4, player, args_not_update);
 
     free(parsed_map->tiles);
     free(parsed_map);
@@ -72,13 +76,10 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
             clear_screen();
             next_state = MAIN_MENU;//open the main menu
             break;
-        case I:
+        case I: // open character screen
+        case C: // open character screen
             clear_screen();
-            next_state = CHARACTER_MODE;// open inventory
-            break;
-        case C:
-            clear_screen();
-            next_state = CHARACTER_MODE;// open character screen
+            next_state = CHARACTER_MODE;
             break;
         case QUIT:
             next_state = EXIT_GAME;// exit game
