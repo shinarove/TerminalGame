@@ -7,8 +7,12 @@
  * A structure to hold the arguments for the character output subsystem.
  */
 typedef struct output_args_c {
-    bool show_res_curr_max; // if true the max resources are shown
-    bool show_attr_max; // if true the max attributes are shown, otherwise the base attributes are shown
+    // if 1 the current and max resources are shown, otherwise only the base resources are shown
+    unsigned int res_curr_max : 1;
+    // if 1 the max attributes are shown, otherwise the base attributes are shown
+    unsigned int attr_max : 1;
+    // if 1 the resources and attributes are shown in short form (e.g. STR, AGI)
+    unsigned int res_attr_short : 1;
 } output_args_c_t;
 
 /**
