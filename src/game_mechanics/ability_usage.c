@@ -271,6 +271,8 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
                     "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
+    // update the resource flag
+    target->u_flag_res = 1;
     return res;
 }
 
@@ -290,5 +292,7 @@ usage_result_t heal_target(character_t* target, const char r_target, const int h
                     "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
+    // update the resource flag
+    target->u_flag_res = 1;
     return SUCCESS;
 }
