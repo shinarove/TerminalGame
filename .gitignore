@@ -3,3 +3,5 @@
 buildDir
 
 log/*.txt
+
+save_files/*.sav
