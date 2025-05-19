@@ -7,7 +7,6 @@
  * A structure to hold the arguments for the character output subsystem.
  */
 typedef struct output_args_c {
-    bool update; // if true the character information is updated in the cache
     bool show_res_curr_max; // if true the max resources are shown
     bool show_attr_max; // if true the max attributes are shown, otherwise the base attributes are shown
 } output_args_c_t;
@@ -30,9 +29,9 @@ int init_character_output(void);
  * @param character Pointer to the character whose information needs to be displayed.
  * @param args A structure containing diverse flags.
  */
-void print_c_res_attr_hori(const int x, int y, const character_t* character, const output_args_c_t args);
+void print_c_res_attr_hori(int x, int y, character_t* character, output_args_c_t args);
 
-void print_c_res_attr_vert(int x, int y, const character_t* character, output_args_c_t args);
+void print_c_res_attr_vert(int x, int y, character_t* character, output_args_c_t args);
 
 /**
  * Shuts down the character output subsystem, releasing all associated resources.

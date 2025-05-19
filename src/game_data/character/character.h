@@ -27,10 +27,10 @@ typedef struct character {
     ability_array_t* abilities;
     inventory_t* inventory;// the character's inventory
 
-    unsigned int u_flag_resources : 1; // when either the base, max or current resources was changed
-    unsigned int u_flag_attributes : 1; // when either the base, max or current attributes was changed
-    unsigned int u_flag_abilities : 1; // when the abilities were changed
-    unsigned int u_flag_inventory : 1; // when the inventory was changed
+    unsigned int u_flag_res : 1; // when either the base, max or current resources was changed
+    unsigned int u_flag_attr : 1; // when either the base, max or current attributes was changed
+    unsigned int u_flag_abi : 1; // when the abilities were changed
+    unsigned int u_flag_inv : 1; // when the inventory was changed
 } character_t;
 
 static const struct {

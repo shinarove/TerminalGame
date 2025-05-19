@@ -118,7 +118,7 @@ void add_resources_c(character_t* character, const int health, const int stamina
 
     // update the ressource flag
     if (health != 0 || stamina != 0 || mana != 0) {
-        character->u_flag_resources = 1;
+        character->u_flag_res = 1;
     }
 }
 
@@ -127,7 +127,7 @@ void reset_resources_c(character_t* character) {
     character->current_resources = character->max_resources;
 
     // update the ressource flags
-    character->u_flag_resources = 1;
+    character->u_flag_res = 1;
 }
 
 void reset_health_c(character_t* character) {
@@ -135,7 +135,7 @@ void reset_health_c(character_t* character) {
     character->current_resources.health = character->max_resources.health;
 
     // update the ressource flags
-    character->u_flag_resources = 1;
+    character->u_flag_res = 1;
 }
 
 void reset_stamina_c(character_t* character) {
@@ -143,7 +143,7 @@ void reset_stamina_c(character_t* character) {
     character->current_resources.stamina = character->max_resources.stamina;
 
     // update the ressource flags
-    character->u_flag_resources = 1;
+    character->u_flag_res = 1;
 }
 
 void reset_mana_c(character_t* character) {
@@ -151,7 +151,7 @@ void reset_mana_c(character_t* character) {
     character->current_resources.mana = character->max_resources.mana;
 
     // update the ressource flags
-    character->u_flag_resources = 1;
+    character->u_flag_res = 1;
 }
 
 int check_exp_c(const character_t* character) {
@@ -220,8 +220,8 @@ void lvl_up_c(character_t* character, const attr_id_t attr_to_increase) {
     }
 
     // update the ressource and attribute flags
-    character->u_flag_resources = 1;
-    character->u_flag_attributes = 1;
+    character->u_flag_res = 1;
+    character->u_flag_attr = 1;
 }
 
 int add_gear_c(character_t* character, const gear_id_t gear_id) {
@@ -410,15 +410,15 @@ void apply_bonus_stats_c(character_t* character, const resources_t* bonus_res, c
     character->current_attributes.luck += character->max_attributes.luck - prev_max_att.luck;
 
     // update the update flags
-    character->u_flag_resources = 1;
-    character->u_flag_attributes = 1;
+    character->u_flag_res = 1;
+    character->u_flag_attr = 1;
 }
 
 void reset_update_flags_c(character_t* character) {
     RETURN_WHEN_NULL(character, , "Character", "In `reset_update_flags_c` given character is NULL")
 
-    character->u_flag_resources = 0;
-    character->u_flag_attributes = 0;
-    character->u_flag_abilities = 0;
-    character->u_flag_inventory = 0;
+    character->u_flag_res = 0;
+    character->u_flag_attr = 0;
+    character->u_flag_abi = 0;
+    character->u_flag_inv = 0;
 }
