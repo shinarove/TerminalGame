@@ -167,11 +167,18 @@ void start_game_loop(memory_pool_t* used_pool) {
 
                     if (check_exp_c(game_state.player)) {
                         current = prepare_lvl_up_mode(game_state.player);
+                    } else {
+                        // workaround to update the player text in map mode
+                        game_state.player->u_flag_res = 1;
                     }
                 }
                 break;
             case LVL_UP_MODE:
                 current = update_lvl_up_mode(input, game_state.player);
+                if (current == MAP_MODE) {
+                    // workaround to update the player text in map mode
+                    game_state.player->u_flag_res = 1;
+                }
                 break;
             case CHARACTER_MODE:
             case MAIN_MENU:
