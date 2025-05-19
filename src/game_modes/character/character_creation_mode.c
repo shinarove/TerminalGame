@@ -115,7 +115,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Creation", "In `update_character_creation` given player is NULL.")
     state_t res = CHARACTER_CREATION;
 
-    const output_args_c_t cc_args = { false, false};
+    const output_args_c_t cc_args = { 0, 0, 0};
 
     switch (cc_state) {
         case PRE_CREATION:
@@ -138,6 +138,9 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 clear_line(6, 5, CLEAR_X_END);
             }
 
+            // print the currently written name
+            print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
+
             switch (input) {
                 case BACKSPACE:
                     clear_line(4, 7, CLEAR_X_END);
@@ -159,8 +162,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 default:
                     break;
             }
-            // print the name
-            print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
+
             break;
         case RESSOURCE_DISTRIBUTION:
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {

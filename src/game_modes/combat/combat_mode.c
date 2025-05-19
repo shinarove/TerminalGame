@@ -153,7 +153,7 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     RETURN_WHEN_NULL(player, EXIT_GAME, "Combat Mode", "Player is NULL.")
     RETURN_WHEN_NULL(enemy, EXIT_GAME, "Combat Mode", "Enemy is NULL.")
 
-    const output_args_c_t combat_mode_args = {true, true};
+    const output_args_c_t combat_mode_args = {1, 1, 0};
     print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, combat_mode_args);
     print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, combat_mode_args);
 

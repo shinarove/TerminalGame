@@ -70,7 +70,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
 
     print_text(5, LVLUP_Y_POS_TITLE, WHITE, DEFAULT, lvl_up_mode_strings[LEVEL_UP_TITLE]);
 
-    const output_args_c_t lvl_up_args = {true, true};
+    const output_args_c_t lvl_up_args = {1, 1, 0};
     print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
