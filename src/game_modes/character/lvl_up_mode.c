@@ -54,9 +54,7 @@ int init_lvl_up_mode(void) {
     return 0;
 }
 
-state_t prepare_lvl_up_mode(const character_t* player) {
-    RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `prepare_lvl_up_mode` given player is NULL.")
-
+state_t prepare_lvl_up_mode() {
     // reset the menu selected index
     lvl_up_menu.selected_index = 0;
 

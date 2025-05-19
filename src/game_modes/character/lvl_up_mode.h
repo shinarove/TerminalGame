@@ -18,19 +18,14 @@
 int init_lvl_up_mode(void);
 
 /**
- * Prepares the Level-Up mode for the specified player.
- * This function cleans up any previously allocated strings used in the
- * Level-Up mode, prepares new strings based on the player's attributes,
- * updates the player's level-related information, and sets up the mode for
- * further interactions. Logs an error and returns the EXIT_GAME state if
- * the provided player is null.
+ * Prepares the Level-Up mode state for the application.
+ * This function resets the selected index of the level-up menu to its initial state
+ * and ensures that the system is correctly set up to transition into the Level-Up
+ * mode state.
  *
- * @param player The character for whom the Level-Up mode is being prepared.
- *                Must not be NULL.
- * @return LVL_UP_MODE if preparation is successful, otherwise EXIT_GAME
- *         if the player is null.
+ * @return LVL_UP_MODE to indicate that the Level-Up mode is ready to be entered.
  */
-state_t prepare_lvl_up_mode(const character_t* player);
+state_t prepare_lvl_up_mode(void);
 
 /**
  * Updates the Level-Up mode of the game based on user input.

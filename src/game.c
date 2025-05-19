@@ -15,7 +15,7 @@
 #include "io/input/input_handler.h"
 #include "logger/logger.h"
 
-#define FRAMES_PER_SECONDS 20.0
+#define FRAMES_PER_SECONDS 26.0
 
 #define MAX_MAP_COUNT 5
 #define MAP_HEIGHT 19
@@ -166,7 +166,7 @@ void start_game_loop(memory_pool_t* used_pool) {
                     enemy = NULL;
 
                     if (check_exp_c(game_state.player)) {
-                        current = prepare_lvl_up_mode(game_state.player);
+                        current = prepare_lvl_up_mode();
                     } else {
                         // workaround to update the player text in map mode
                         game_state.player->u_flag_res = 1;
