@@ -30,7 +30,9 @@ int init_character_output(void);
  * @param character Pointer to the character whose information needs to be displayed.
  * @param args A structure containing diverse flags.
  */
-void print_c_hori(const int x, int y, const character_t* character, const output_args_c_t args);
+void print_c_hori(int x, int y, const character_t* character, output_args_c_t args);
+
+void print_c_vert(int x, int y, const character_t* character, output_args_c_t args);
 
 /**
  * Shuts down the character output subsystem, releasing all associated resources.
