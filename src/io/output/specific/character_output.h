@@ -37,6 +37,8 @@ void print_c_res_attr_hori(int x, int y, character_t* character, output_args_c_t
 
 void print_c_res_attr_vert(int x, int y, character_t* character, output_args_c_t args);
 
+void print_c_base_bonus_attr(int x, int y, const character_t* character);
+
 /**
  * Shuts down the character output subsystem, releasing all associated resources.
  *

@@ -5,6 +5,7 @@
 #include "../../local/local_handler.h"
 #include "../../string_formats.h"
 #include "../common/common_output.h"
+#include "../../../../termbox2/termbox2.h"
 
 #include <stdio.h>
 
@@ -16,7 +17,7 @@ typedef struct {
     int call_count; // the number of times this character with the given args has been called
 } char_args_map_t;
 
-enum cache_co_offset {
+enum char_str_cache_offset {
     NAME_LVL_STR,
     RES_HEALTH_STR,
     RES_STAMINA_STR,
@@ -29,7 +30,7 @@ enum cache_co_offset {
     MAX_CACHED_CO_STRINGS
 };
 
-enum co_index {
+enum co_str_index {
     LEVEL_STR,
     HEALTH_STR,
     STAMINA_STR,
@@ -52,8 +53,8 @@ enum co_index {
 
 char** co_strings = NULL;
 
-char_args_map_t** cached_char_args = NULL;
-string_cache_t* character_cache = NULL;
+char_args_map_t** char_args_cache = NULL;
+string_cache_t* char_str_cache = NULL;
 
 void update_character_output_local(void);
 
@@ -64,16 +65,16 @@ char_args_map_t* wrap_char_args(character_t* character, output_args_c_t args);
 int init_character_output() {
     co_strings = (char**) malloc(sizeof(char*) * MAX_CO_STRINGS);
     RETURN_WHEN_NULL(co_strings, 1, "Character Output", "Failed to allocate memory for character output strings.")
-    cached_char_args = (char_args_map_t**) malloc(sizeof(char_args_map_t*) * NUM_CACHED_CHARS);
-    RETURN_WHEN_NULL(cached_char_args, 1, "Character Output", "Failed to allocate memory for character args cache.")
-    character_cache = create_string_cache(NUM_CACHED_CHARS, MAX_CACHED_CO_STRINGS);
-    RETURN_WHEN_NULL(character_cache, 1, "Character Output", "Failed to create a string cache for character output.")
+    char_args_cache = (char_args_map_t**) malloc(sizeof(char_args_map_t*) * NUM_CACHED_CHARS);
+    RETURN_WHEN_NULL(char_args_cache, 1, "Character Output", "Failed to allocate memory for character args cache.")
+    char_str_cache = create_string_cache(NUM_CACHED_CHARS, MAX_CACHED_CO_STRINGS);
+    RETURN_WHEN_NULL(char_str_cache, 1, "Character Output", "Failed to create a string cache for character output.")
 
     for (int i = 0; i < MAX_CO_STRINGS; i++) {
         co_strings[i] = NULL;
     }
     for (int i = 0; i < NUM_CACHED_CHARS; i++) {
-        cached_char_args[i] = NULL;
+        char_args_cache[i] = NULL;
     }
 
     update_character_output_local();
@@ -88,13 +89,13 @@ void print_c_res_attr_hori(const int x, int y, character_t* character, const out
     char_args_map_t* char_args = wrap_char_args(character, args); // wrap the character and args in a struct
     if (char_args == NULL) return;
 
-    char** strings = get_strings_from_cache(character_cache, char_args);
+    char** strings = get_strings_from_cache(char_str_cache, char_args);
     if (strings == NULL || character->u_flag_res == 1 || character->u_flag_attr == 1) {
         // update the strings in the cache if they are not cached or if the update flags are set
         char** temp_strings = prepare_char_strings(character, args);
         RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_res_attr_hori` failed to prepare strings.")
 
-        strings = put_strings_in_cache(character_cache, char_args, temp_strings, MAX_CACHED_CO_STRINGS);
+        strings = put_strings_in_cache(char_str_cache, char_args, temp_strings, MAX_CACHED_CO_STRINGS);
         RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_res_attr_hori` failed to put strings in cache.")
         free(temp_strings);// only the pointer to pointers needs to be freed, the rest is now cached
 
@@ -117,13 +118,13 @@ void print_c_res_attr_vert(const int x, int y, character_t* character, const out
     char_args_map_t* char_args = wrap_char_args(character, args); // wrap the character and args in a struct
     if (char_args == NULL) return;
 
-    char** strings = get_strings_from_cache(character_cache, char_args);
+    char** strings = get_strings_from_cache(char_str_cache, char_args);
     if (strings == NULL || character->u_flag_res == 1 || character->u_flag_attr == 1) {
         // update the strings in the cache if they are not cached or if the update flag is set
         char** temp_strings = prepare_char_strings(character, args);
         RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_res_attr_hori` failed to prepare strings.")
 
-        strings = put_strings_in_cache(character_cache, char_args, temp_strings, MAX_CACHED_CO_STRINGS);
+        strings = put_strings_in_cache(char_str_cache, char_args, temp_strings, MAX_CACHED_CO_STRINGS);
         RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_res_attr_hori` failed to put strings in cache.")
         free(temp_strings);// only the pointer to pointers needs to be freed, the rest is now cached
 
@@ -144,6 +145,76 @@ void print_c_res_attr_vert(const int x, int y, character_t* character, const out
     print_text(x + 1, y, WHITE, DEFAULT, strings[ATTR_LUCK_STR]);
 }
 
+void print_c_base_bonus_attr(const int x, int y, const character_t* character) {
+    if (character == NULL) {
+        log_msg(WARNING, "Character Output", "In `print_c_base_bonus_attr` given character is NULL");
+        return;
+    }
+
+    // prints the two lines as follows:
+    // Strength      | Intelligence      | Agility           | Constitution      | Luck
+    // [5] +4        | [?] -?            | [?] +?            | [?] +?            | [?] -?
+
+    const uintattr_t c_white = color_mapping[WHITE].value;
+    const uintattr_t c_default = color_mapping[DEFAULT].value;
+    const uintattr_t c_green = color_mapping[GREEN].value;
+    const uintattr_t c_red = color_mapping[RED].value;
+
+    tb_printf(x, y, c_white, c_default, "%s", co_strings[STRENGTH_STR]);
+    tb_printf(x + 14, y, c_white, c_default, "| %s", co_strings[INTELLIGENCE_STR]);
+    tb_printf(x + 34, y, c_white, c_default, "| %s", co_strings[AGILITY_STR]);
+    tb_printf(x + 54, y, c_white, c_default, "| %s", co_strings[CONSTITUTION_STR]);
+    tb_printf(x + 74, y++, c_white, c_default, "| %s", co_strings[LUCK_STR]);
+    // new line
+    // strength numbers
+    tb_printf(x, y, c_white, c_default, "[%d]", character->base_attributes.strength);
+    if (character->inventory->total_attribute_bonus.strength > 0) {
+        tb_printf(x + 5, y, c_green, c_default, "+%d", character->inventory->total_attribute_bonus.strength);
+    } else if (character->inventory->total_attribute_bonus.strength < 0) {
+        tb_printf(x + 5, y, c_red, c_default, "%d", character->inventory->total_attribute_bonus.strength);
+    } else {
+        tb_printf(x + 5, y, c_white, c_default, "-");
+    }
+    // intelligence numbers
+    tb_printf(x + 16, y, c_white, c_default, "[%d]", character->base_attributes.intelligence);
+    if (character->inventory->total_attribute_bonus.intelligence > 0) {
+        tb_printf(x + 21, y, c_green, c_default, "+%d", character->inventory->total_attribute_bonus.intelligence);
+    } else if (character->inventory->total_attribute_bonus.intelligence < 0) {
+        tb_printf(x + 21, y, c_red, c_default, "%d", character->inventory->total_attribute_bonus.intelligence);
+    } else {
+        tb_printf(x + 21, y, c_white, c_default, "-");
+    }
+    // agility numbers
+    tb_printf(x + 36, y, c_white, c_default, "[%d]", character->base_attributes.agility);
+    if (character->inventory->total_attribute_bonus.agility > 0) {
+        tb_printf(x + 41, y, c_green, c_default, "+%d", character->inventory->total_attribute_bonus.agility);
+    } else if (character->inventory->total_attribute_bonus.agility < 0) {
+        tb_printf(x + 41, y, c_red, c_default, "%d", character->inventory->total_attribute_bonus.agility);
+    } else {
+        tb_printf(x + 41, y, c_white, c_default, "-");
+    }
+    // constitution numbers
+    tb_printf(x + 56, y, c_white, c_default, "[%d]", character->base_attributes.constitution);
+    if (character->inventory->total_attribute_bonus.constitution > 0) {
+        tb_printf(x + 61, y, c_green, c_default, "+%d", character->inventory->total_attribute_bonus.constitution);
+    } else if (character->inventory->total_attribute_bonus.constitution < 0) {
+        tb_printf(x + 61, y, c_red, c_default, "%d", character->inventory->total_attribute_bonus.constitution);
+    } else {
+        tb_printf(x + 61, y, c_white, c_default, "-");
+    }
+    // luck numbers
+    tb_printf(x + 76, y, c_white, c_default, "[%d]", character->base_attributes.luck);
+    if (character->inventory->total_attribute_bonus.luck > 0) {
+        tb_printf(x + 81, y, c_green, c_default, "+%d", character->inventory->total_attribute_bonus.luck);
+    } else if (character->inventory->total_attribute_bonus.luck < 0) {
+        tb_printf(x + 81, y, c_red, c_default, "%d", character->inventory->total_attribute_bonus.luck);
+    } else {
+        tb_printf(x + 81, y, c_white, c_default, "-");
+    }
+
+    tb_present();
+}
+
 void shutdown_character_output(void) {
     for (int i = 0; i < MAX_CO_STRINGS; i++) {
         if (co_strings[i] != NULL) {
@@ -154,19 +225,19 @@ void shutdown_character_output(void) {
     co_strings = NULL;
 
     for (int i = 0; i < NUM_CACHED_CHARS; i++) {
-        if (cached_char_args[i] != NULL) {
-            free(cached_char_args[i]);
+        if (char_args_cache[i] != NULL) {
+            free(char_args_cache[i]);
         }
     }
-    free(cached_char_args);
-    cached_char_args = NULL;
+    free(char_args_cache);
+    char_args_cache = NULL;
 
-    destroy_string_cache(character_cache);
-    character_cache = NULL;
+    destroy_string_cache(char_str_cache);
+    char_str_cache = NULL;
 }
 
 void update_character_output_local(void) {
-    reset_string_cache(character_cache);
+    reset_string_cache(char_str_cache);
 
     for (int i = 0; i < MAX_CO_STRINGS; i++) {
         if (co_strings[i] != NULL) {
@@ -264,13 +335,14 @@ char** prepare_char_strings(const character_t* character, const output_args_c_t 
 char_args_map_t* wrap_char_args(character_t* character, const output_args_c_t args) {
     // check if the character with the given args is already cached
     for (int i = 0; i < NUM_CACHED_CHARS; i++) {
-        if (cached_char_args[i] != NULL) {
-            if (cached_char_args[i]->character == character &&
-                cached_char_args[i]->args.res_curr_max == args.res_curr_max &&
-                cached_char_args[i]->args.attr_max == args.attr_max &&
-                cached_char_args[i]->args.res_attr_short == args.res_attr_short) {
-                cached_char_args[i]->call_count++;
-                return cached_char_args[i];
+        if (char_args_cache[i] != NULL) {
+            if (char_args_cache[i]->character == character &&
+                char_args_cache[i]->args.res_curr_max == args.res_curr_max &&
+                char_args_cache[i]->args.attr_max == args.attr_max &&
+                char_args_cache[i]->args.res_attr_short == args.res_attr_short) {
+
+                char_args_cache[i]->call_count++;
+                return char_args_cache[i];
             }
         }
     }
@@ -284,7 +356,7 @@ char_args_map_t* wrap_char_args(character_t* character, const output_args_c_t ar
     // find an empty slot in the cache
     int index = -1;
     for (int i = 0; i < NUM_CACHED_CHARS; i++) {
-        if (cached_char_args[i] == NULL) {
+        if (char_args_cache[i] == NULL) {
             index = i;
             break;
         }
@@ -292,16 +364,16 @@ char_args_map_t* wrap_char_args(character_t* character, const output_args_c_t ar
 
     // if no empty slot is found, remove the least used entry
     if (index == -1) {
-        int min_calls = cached_char_args[0]->call_count;
+        int min_calls = char_args_cache[0]->call_count;
         index = 0;
         for (int i = 1; i < NUM_CACHED_CHARS; i++) {
-            if (cached_char_args[i]->call_count < min_calls) {
-                min_calls = cached_char_args[i]->call_count;
+            if (char_args_cache[i]->call_count < min_calls) {
+                min_calls = char_args_cache[i]->call_count;
                 index = i;
             }
         }
-        free(cached_char_args[index]);
+        free(char_args_cache[index]);
     }
-    cached_char_args[index] = new_entry;
+    char_args_cache[index] = new_entry;
     return new_entry;
 }
