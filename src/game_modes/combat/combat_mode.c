@@ -148,10 +148,10 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     // update_combat_head(player, enemy);
 
     // print the player & enemy info once with update
-    print_c_hori(5, COMBAT_Y_POS_PLAYER_INFO, player,
-                 (output_args_c_t) {true, true, true});
-    print_c_hori(5, COMBAT_Y_POS_ENEMY_INFO, player,
-                 (output_args_c_t) {true, true, true});
+    print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player,
+                          (output_args_c_t) {true, true, true});
+    print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, player,
+                          (output_args_c_t) {true, true, true});
     return COMBAT_MODE;
 }
 
@@ -163,8 +163,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     const output_args_c_t args_no_update = {false, true, true};
     const output_args_c_t args_update = {true, true, true};
 
-    print_c_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_no_update);
-    print_c_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_no_update);
+    print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_no_update);
+    print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_no_update);
 
     state_t res = COMBAT_MODE;
     switch (combat_state) {
@@ -209,8 +209,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
                         const usage_result_t result = use_ability(player, enemy, ability);
                         res = evaluate_player_ability_usage(result, player, enemy);
                         if (result == SUCCESS || result == TARGET_DIED) {
-                            print_c_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
-                            print_c_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
+                            print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
+                            print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
                         }
                     } else if (selected_index != combat_mode_ability_menu.option_count) {
                         log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", selected_index);
@@ -249,8 +249,8 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             const usage_result_t result = use_ability(enemy, player, ability);
             res = evaluate_enemy_ability_usage(result, player, enemy);
             if (result == SUCCESS || result == TARGET_DIED) {
-                print_c_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
-                print_c_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
+                print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
+                print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
             }
             break;
         case WAIT_AFTER_ENEMY_ACTION:

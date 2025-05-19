@@ -59,18 +59,18 @@ int init_character_output() {
     return 0;
 }
 
-void print_c_hori(const int x, int y, const character_t* character, const output_args_c_t args) {
+void print_c_res_attr_hori(const int x, int y, const character_t* character, const output_args_c_t args) {
     RETURN_WHEN_NULL(co_strings, , "Character Output", "Module not initialized.")
-    RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_hori` given player is NULL.")
+    RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_res_attr_hori` given player is NULL.")
 
     char** strings = get_strings_from_cache(character_cache, (void*) character);
     if (strings == NULL || args.update) {
         // update the strings in the cache if they are not cached or if the update flag is set
         char** temp_strings = prepare_char_strings(character, args);
-        RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_hori` failed to prepare strings.")
+        RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_res_attr_hori` failed to prepare strings.")
 
         strings = put_strings_in_cache(character_cache, (void*) character, temp_strings, MAX_CACHED_CO_STRINGS);
-        RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_hori` failed to put strings in cache.")
+        RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_res_attr_hori` failed to put strings in cache.")
         free(temp_strings);// only the pointer to pointers needs to be freed, the rest is now cached
     }
 
@@ -81,18 +81,18 @@ void print_c_hori(const int x, int y, const character_t* character, const output
                  strings[ATTR_INTELLIGENCE_STR], strings[ATTR_AGILITY_STR], strings[ATTR_CONSTITUTION_STR], strings[ATTR_LUCK_STR]);
 }
 
-void print_c_vert(int x, int y, const character_t* character, output_args_c_t args) {
+void print_c_res_attr_vert(int x, int y, const character_t* character, output_args_c_t args) {
     RETURN_WHEN_NULL(co_strings, , "Character Output", "Module not initialized.")
-    RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_hori` given player is NULL.")
+    RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_res_attr_hori` given player is NULL.")
 
     char** strings = get_strings_from_cache(character_cache, (void*) character);
     if (strings == NULL || args.update) {
         // update the strings in the cache if they are not cached or if the update flag is set
         char** temp_strings = prepare_char_strings(character, args);
-        RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_hori` failed to prepare strings.")
+        RETURN_WHEN_NULL(temp_strings, , "Character Output", "In `print_c_res_attr_hori` failed to prepare strings.")
 
         strings = put_strings_in_cache(character_cache, (void*) character, temp_strings, MAX_CACHED_CO_STRINGS);
-        RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_hori` failed to put strings in cache.")
+        RETURN_WHEN_NULL(strings, , "Character Output", "In `print_c_res_attr_hori` failed to put strings in cache.")
         free(temp_strings);// only the pointer to pointers needs to be freed, the rest is now cached
     }
 
@@ -100,6 +100,7 @@ void print_c_vert(int x, int y, const character_t* character, output_args_c_t ar
     print_text(x + 2, y++, WHITE, DEFAULT, strings[RES_HEALTH_STR]);
     print_text(x + 2, y++, WHITE, DEFAULT, strings[RES_STAMINA_STR]);
     print_text(x + 2, y++, WHITE, DEFAULT, strings[RES_MANA_STR]);
+    y++;
     print_text(x + 2, y++, WHITE, DEFAULT, strings[ATTR_STRENGTH_STR]);
     print_text(x + 2, y++, WHITE, DEFAULT, strings[ATTR_INTELLIGENCE_STR]);
     print_text(x + 2, y++, WHITE, DEFAULT, strings[ATTR_AGILITY_STR]);
