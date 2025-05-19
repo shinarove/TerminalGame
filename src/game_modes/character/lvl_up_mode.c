@@ -1,6 +1,5 @@
 #include "lvl_up_mode.h"
 
-#include "../../game_data/character/stats.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../logger/logger.h"
@@ -56,62 +55,54 @@ int init_lvl_up_mode(void) {
 }
 
 state_t prepare_lvl_up_mode(const character_t* player) {
-    RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `prepare_lvl_up_mode` given player is NULL.");
+    RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `prepare_lvl_up_mode` given player is NULL.")
 
     // reset the menu selected index
     lvl_up_menu.selected_index = 0;
 
-    // print the player info once with update
-    print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player,
-                          (output_args_c_t) {true, true, true});
     return LVL_UP_MODE;
 }
 
 state_t update_lvl_up_mode(const input_t input, character_t* player) {
-    RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `update_lvl_up_mode` given player is NULL.");
+    RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `update_lvl_up_mode` given player is NULL.")
 
     state_t res = LVL_UP_MODE;
 
-    const output_args_c_t args_no_update = {false, true, true};
-
     print_text(5, LVLUP_Y_POS_TITLE, WHITE, DEFAULT, lvl_up_mode_strings[LEVEL_UP_TITLE]);
 
+    const output_args_c_t lvl_up_args = {true, true};
+    print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
+
     if (lvl_up_state == LVL_UP_SELECTION) {
-        const output_args_c_t args_update = {true, true, true};
         switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
             case STRENGTH:
                 lvl_up_c(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_update);
                 clear_screen();
                 break;
             case INTELLIGENCE:
                 lvl_up_c(player, INTELLIGENCE);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_update);
                 clear_screen();
                 break;
             case AGILITY:
                 lvl_up_c(player, AGILITY);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_update);
                 clear_screen();
                 break;
             case CONSTITUTION:
                 lvl_up_c(player, CONSTITUTION);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_update);
                 clear_screen();
                 break;
             case LUCK:
                 lvl_up_c(player, LUCK);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_update);
                 clear_screen();
                 break;
             case MAX_ATTRIBUTES:// nothing was pressed, do nothing
             case -1:            // ESC was pressed, do nothing
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_no_update);
+                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
                 break;
             case -2:// Ctrl + C was pressed
                 res = EXIT_GAME;
@@ -120,7 +111,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
         }
     } else if (lvl_up_state == WAIT_AFTER_LVL_UP) {
-        print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, args_no_update);
+        print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
         print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {

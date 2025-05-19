@@ -86,7 +86,7 @@ state_t evaluate_enemy_ability_usage(usage_result_t result, const character_t* p
 
 int init_combat_mode() {
     combat_mode_strings = (char**) malloc(sizeof(char*) * MAX_COMBAT_MODE_STRINGS);
-    RETURN_WHEN_NULL(combat_mode_strings, 1, "Combat Mode", "Failed to allocate memory for combat mode strings.");
+    RETURN_WHEN_NULL(combat_mode_strings, 1, "Combat Mode", "Failed to allocate memory for combat mode strings.")
 
     for (int i = 0; i < MAX_COMBAT_MODE_STRINGS; i++) {
         combat_mode_strings[i] = NULL;
@@ -145,13 +145,6 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     combat_mode_potion_menu.selected_index = 0;
     combat_mode_potion_menu.option_count = 0;
 
-    // update_combat_head(player, enemy);
-
-    // print the player & enemy info once with update
-    print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player,
-                          (output_args_c_t) {true, true, true});
-    print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, player,
-                          (output_args_c_t) {true, true, true});
     return COMBAT_MODE;
 }
 
@@ -160,11 +153,9 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     RETURN_WHEN_NULL(player, EXIT_GAME, "Combat Mode", "Player is NULL.")
     RETURN_WHEN_NULL(enemy, EXIT_GAME, "Combat Mode", "Enemy is NULL.")
 
-    const output_args_c_t args_no_update = {false, true, true};
-    const output_args_c_t args_update = {true, true, true};
-
-    print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_no_update);
-    print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_no_update);
+    const output_args_c_t combat_mode_args = {true, true};
+    print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, combat_mode_args);
+    print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, combat_mode_args);
 
     state_t res = COMBAT_MODE;
     switch (combat_state) {
@@ -208,10 +199,6 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
                                          "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", selected_index)
                         const usage_result_t result = use_ability(player, enemy, ability);
                         res = evaluate_player_ability_usage(result, player, enemy);
-                        if (result == SUCCESS || result == TARGET_DIED) {
-                            print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
-                            print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
-                        }
                     } else if (selected_index != combat_mode_ability_menu.option_count) {
                         log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", selected_index);
                     }
@@ -248,10 +235,6 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
             RETURN_WHEN_NULL(ability, EXIT_GAME, "Combat Mode", "In `update_combat_mode` enemy has no abilities.")
             const usage_result_t result = use_ability(enemy, player, ability);
             res = evaluate_enemy_ability_usage(result, player, enemy);
-            if (result == SUCCESS || result == TARGET_DIED) {
-                print_c_res_attr_hori(5, COMBAT_Y_POS_PLAYER_INFO, player, args_update);
-                print_c_res_attr_hori(5, COMBAT_Y_POS_ENEMY_INFO, enemy, args_update);
-            }
             break;
         case WAIT_AFTER_ENEMY_ACTION:
             print_text(5, COMBAT_Y_POS_BODY, WHITE, DEFAULT, combat_mode_strings[ENEMY_ABILITY_USAGE_INFO]);
