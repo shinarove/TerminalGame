@@ -19,6 +19,7 @@
 #endif//_WIN32
 
 #define ABILITY_FILE_NAME "ability_table.csv"
+#define ABILITY_STR_FORMAT "%s | %s %s: %d x D%d %s %s | %s %s: %d x D%d %s %s | %s: %d %s"
 
 #define INIT_ERROR_NULL(ptr, file, msg, ...)           \
     if (ptr == NULL) {                                 \
@@ -37,6 +38,8 @@
 ability_table_t* singleton_ability_table = NULL;
 
 void update_ability_local(void);
+
+void build_ability_str(void);
 
 ability_table_t* init_ability_table(const memory_pool_t* pool) {
     RETURN_WHEN_NULL(pool, NULL, "Ability", "Memory pool is NULL")
@@ -145,11 +148,13 @@ ability_table_t* init_ability_table(const memory_pool_t* pool) {
             INIT_ERROR_TRUE(parse_int(token, &singleton_ability_table->abilities[count].v_cost) != 0,
                             ability_file, "Failed to parse v_cost at line %d", count + 1)
 
+            singleton_ability_table->abilities[count].ability_str = NULL;
             count++;
         }
         fclose(ability_file);
         observe_local(update_ability_local);
     }
+    build_ability_str();
     return singleton_ability_table;//always return the singleton
 }
 
@@ -275,5 +280,116 @@ void update_ability_local() {
     for (int i = 0; i < singleton_ability_table->count; i++) {
         free(singleton_ability_table->abilities[i].local_name);
         singleton_ability_table->abilities[i].local_name = get_local_string(singleton_ability_table->abilities[i].key_name);
+    }
+
+    build_ability_str();
+}
+
+void build_ability_str(void) {
+    // build the ability strings as follows
+    // <name> | DMG dice: %d x D%d scales with <ATTRIBUTE> | ACC dice: %d x D%d scales with <ATTRIBUTE> | costs %d <RESOURCE>
+    // or for healing abilites
+    // <name> | HEAL dice: %d x D%d scales with <ATTRIBUTE> | ACC dice: %d x D%d scales with <ATTRIBUTE> | costs %d <RESOURCE>
+
+    char* temp_strs[14];
+    temp_strs[0] = get_local_string("HEALTH.SHORT");
+    temp_strs[1] = get_local_string("STAMINA.SHORT");
+    temp_strs[2] = get_local_string("MANA.SHORT");
+    temp_strs[3] = get_local_string("STRENGTH.SHORT");
+    temp_strs[4] = get_local_string("INTELLIGENCE.SHORT");
+    temp_strs[5] = get_local_string("AGILITY.SHORT");
+    temp_strs[6] = get_local_string("CONSTITUTION.SHORT");
+    temp_strs[7] = get_local_string("LUCK.SHORT");
+    temp_strs[8] = get_local_string("DAMAGE.SHORT");
+    temp_strs[9] = get_local_string("HEALING.SHORT");
+    temp_strs[10] = get_local_string("ACCURACY.SHORT");
+    temp_strs[11] = get_local_string("DICE");
+    temp_strs[12] = get_local_string("SCALES.WITH");
+    temp_strs[13] = get_local_string("COSTS");
+
+    ability_table_t* ability_table = get_ability_table();
+
+    for (int i = 0; i < ability_table->count; i++) {
+        ability_t* abil = &ability_table->abilities[i];
+
+        if (abil->ability_str != NULL) {
+            // free the previous string
+            free(abil->ability_str);
+        }
+
+        char* eff_scaler_str = NULL;
+        switch (abil->effect_scaler) {
+            case STRENGTH_CHAR:
+                eff_scaler_str = temp_strs[3];
+                break;
+            case INTELLIGENCE_CHAR:
+                eff_scaler_str = temp_strs[4];
+                break;
+            case AGILITY_CHAR:
+                eff_scaler_str = temp_strs[5];
+                break;
+            case CONSTITUTION_CHAR:
+                eff_scaler_str = temp_strs[6];
+                break;
+            case LUCK_CHAR:
+                eff_scaler_str = temp_strs[7];
+                break;
+            default:
+                eff_scaler_str = NULL;
+        }
+
+        char* acc_scaler_str = NULL;
+        switch (abil->accuracy_scaler) {
+            case STRENGTH_CHAR:
+                acc_scaler_str = temp_strs[3];
+                break;
+            case INTELLIGENCE_CHAR:
+                acc_scaler_str = temp_strs[4];
+                break;
+            case AGILITY_CHAR:
+                acc_scaler_str = temp_strs[5];
+                break;
+            case CONSTITUTION_CHAR:
+                acc_scaler_str = temp_strs[6];
+                break;
+            case LUCK_CHAR:
+                acc_scaler_str = temp_strs[7];
+                break;
+            default:
+                acc_scaler_str = NULL;
+        }
+
+        char* cost_str = NULL;
+        switch (abil->r_cost) {
+            case HEALTH_CHAR:
+                cost_str = temp_strs[0];
+                break;
+            case STAMINA_CHAR:
+                cost_str = temp_strs[1];
+                break;
+            case MANA_CHAR:
+                cost_str = temp_strs[2];
+                break;
+            default:
+                cost_str = NULL;
+        }
+
+        char buffer[128];
+        snprintf(buffer, sizeof(buffer),
+            ABILITY_STR_FORMAT,
+            abil->local_name,
+            abil->effect_type == DAMAGE_CHAR ? temp_strs[8] : temp_strs[9],
+            temp_strs[11], abil->effect_rolls, abil->effect_dice,
+            temp_strs[12], eff_scaler_str,
+            temp_strs[10], temp_strs[11], abil->accuracy_rolls, abil->accuracy_dice,
+            temp_strs[12], acc_scaler_str,
+            temp_strs[13], abil->v_cost, cost_str);
+
+        abil->ability_str = strdup(buffer);
+    }
+
+    // free the temporary strings
+    for (int i = 0; i < 14; i++) {
+        free(temp_strs[i]);
     }
 }

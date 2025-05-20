@@ -39,6 +39,7 @@ typedef struct ability {
     int id;
     char* key_name;
     char* local_name;
+    char* ability_str;
     char c_target;       // 's' for self, 'e' for enemy
     char r_target;       // 'h' for health, 's' for stamina, 'm' for mana
     char effect_type;    // 'd' for damage, 'h' for heal
