@@ -166,7 +166,7 @@ void start_game_loop(memory_pool_t* used_pool) {
                     enemy = NULL;
 
                     if (check_exp_c(game_state.player)) {
-                        current = prepare_lvl_up_mode();
+                        current = LVL_UP_MODE;
                     }
                 }
                 break;

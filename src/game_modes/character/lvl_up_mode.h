@@ -18,16 +18,6 @@
 int init_lvl_up_mode(void);
 
 /**
- * Prepares the Level-Up mode state for the application.
- * This function resets the selected index of the level-up menu to its initial state
- * and ensures that the system is correctly set up to transition into the Level-Up
- * mode state.
- *
- * @return LVL_UP_MODE to indicate that the Level-Up mode is ready to be entered.
- */
-state_t prepare_lvl_up_mode(void);
-
-/**
  * Updates the Level-Up mode of the game based on user input.
  * This function manages the display of Level-Up mode components,
  * including the current title and player status, and processes

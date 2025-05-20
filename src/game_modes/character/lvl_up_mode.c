@@ -54,14 +54,6 @@ int init_lvl_up_mode(void) {
     return 0;
 }
 
-state_t prepare_lvl_up_mode() {
-    // reset the menu selected index
-    lvl_up_menu.selected_index = 0;
-    lvl_up_state = LVL_UP_SELECTION;
-
-    return LVL_UP_MODE;
-}
-
 state_t update_lvl_up_mode(const input_t input, character_t* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `update_lvl_up_mode` given player is NULL.")
 
@@ -101,7 +93,6 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
             case MAX_ATTRIBUTES:// nothing was pressed, do nothing
             case -1:            // ESC was pressed, do nothing
-                print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
                 break;
             case -2:// Ctrl + C was pressed
                 res = EXIT_GAME;
@@ -110,10 +101,13 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
         }
     } else if (lvl_up_state == WAIT_AFTER_LVL_UP) {
-        print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
         print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {
+            // reset the menu selected index
+            lvl_up_menu.selected_index = 0;
+            lvl_up_state = LVL_UP_SELECTION;
+
             res = MAP_MODE;
             clear_screen();
         }
