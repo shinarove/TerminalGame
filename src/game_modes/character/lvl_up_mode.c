@@ -57,6 +57,7 @@ int init_lvl_up_mode(void) {
 state_t prepare_lvl_up_mode() {
     // reset the menu selected index
     lvl_up_menu.selected_index = 0;
+    lvl_up_state = LVL_UP_SELECTION;
 
     return LVL_UP_MODE;
 }
@@ -68,8 +69,8 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
 
     print_text(5, LVLUP_Y_POS_TITLE, WHITE, DEFAULT, lvl_up_mode_strings[LEVEL_UP_TITLE]);
 
-    const output_args_c_t lvl_up_args = {1, 1, 0};
-    print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
+    const output_args_c_t lvl_up_args = {0, RES_CURR_MAX, ATTR_MAX};
+    print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
         switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
@@ -100,7 +101,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
             case MAX_ATTRIBUTES:// nothing was pressed, do nothing
             case -1:            // ESC was pressed, do nothing
-                print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
+                print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
                 break;
             case -2:// Ctrl + C was pressed
                 res = EXIT_GAME;
@@ -109,7 +110,7 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
                 break;
         }
     } else if (lvl_up_state == WAIT_AFTER_LVL_UP) {
-        print_c_res_attr_hori(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
+        print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
         print_text(5, LVLUP_Y_POS_BODY, WHITE, DEFAULT, lvl_up_mode_strings[CONTINUE_TEXT]);
 
         if (input == ENTER) {

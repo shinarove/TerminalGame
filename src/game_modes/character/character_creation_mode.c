@@ -7,8 +7,8 @@
 #include "../../io/output/specific/character_output.h"
 
 #define CC_Y_POS_HEAD 2
-#define CC_Y_POS_UNSPENT_P 6
-#define CC_Y_POS_BODY 8
+#define CC_Y_POS_UNSPENT_P 7
+#define CC_Y_POS_BODY (CC_Y_POS_UNSPENT_P + 2)
 
 #define CLEAR_X_START 25
 #define CLEAR_X_END 45
@@ -115,7 +115,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Creation", "In `update_character_creation` given player is NULL.")
     state_t res = CHARACTER_CREATION;
 
-    const output_args_c_t cc_args = { 0, 0, 0};
+    const output_args_c_t cc_args = { 0, RES_BASE, ATTR_BASE};
 
     switch (cc_state) {
         case PRE_CREATION:
@@ -139,11 +139,10 @@ state_t update_character_creation(const input_t input, character_t* player) {
             }
 
             // print the currently written name
-            print_text(7, 4, WHITE, DEFAULT, name_input_buffer);
+            print_text_f(7, 4, WHITE, DEFAULT, "%s ",name_input_buffer);
 
             switch (input) {
                 case BACKSPACE:
-                    clear_line(4, 7, CLEAR_X_END);
                     break;
                 case ENTER:
                     if (name_input_buffer[0] != '\0') {
@@ -159,8 +158,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                 case QUIT:
                     res = EXIT_GAME;
                     break;
-                default:
-                    break;
+                default:;
             }
 
             break;
@@ -192,7 +190,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
                 case MAX_RESOURCES * 2:// nothing was pressed, do nothing
                 case -1:               // ESC was pressed, do nothing
-                    print_c_res_attr_hori(5, CC_Y_POS_HEAD, player, cc_args);
+                    print_char_h(5, CC_Y_POS_HEAD, player, cc_args);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -204,7 +202,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
             }
 
-            print_c_res_attr_hori(5, CC_Y_POS_HEAD, player, cc_args);
+            print_char_h(5, CC_Y_POS_HEAD, player, cc_args);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_res_p == 0) {
@@ -271,7 +269,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
                 case MAX_ATTRIBUTES * 2:// nothing was pressed, do nothing
                 case -1:                // ESC was pressed, do nothing
-                    print_c_res_attr_hori(5, CC_Y_POS_HEAD, player, cc_args);
+                    print_char_h(5, CC_Y_POS_HEAD, player, cc_args);
                     break;
                 case -2:// Ctrl + C was pressed
                     res = EXIT_GAME;
@@ -283,7 +281,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
                     break;
             }
 
-            print_c_res_attr_hori(5, CC_Y_POS_HEAD, player, cc_args);
+            print_char_h(5, CC_Y_POS_HEAD, player, cc_args);
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_attr_p == 0) {
@@ -307,7 +305,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
 
             break;
         case WAIT_AFTER_CREATION:
-            print_c_res_attr_hori(5, CC_Y_POS_HEAD, player, cc_args);
+            print_char_h(5, CC_Y_POS_HEAD, player, cc_args);
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {

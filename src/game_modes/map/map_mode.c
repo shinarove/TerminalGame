@@ -43,8 +43,8 @@ state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
     print_text(5, 2, RED, DEFAULT, map_mode_strings[GAME_TITLE]);
     print_map(5, 4, parsed_map);
 
-    const output_args_c_t map_mode_args = {1, 1, 1};
-    print_c_res_attr_vert(5 + map->width + 2, 4, player, map_mode_args);
+    const output_args_c_t map_mode_args = {1, RES_CURR_MAX, ATTR_MAX};
+    print_char_v(5 + map->width + 2, 4, player, map_mode_args);
 
     free(parsed_map->tiles);
     free(parsed_map);
