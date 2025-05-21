@@ -4,7 +4,7 @@
 #include "../../../logger/logger.h"
 #include "../../local/local_handler.h"
 #include "../../string_formats.h"
-#include "src/io/colors.h"
+#include "../../colors.h"
 
 #include <stdio.h>
 

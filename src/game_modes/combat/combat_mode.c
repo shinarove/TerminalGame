@@ -10,9 +10,9 @@
 
 #include <stdlib.h>
 
-#define Y_PLAYER_INFO 2
-#define Y_ENEMY_INFO (Y_PLAYER_INFO + 6)
-#define Y_COMBAT_MENU (Y_ENEMY_INFO + 6)
+#define Y_ENEMY_INFO 2
+#define Y_PLAYER_INFO (Y_ENEMY_INFO + 6)
+#define Y_COMBAT_MENU (Y_PLAYER_INFO + 6)
 #define Y_COMBAT_FOOTER (Y_COMBAT_MENU + 2)
 
 #define MAX_COMBAT_MAIN_OPTIONS 2
@@ -23,6 +23,9 @@
 #define VICTORY_MESSAGE_FORMAT "%s %s %s"
 // [Msg] [Enemy Name]
 #define DEATH_MESSAGE_FORMAT "%s %s"
+
+#define VS_SEPERATOR_DE "------------------------------------vs------------------------------------"
+#define VS_SEPERATOR_EN "-----------------------------------vs------------------------------------"
 
 typedef enum {
     CHOOSE_ABILITY_POTION,
@@ -134,7 +137,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
     char** ability_names = malloc(sizeof(char*) * player->abilities->ability_count);
     combat_mode_ability_menu.options = ability_names;
     for (int i = 0; i < player->abilities->ability_count; i++) {
-        ability_names[i] = player->abilities->abilities[i]->local_name;
+        ability_names[i] = player->abilities->abilities[i]->ability_str;
     }
     combat_mode_ability_menu.option_count = player->abilities->ability_count;
     combat_mode_ability_menu.selected_index = 0;
@@ -154,13 +157,15 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
     RETURN_WHEN_NULL(enemy, EXIT_GAME, "Combat Mode", "Enemy is NULL.")
 
     const output_args_c_t combat_mode_args = {0, RES_CURR_MAX, ATTR_MAX};
-    print_char_h(5, Y_PLAYER_INFO, player, combat_mode_args);
     print_char_h(5, Y_ENEMY_INFO, enemy, combat_mode_args);
+    print_text(5, Y_PLAYER_INFO - 1, WHITE, DEFAULT, get_language() == LANGE_EN ? VS_SEPERATOR_EN : VS_SEPERATOR_DE);
+    print_char_h(5, Y_PLAYER_INFO, player, combat_mode_args);
 
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            switch (handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_main_menu)) {
+            const int idx_main = handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_main_menu);
+            switch (idx_main) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
                     clear_screen();
@@ -176,13 +181,13 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
                     res = EXIT_GAME;// Ctrl + C was pressed
                     break;
                 default:
-                    log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", res);
+                    log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", idx_main);
                     break;
             }
             break;
         case ABILITY_SELECTION:
-            const int selected_index = handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_ability_menu);
-            switch (selected_index) {
+            const int idx_abil = handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_ability_menu);
+            switch (idx_abil) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
                     combat_mode_ability_menu.selected_index = 0;
@@ -192,15 +197,15 @@ state_t update_combat_mode(const input_t input, character_t* player, character_t
                     res = EXIT_GAME;// Ctrl + C was pressed
                     break;
                 default:
-                    if (selected_index >= 0 && selected_index < combat_mode_ability_menu.option_count) {
+                    if (idx_abil >= 0 && idx_abil < combat_mode_ability_menu.option_count) {
                         // a valid ability was selected
-                        const ability_t* ability = get_ability_by_index_c(player, selected_index);
+                        const ability_t* ability = get_ability_by_index_c(player, idx_abil);
                         RETURN_WHEN_NULL(ability, EXIT_GAME, "Combat Mode",
-                                         "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", selected_index)
+                                         "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", idx_abil)
                         const usage_result_t result = use_ability(player, enemy, ability);
                         res = evaluate_player_ability_usage(result, player, enemy);
-                    } else if (selected_index != combat_mode_ability_menu.option_count) {
-                        log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", selected_index);
+                    } else if (idx_abil != combat_mode_ability_menu.option_count) {
+                        log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", idx_abil);
                     }
                     break;
             }
