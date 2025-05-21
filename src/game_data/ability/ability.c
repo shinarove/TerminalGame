@@ -168,6 +168,7 @@ void destroy_ability_table(const memory_pool_t* pool) {
     for (int i = 0; i < singleton_ability_table->count; i++) {
         free(singleton_ability_table->abilities[i].key_name);
         free(singleton_ability_table->abilities[i].local_name);
+        free(singleton_ability_table->abilities[i].ability_str);
     }
 
     memory_pool_free(pool, singleton_ability_table);
