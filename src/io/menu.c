@@ -7,6 +7,15 @@ int handle_simple_menu(const input_t input, const int x, const int y, menu_t* me
 
     print_simple_menu(x, y, menu_to_handle);
 
+    if (menu_to_handle->args->mode != ACTIVE) {
+        // menu is not active, do nothing
+        return menu_to_handle->option_count;
+    }
+    if (menu_to_handle->option_count == 0) {
+        // menu has no options, do nothing
+        return menu_to_handle->option_count;
+    }
+
     switch (input) {
         case UP:
             menu_to_handle->selected_index = (menu_to_handle->selected_index - 1 + menu_to_handle->option_count) % menu_to_handle->option_count;

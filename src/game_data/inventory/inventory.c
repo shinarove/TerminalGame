@@ -5,8 +5,6 @@
 
 int find_gear_by_id(const inventory_t* inventory, gear_id_t gear_id);
 
-gear_slot_t parse_gear_type(gear_type_t gear_type);
-
 inventory_t* create_inventory(const int pre_length) {
     RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` allocated_space is negative")
     inventory_t* inventory = memory_pool_alloc(global_memory_pool, sizeof(inventory_t));
@@ -173,6 +171,32 @@ int unequip_gear_i(inventory_t* inventory, const gear_slot_t target_slot) {
     inventory->total_attribute_bonus.luck -= gear_to_unequip->attribute_bonus.luck;
 
     return 0;
+}
+
+int is_gear_equipped(const inventory_t* inventory, const gear_t* gear) {
+    RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `is_gear_equipped` inventory is NULL")
+
+    int gear_type = gear->gear_type;
+
+    int is_equipped = 0;
+    if (gear_type >= HEAD_ARMOR && gear_type < RING) {
+        if (inventory->equipped[gear_type]->id == gear->id) {
+            is_equipped = 1;
+        }
+    } else if (gear_type == RING) {
+        if (inventory->equipped[RING_LEFT_SLOT]->id == gear->id) {
+            is_equipped = 1;
+        } else if (inventory->equipped[RING_RIGHT_SLOT]->id == gear->id) {
+            is_equipped = 1;
+        }
+    } else if (gear_type >= AMULET && gear_type < MAX_GEAR_TYPES) {
+        gear_type++;
+        if (inventory->equipped[gear_type]->id == gear->id) {
+            is_equipped = 1;
+        }
+    }
+
+    return is_equipped;
 }
 
 void destroy_inventory(inventory_t* inventory) {

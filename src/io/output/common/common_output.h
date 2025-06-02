@@ -3,8 +3,14 @@
 
 #include "../../colors.h"
 
+typedef enum {
+    ACTIVE,
+    INACTIVE_W_SEL,
+    INACTIVE_WOUT_SEL,
+} menu_mode_t;
+
 typedef struct {
-    int active;// non-zero if the menu is active
+    menu_mode_t mode;
     color_t selected_fg;
     color_t selected_bg;
     color_t unselected_fg;

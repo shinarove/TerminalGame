@@ -100,7 +100,7 @@ int init_character_creation(void) {
     spend_attr_p_spinner.right_symbol = '>';
     spend_attr_p_spinner.max_option_length = MAX_OPTION_LENGTH;
     // initialize the menu args
-    cc_menu_args.active = 1;
+    cc_menu_args.mode = ACTIVE;
     cc_menu_args.unselected_fg = WHITE;
     cc_menu_args.unselected_bg = DEFAULT;
     cc_menu_args.selected_fg = BLACK;

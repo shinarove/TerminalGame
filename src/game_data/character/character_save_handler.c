@@ -107,6 +107,9 @@ int read_character_data(FILE* file, character_t* character) {
         }
     }
 
+    // TODO: read the inventory data if needed
+    character->inventory = create_inventory(5);
+
     return 0;
 }
 

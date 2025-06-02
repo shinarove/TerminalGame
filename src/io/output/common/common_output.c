@@ -70,7 +70,7 @@ void print_simple_menu(int x, int y, const menu_t* menu) {
     for (int i = 0; i < menu->option_count; i++) {
         // if (menu->options[i] == NULL) continue;
 
-        if (i == menu->selected_index && args.active) {
+        if (i == menu->selected_index && args.mode != INACTIVE_WOUT_SEL) {
             tb_printf(x, y++, sel_fg, sel_bg, "> %s", menu->options[i]);
         } else {
             tb_printf(x, y++, uns_fg, uns_bg, "  %s", menu->options[i]);
@@ -100,11 +100,11 @@ void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu) {
 
     for (int i = 0; i < spinner_menu->menu->option_count; i++) {
         tb_printf(x, y, uns_fg, uns_bg, "%s", spinner_menu->menu->options[i]);
-        if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 0 && args.active) {
+        if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 0 && args.mode) {
             // the left symbol is marked
             tb_printf(spinner_x_pos, y, sel_fg, sel_bg, "%c", spinner_menu->left_symbol);
             tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, "%c", spinner_menu->right_symbol);
-        } else if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 1 && args.active) {
+        } else if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 1 && args.mode) {
             // the right symbol is marked
             tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "%c", spinner_menu->left_symbol);
             tb_printf(spinner_x_pos + 2, y, sel_fg, sel_bg, "%c", spinner_menu->right_symbol);
@@ -128,7 +128,7 @@ void check_xy(int* x, int* y) {
 }
 
 menu_arg_t extract_menu_args(const menu_arg_t* args) {
-    const menu_arg_t default_args = {1, BLACK, WHITE, WHITE, DEFAULT};
+    const menu_arg_t default_args = {ACTIVE, BLACK, WHITE, WHITE, DEFAULT};
     if (args == NULL) {
         return default_args;
     }

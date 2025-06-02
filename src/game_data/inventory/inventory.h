@@ -142,6 +142,15 @@ int equip_gear_i(inventory_t* inventory, gear_id_t gear_id, gear_slot_t target_s
 int unequip_gear_i(inventory_t* inventory, gear_slot_t target_slot);
 
 /**
+ * Check if the specified gear is currently equipped in the inventory.
+ *
+ * @param inventory the inventory to check
+ * @param gear the gear to check for
+ * @return -1 if the inventory is NULL, 0 if the gear is not equipped and 1 if the gear is equipped
+ */
+int is_gear_equipped(const inventory_t* inventory, const gear_t* gear);
+
+/**
  * This function releases all memory associated with the given inventory,
  * including the array of gears (if allocated). It also ensures that
  * any allocated memory in the global memory pool is properly freed.
