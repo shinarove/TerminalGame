@@ -47,7 +47,7 @@ typedef enum {
     AMULET,
     MAIN_HAND,
     OFF_HAND,
-    BOTH_HAND,
+    TWO_HANDED,
     MAX_GEAR_TYPES
 } gear_type_t;
 
