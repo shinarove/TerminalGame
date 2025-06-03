@@ -6,6 +6,7 @@ int array_list_add(void* self, const void* element);
 int array_list_remove(void* self, const void* element);
 int array_list_remove_at(void* self, int index);
 void* array_list_get(const void* self, int index);
+int array_list_find(const void* self, const void* element);
 int array_list_size(const void* self);
 void array_list_clear(void* self);
 
@@ -15,6 +16,7 @@ static const List_VTable vtable_List = {
     .add = array_list_add,
     .remove = array_list_remove,
     .get = array_list_get,
+    .find = array_list_find,
     .size = array_list_size,
     .clear = array_list_clear
 };
@@ -133,6 +135,19 @@ void* array_list_get(const void* self, const int index) {
     if (index < 0 || index >= list->size) return NULL; // Error: index out of bounds
 
     return (char*)list->elements + index * list->element_size; // Return pointer to the element at index
+}
+
+int array_list_find(const void* self, const void* element) {
+    if (self == NULL || element == NULL) return -1; // Error: self or element is NULL
+
+    const ArrayList* list = self;
+    for (int i = 0; i < list->size; i++) {
+        const void* current_element = (char*)list->elements + i * list->element_size;
+        if (memcmp(current_element, element, list->element_size) == 0) {
+            return i; // Element found at index i
+        }
+    }
+    return -1; // Element not found
 }
 
 int array_list_size(const void* self) {
