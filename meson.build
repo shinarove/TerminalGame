@@ -4,6 +4,8 @@ project('TerminalGame', 'c',
 
 termbox_file = files('termbox2/termbox2.c')
 
+cstd_files = files('src/cstd/collections/array_list.c')
+
 helper_files = files('src/helper/string_helper.c',)
 
 data_types_files = files('src/data_types/cache/string_cache.c')
@@ -69,6 +71,7 @@ game_data_files = files('src/game_data/save_file_handler.c')
 
 TerminalGame = executable('TerminalGame',
                           termbox_file,
+                          cstd_files,
                           data_types_files,
                           helper_files,
                           src_files,
