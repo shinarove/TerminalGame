@@ -3,162 +3,137 @@
 #include "../../game.h"
 #include "../../logger/logger.h"
 
-int find_gear_by_id(const inventory_t* inventory, gear_id_t gear_id);
+int add_gear(const Inventory* inventory, const gear_t* gear);
+int remove_gear(const Inventory* inventory, const gear_t* gear);
+int equip_gear(Inventory* inventory, const gear_t* gear);
+int unequip_gear(Inventory* inventory, gear_slot_t target_slot);
+int is_gear_equipped(const Inventory* inventory, const gear_t* gear);
 
-inventory_t* create_inventory(const int pre_length) {
-    RETURN_WHEN_TRUE(pre_length < 0, NULL, "Inventory", "In `create_empty_inventory` allocated_space is negative")
-    inventory_t* inventory = memory_pool_alloc(global_memory_pool, sizeof(inventory_t));
-    RETURN_WHEN_NULL(inventory, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for inventory")
+static const Inventory_VTable vtable_Inventory = {
+    .add_gear = add_gear,
+    .remove_gear = remove_gear,
+    .equip_gear = equip_gear,
+    .unequip_gear = unequip_gear,
+    .is_gear_equipped = is_gear_equipped
+};
 
-    if (pre_length == 0) {
-        inventory->gears = NULL;
-    } else {
-        inventory->gears = (gear_t**) memory_pool_alloc(global_memory_pool, sizeof(gear_t*) * pre_length);
-        RETURN_WHEN_NULL(inventory->gears, NULL, "Inventory", "In `create_empty_inventory` failed to allocate memory for gears")
+Inventory* create_inventory(const unsigned int initial_capacity) {
+    RETURN_WHEN_TRUE(initial_capacity < 0, NULL, "Inventory", "In `create_inventory` allocated_space is negative")
+    Inventory* inventory = malloc(sizeof(Inventory));
+    RETURN_WHEN_NULL(inventory, NULL, "Inventory", "In `create_inventory` failed to allocate memory for inventory")
 
-        for (int i = 0; i < pre_length; i++) {
-            inventory->gears[i] = NULL;
-        }
-        for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
-            inventory->equipped[i] = NULL;
-        }
+    inventory->gear_list = create_array_list(sizeof(gear_t*), initial_capacity);
+    RETURN_WHEN_NULL(inventory->gear_list, NULL, "Inventory", "In `create_inventory` failed to create gear list")
+
+    for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
+        inventory->equipped[i] = NULL;
     }
 
-    inventory->gear_count = 0;
-    inventory->allocated_space = pre_length;
-    inventory->total_resource_bonus.health = 0;
-    inventory->total_resource_bonus.stamina = 0;
-    inventory->total_resource_bonus.mana = 0;
-    inventory->total_attribute_bonus.strength = 0;
-    inventory->total_attribute_bonus.intelligence = 0;
-    inventory->total_attribute_bonus.agility = 0;
-    inventory->total_attribute_bonus.constitution = 0;
-    inventory->total_attribute_bonus.luck = 0;
+    inventory->total_resource_bonus = {0};
+    inventory->total_attribute_bonus = {0};
+    inventory->vtable = &vtable_Inventory;
     return inventory;
 }
 
-int add_gear_i(inventory_t* inventory, const gear_id_t gear_id) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `add_gear_i` inventory is NULL")
-    RETURN_WHEN_TRUE(gear_id < 0 || gear_id >= MAX_GEARS, 1,
-                     "Inventory", "In `add_gear_i` given gear id is invalid: %d", gear_id)
-    RETURN_WHEN_TRUE(inventory->gear_count > inventory->allocated_space, 1,
-                     "Inventory", "In `add_gear_i` invalid state encountered,"
-                                  "the gear count is greater than the allocated space: %d > %d",
-                     inventory->gear_count, inventory->allocated_space)
+void destroy_inventory(Inventory* inventory) {
+    if (inventory == NULL) return;
 
-    if (inventory->gears == NULL || inventory->allocated_space == 0) {
-        // when the inventory is empty, allocate space for the gear with default size of 5
-        inventory->gears = (gear_t**) memory_pool_alloc(global_memory_pool, sizeof(gear_t*) * 5);
-        for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
-            inventory->gears[i] = NULL;
-        }
-        inventory->allocated_space = 5;
-    } else if (inventory->gear_count == inventory->allocated_space) {
-        // when the inventory is full, double the size
-        inventory->allocated_space *= 2;
-        inventory->gears = (gear_t**) memory_pool_realloc(global_memory_pool, inventory->gears,
-                                                          sizeof(gear_t*) * inventory->allocated_space);
-        RETURN_WHEN_NULL(inventory->gears, 1, "Inventory", "In `add_gear_i` failed to reallocate memory for gears")
-    }
-    // add the gear to the inventory
-    inventory->gears[inventory->gear_count] = &get_gear_table()->gears[gear_id];
-    inventory->gear_count++;
-
-    return 0;
+    destroy_array_list(inventory->gear_list);
+    free(inventory);
 }
 
-int remove_gear_i(inventory_t* inventory, const gear_id_t gear_id) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `add_gear_i` inventory is NULL")
-    RETURN_WHEN_TRUE(gear_id < 0 || gear_id >= MAX_GEARS, 1,
-                     "Inventory", "In `add_gear_i` given gear id is invalid: %d", gear_id)
+int add_gear(const Inventory* inventory, const gear_t* gear) {
+    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `add_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `add_gear` given gear is NULL")
 
-    // find the gear in the inventory
-    const int index = find_gear_by_id(inventory, gear_id);
-
-    if (index != -1) {
-        // remove the gear from the inventory
-        for (int i = index; i < inventory->gear_count - 1; i++) {
-            inventory->gears[i] = inventory->gears[i + 1];
-        }
-        inventory->gears[inventory->gear_count - 1] = NULL;
-        inventory->gear_count--;
-        return 0;
-    }
-    return 1;// gear not found
+    // add the gear reference to the gear list
+    return inventory->gear_list->vtable->list->add(inventory->gear_list, &gear);
 }
 
-int equip_gear_i(inventory_t* inventory, const gear_id_t gear_id, const gear_slot_t target_slot) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `equip_gear_i` inventory is NULL")
-    if (inventory->gear_count == 0) return 1;// no gears to equip in the inventory
-    // find the gear in the inventory
-    const int index = find_gear_by_id(inventory, gear_id);
-    if (index == -1) return 1;// gear isn't found in the inventory
+int remove_gear(const Inventory* inventory, const gear_t* gear) {
+    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `remove_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `remove_gear` given gear is NULL")
 
-    // check if the gear matches with the slot
-    gear_t* gear_to_equip = inventory->gears[index];
-    if (gear_slot_type_mapping[target_slot].type != gear_to_equip->gear_type) {
-        log_msg(WARNING, "Inventory", "In `equip_gear_i` gear type %d does not match the slot nr %d",
-                gear_to_equip->gear_type, target_slot);
-        return 1;
+    const int rm_success = inventory->gear_list->vtable->list->remove(inventory->gear_list, &gear);
+    if (rm_success < 0) {
+        log_msg(WARNING, "Inventory", "In `remove_gear` an error occurred while"
+                                      "removing gear with id %d from the inventory", gear->id);
+    } else if (rm_success > 0) {
+        log_msg(WARNING, "Inventory", "In `remove_gear` gear with id %d not found"
+                                      "in the inventory", gear->id);
+    }
+    return rm_success;
+}
+
+int equip_gear(Inventory* inventory, const gear_t* gear) {
+    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `equip_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `equip_gear` given gear is NULL")
+
+    const int found = inventory->gear_list->vtable->list->find(inventory->gear_list, &gear);
+    if (found < 0) {
+        log_msg(WARNING, "Inventory", "In `equip_gear` an error occurred while"
+                                      "finding gear with id %d in the inventory", gear->id);
+        return found;
+    }
+    if (found > 0) {
+        log_msg(WARNING, "Inventory", "In `equip_gear` gear with id %d not found"
+                                      "in the inventory", gear->id);
+        return found;
     }
 
-    // ensure the correct inventory state
-    switch (target_slot) {
-        case HEAD_SLOT:
-        case BODY_SLOT:
-        case LEG_SLOT:
-        case HAND_SLOT:
-        case RING_LEFT_SLOT:
-        case RING_RIGHT_SLOT:
-        case AMULET_SLOT:
-            unequip_gear_i(inventory, target_slot);
-            break;
-        case MAIN_HAND_SLOT:
-            if (unequip_gear_i(inventory, MAIN_HAND_SLOT)) {
-                // if nothing was unequipped, try to unequip the both hand slot
-                unequip_gear_i(inventory, BOTH_HAND_SLOT);
-            }
-            break;
-        case OFF_HAND_SLOT:
-            if (unequip_gear_i(inventory, OFF_HAND_SLOT)) {
-                // if nothing was unequipped, try to unequip the both hand slot
-                unequip_gear_i(inventory, BOTH_HAND_SLOT);
-            }
-            break;
-        case BOTH_HAND_SLOT:// unequip the items in the main-hand and off-hand slots
-            if (unequip_gear_i(inventory, BOTH_HAND_SLOT)) {
-                // if nothing was unequipped, try to unequip the main-hand and off-hand slots
-                unequip_gear_i(inventory, MAIN_HAND_SLOT);
-                unequip_gear_i(inventory, OFF_HAND_SLOT);
-            }
-            break;
-        default:
-            log_msg(WARNING, "Inventory", "In `equip_gear_i` invalid slot type %d", target_slot);
-            return 1;
+    // gear is in the inventory, but we first need to unequip the gear in the target slot
+    int unequip_result;
+    if (gear->gear_type == TWO_HANDED) {
+        unequip_result = inventory->vtable->unequip_gear(inventory, MAIN_HAND);
+    } else {
+        unequip_result = inventory->vtable->unequip_gear(inventory, gear->gear_type);
     }
-    // equip the gear
-    inventory->equipped[target_slot] = gear_to_equip;
+    if (unequip_result < 0) {
+        return unequip_result;
+    }
+
+    // either nothing was unequipped or the unequip was successful
+    if (gear->gear_type == TWO_HANDED) {
+        inventory->equipped[OFF_HAND_SLOT] = gear;
+        inventory->equipped[MAIN_HAND_SLOT] = gear;
+    } else {
+        inventory->equipped[gear->gear_type] = gear;
+    }
 
     // add ressource & attribute bonuses in total
-    inventory->total_resource_bonus.health += gear_to_equip->resource_bonus.health;
-    inventory->total_resource_bonus.stamina += gear_to_equip->resource_bonus.stamina;
-    inventory->total_resource_bonus.mana += gear_to_equip->resource_bonus.mana;
-    inventory->total_attribute_bonus.strength += gear_to_equip->attribute_bonus.strength;
-    inventory->total_attribute_bonus.intelligence += gear_to_equip->attribute_bonus.intelligence;
-    inventory->total_attribute_bonus.agility += gear_to_equip->attribute_bonus.agility;
-    inventory->total_attribute_bonus.constitution += gear_to_equip->attribute_bonus.constitution;
-    inventory->total_attribute_bonus.luck += gear_to_equip->attribute_bonus.luck;
-
+    inventory->total_resource_bonus.health += gear->resource_bonus.health;
+    inventory->total_resource_bonus.stamina += gear->resource_bonus.stamina;
+    inventory->total_resource_bonus.mana += gear->resource_bonus.mana;
+    inventory->total_attribute_bonus.strength += gear->attribute_bonus.strength;
+    inventory->total_attribute_bonus.intelligence += gear->attribute_bonus.intelligence;
+    inventory->total_attribute_bonus.agility += gear->attribute_bonus.agility;
+    inventory->total_attribute_bonus.constitution += gear->attribute_bonus.constitution;
+    inventory->total_attribute_bonus.luck += gear->attribute_bonus.luck;
     return 0;
 }
 
-int unequip_gear_i(inventory_t* inventory, const gear_slot_t target_slot) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `unequip_gear_i` inventory is NULL")
+int unequip_gear(Inventory* inventory, const gear_slot_t target_slot) {
+    RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `unequip_gear_slot` inventory is NULL")
+    if (target_slot >= MAX_GEAR_SLOTS) {
+        log_msg(WARNING, "Inventory", "In `unequip_gear_slot` invalid slot type %d", target_slot);
+        return -1;
+    }
 
     if (inventory->equipped[target_slot] == NULL) return 1;// no gear to unequip in the inventory
-
     const gear_t* gear_to_unequip = inventory->equipped[target_slot];
-    inventory->equipped[target_slot] = NULL;
+
+    if (gear_to_unequip->gear_type == TWO_HANDED &&
+        (target_slot == OFF_HAND_SLOT || target_slot == MAIN_HAND_SLOT)) {
+        // special case for two-handed weapons
+        inventory->equipped[OFF_HAND_SLOT] = NULL;
+        inventory->equipped[MAIN_HAND_SLOT] = NULL;
+    } else if (gear_to_unequip->gear_type != TWO_HANDED) {
+        inventory->equipped[target_slot] = NULL;
+    } else {
+        log_msg(WARNING, "Inventory", "In `unequip_gear_slot` invalid gear type %d for slot %d",
+                gear_to_unequip->gear_type, target_slot);
+        return -1;
+    }
 
     // remove ressource & attribute bonuses in total
     inventory->total_resource_bonus.health -= gear_to_unequip->resource_bonus.health;
@@ -169,54 +144,33 @@ int unequip_gear_i(inventory_t* inventory, const gear_slot_t target_slot) {
     inventory->total_attribute_bonus.agility -= gear_to_unequip->attribute_bonus.agility;
     inventory->total_attribute_bonus.constitution -= gear_to_unequip->attribute_bonus.constitution;
     inventory->total_attribute_bonus.luck -= gear_to_unequip->attribute_bonus.luck;
-
     return 0;
 }
 
-int is_gear_equipped(const inventory_t* inventory, const gear_t* gear) {
+int is_gear_equipped(const Inventory* inventory, const gear_t* gear) {
     RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `is_gear_equipped` inventory is NULL")
+    RETURN_WHEN_NULL(gear, -1, "Inventory", "In `is_gear_equipped` given gear is NULL")
 
-    int gear_type = gear->gear_type;
+    const int gear_type = gear->gear_type;
 
     int is_equipped = 0;
-    if (gear_type >= HEAD_ARMOR && gear_type < RING) {
-        if (inventory->equipped[gear_type]->id == gear->id) {
-            is_equipped = 1;
+    if (gear_type == TWO_HANDED) {
+        if (inventory->equipped[OFF_HAND_SLOT] != gear &&
+            inventory->equipped[MAIN_HAND_SLOT] != gear) {
+            // two-handed gear is not equipped
+        } else if (inventory->equipped[OFF_HAND_SLOT] == gear ||
+                   inventory->equipped[MAIN_HAND_SLOT] == gear) {
+            is_equipped = 1; // two-handed gear is equipped
+        } else {
+            log_msg(WARNING, "Inventory", "In `is_gear_equipped`"
+                                          "two-handed gear is not equipped properly");
+            is_equipped = -1;
         }
-    } else if (gear_type == RING) {
-        if (inventory->equipped[RING_LEFT_SLOT]->id == gear->id) {
-            is_equipped = 1;
-        } else if (inventory->equipped[RING_RIGHT_SLOT]->id == gear->id) {
-            is_equipped = 1;
-        }
-    } else if (gear_type >= AMULET && gear_type < MAX_GEAR_TYPES) {
-        gear_type++;
-        if (inventory->equipped[gear_type]->id == gear->id) {
-            is_equipped = 1;
+    } else {
+        if (inventory->equipped[gear_type] == gear) {
+            is_equipped = 1; // gear is equipped
         }
     }
 
     return is_equipped;
-}
-
-void destroy_inventory(inventory_t* inventory) {
-    if (inventory == NULL) return;
-
-    if (inventory->gears != NULL) {
-        memory_pool_free(global_memory_pool, inventory->gears);
-    }
-
-    memory_pool_free(global_memory_pool, inventory);
-}
-
-int find_gear_by_id(const inventory_t* inventory, const gear_id_t gear_id) {
-    // find the gear in the inventory
-    int index = -1;
-    for (int i = 0; i < inventory->gear_count; i++) {
-        if (inventory->gears[i]->id == gear_id) {
-            index = i;
-            break;
-        }
-    }
-    return index;
 }
