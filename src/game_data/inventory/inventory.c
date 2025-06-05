@@ -43,42 +43,42 @@ void destroy_inventory(Inventory* inventory) {
 }
 
 int add_gear(const Inventory* inventory, const gear_t* gear) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `add_gear` inventory is NULL")
-    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `add_gear` given gear is NULL")
+    RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `add_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, -1, "Inventory", "In `add_gear` given gear is NULL")
 
     // add the gear reference to the gear list
     return inventory->gear_list->vtable->list->add(inventory->gear_list, &gear);
 }
 
 int remove_gear(const Inventory* inventory, const gear_t* gear) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `remove_gear` inventory is NULL")
-    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `remove_gear` given gear is NULL")
+    RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `remove_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, -1, "Inventory", "In `remove_gear` given gear is NULL")
 
     const int rm_success = inventory->gear_list->vtable->list->remove(inventory->gear_list, &gear);
-    if (rm_success < 0) {
+    if (rm_success == -1) {
         log_msg(WARNING, "Inventory", "In `remove_gear` an error occurred while"
                                       "removing gear with id %d from the inventory", gear->id);
-    } else if (rm_success > 0) {
-        log_msg(WARNING, "Inventory", "In `remove_gear` gear with id %d not found"
+    } else if (rm_success == 1) {
+        log_msg(INFO, "Inventory", "In `remove_gear` gear with id %d not found"
                                       "in the inventory", gear->id);
     }
     return rm_success;
 }
 
 int equip_gear(Inventory* inventory, const gear_t* gear) {
-    RETURN_WHEN_NULL(inventory, 1, "Inventory", "In `equip_gear` inventory is NULL")
-    RETURN_WHEN_NULL(gear, 1, "Inventory", "In `equip_gear` given gear is NULL")
+    RETURN_WHEN_NULL(inventory, -1, "Inventory", "In `equip_gear` inventory is NULL")
+    RETURN_WHEN_NULL(gear, -1, "Inventory", "In `equip_gear` given gear is NULL")
 
     const int found = inventory->gear_list->vtable->list->find(inventory->gear_list, &gear);
-    if (found < 0) {
+    if (found == -2) {
         log_msg(WARNING, "Inventory", "In `equip_gear` an error occurred while"
                                       "finding gear with id %d in the inventory", gear->id);
-        return found;
+        return -1;
     }
-    if (found > 0) {
+    if (found == -1) {
         log_msg(WARNING, "Inventory", "In `equip_gear` gear with id %d not found"
                                       "in the inventory", gear->id);
-        return found;
+        return 1;
     }
 
     // gear is in the inventory, but we first need to unequip the gear in the target slot
