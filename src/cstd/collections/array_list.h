@@ -18,6 +18,12 @@ struct ArrayList{
 
 struct ArrayList_VTable {
     const List_VTable* list;
+    /**
+     * Reserves additional capacity in the array list.
+     * @param self Pointer to the ArrayList instance.
+     * @param added_capacity The number of additional elements to reserve space for.
+     * @return 0 on success, -1 on error.
+     */
     int (*reserve)(ArrayList* self, int added_capacity);
 };
 

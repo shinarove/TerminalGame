@@ -138,7 +138,7 @@ void* array_list_get(const void* self, const int index) {
 }
 
 int array_list_find(const void* self, const void* element) {
-    if (self == NULL || element == NULL) return -1; // Error: self or element is NULL
+    if (self == NULL || element == NULL) return -2; // Error: self or element is NULL
 
     const ArrayList* list = self;
     for (int i = 0; i < list->size; i++) {
@@ -147,7 +147,7 @@ int array_list_find(const void* self, const void* element) {
             return i; // Element found at index i
         }
     }
-    return 1; // Element not found
+    return -1; // Element not found
 }
 
 int array_list_size(const void* self) {
