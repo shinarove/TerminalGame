@@ -38,6 +38,10 @@ void update_gear_local(void);
 gear_table_t* init_gear_table(const memory_pool_t* pool) {
     RETURN_WHEN_NULL(pool, NULL, "Gear", "In `init_gear_table` given memory pool is NULL")
 
+    const ability_table_t* ability_table = get_ability_table();
+    RETURN_WHEN_NULL(ability_table, NULL, "Gear", "Before `init_gear_table` can be called, "
+                                                  "the ability table must be initialized.")
+
     if (singleton_gear_table == NULL) {
         // make singleton
         singleton_gear_table = (gear_table_t*) memory_pool_alloc(pool, sizeof(gear_table_t));
@@ -125,16 +129,18 @@ gear_table_t* init_gear_table(const memory_pool_t* pool) {
 
 
             if (singleton_gear_table->gears[count].ability_count > 0) {
-                // prepare the ability ids array
-                singleton_gear_table->gears[count].ability_ids = memory_pool_alloc(pool,
-                    sizeof(int) * singleton_gear_table->gears[count].ability_count);
+                // prepare the abilities pointer array
+                singleton_gear_table->gears[count].abilities = memory_pool_alloc(pool,
+                    sizeof(ability_t*) * singleton_gear_table->gears[count].ability_count);
 
                 token = strtok(NULL, ",");
                 INIT_ERROR_NULL(token, gear_file, "Failed to read ability ids at line %d", count + 1)
                 if (singleton_gear_table->gears[count].ability_count == 1) {
                     // read single ability id
-                    INIT_ERROR_TRUE(parse_int(token, &singleton_gear_table->gears[count].ability_ids[0]),
+                    int ability_id;
+                    INIT_ERROR_TRUE(parse_int(token, &ability_id),
                                     gear_file, "Failed to parse ability id at line %d", count + 1)
+                    singleton_gear_table->gears[count].abilities[0] = &ability_table->abilities[ability_id];
 
                 } else {
                     // read the ability ids
@@ -143,14 +149,17 @@ gear_table_t* init_gear_table(const memory_pool_t* pool) {
                     for (int i = 0; i < singleton_gear_table->gears[count].ability_count; i++) {
                         // read each ability id
                         INIT_ERROR_NULL(token, gear_file, "Failed to read ability ids at line %d", count + 1)
-                        INIT_ERROR_TRUE(parse_int(token, &singleton_gear_table->gears[count].ability_ids[i]),
+                        int ability_id;
+                        INIT_ERROR_TRUE(parse_int(token, &ability_id),
                                         gear_file, "Failed to parse ability id at line %d", count + 1)
+                        singleton_gear_table->gears[count].abilities[i] = &ability_table->abilities[ability_id];
                         // get the next token
                         token = strtok(NULL, "-");
                     }
+                    free(ability_ids);
                 }
             } else {
-                singleton_gear_table->gears[count].ability_ids = NULL;
+                singleton_gear_table->gears[count].abilities = NULL;
             }
             count++;
         }
@@ -174,8 +183,8 @@ void destroy_gear_table(const memory_pool_t* pool) {
         if (singleton_gear_table->gears[i].local_name != NULL) {
             free(singleton_gear_table->gears[i].local_name);
         }
-        if (singleton_gear_table->gears[i].ability_ids != NULL) {
-            memory_pool_free(pool, singleton_gear_table->gears[i].ability_ids);
+        if (singleton_gear_table->gears[i].abilities != NULL) {
+            memory_pool_free(pool, singleton_gear_table->gears[i].abilities);
         }
     }
     memory_pool_free(pool, singleton_gear_table);

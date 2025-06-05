@@ -62,7 +62,7 @@ typedef struct gear {
 
     // connected abilities
     int ability_count;
-    int* ability_ids;// an array of ability IDs
+    const ability_t** abilities;// an array of abilities pointers
 } gear_t;
 
 typedef struct gear_table {
