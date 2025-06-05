@@ -20,6 +20,21 @@
         return ret;                                     \
     }
 
+#define RETURN_WHEN_NULL_CLEAN(ptr, ret, clean_func, modul, format, ...) \
+    if (ptr) {                                         \
+        log_msg(ERROR, modul, format, ##__VA_ARGS__);   \
+        clean_func;                                     \
+        return ret;                                     \
+    }
+
+#define RETURN_WHEN_TRUE_CLEAN(exp, ret, clean_func, modul, format, ...) \
+if (exp) {                                         \
+log_msg(ERROR, modul, format, ##__VA_ARGS__);   \
+clean_func;                                     \
+return ret;                                     \
+}
+
+
 typedef enum {
     DEBUG,
     FINE,
