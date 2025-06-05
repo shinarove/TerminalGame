@@ -32,13 +32,15 @@ struct Inventory {
 struct Inventory_VTable {
     /**
      * Adds a gear to the inventory's gear list.
+     *
      * @param self Pointer to the inventory instance.
      * @param gear Pointer to the gear to be added.
-     * @return 0 on success, non-zero on failure.
+     * @return 0 on success, -1 on error.
      */
     int (*add_gear)(const Inventory* self, const gear_t* gear);
     /**
      * Removes a gear from the inventory's gear list.
+     *
      * @param self Pointer to the inventory instance.
      * @param gear Pointer to the gear to be removed.
      * @return 0 on success, 1 if the gear was not found, -1 on error.
