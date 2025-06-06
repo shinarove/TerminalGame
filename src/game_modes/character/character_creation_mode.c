@@ -3,8 +3,8 @@
 #include "../../io/colors.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
-#include "../../logger/logger.h"
 #include "../../io/output/specific/character_output.h"
+#include "../../logger/logger.h"
 
 #define CC_Y_POS_HEAD 2
 #define CC_Y_POS_UNSPENT_P 7
@@ -115,7 +115,7 @@ state_t update_character_creation(const input_t input, Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Creation", "In `update_character_creation` given player is NULL.")
     state_t res = CHARACTER_CREATION;
 
-    const output_args_c_t cc_args = { 0, RES_BASE, ATTR_BASE};
+    const output_args_c_t cc_args = {0, RES_BASE, ATTR_BASE};
 
     switch (cc_state) {
         case PRE_CREATION:
@@ -139,7 +139,7 @@ state_t update_character_creation(const input_t input, Character* player) {
             }
 
             // print the currently written name
-            print_text_f(7, 4, WHITE, DEFAULT, "%s ",name_input_buffer);
+            print_text_f(7, 4, WHITE, DEFAULT, "%s ", name_input_buffer);
 
             switch (input) {
                 case BACKSPACE:

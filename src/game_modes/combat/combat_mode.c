@@ -5,8 +5,8 @@
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
 #include "../../io/output/common/common_output.h"
-#include "../../logger/logger.h"
 #include "../../io/output/specific/character_output.h"
+#include "../../logger/logger.h"
 
 #include <stdlib.h>
 
@@ -41,7 +41,7 @@ typedef enum {
 
 enum combat_mode_index {
     //strings that are updated via local
-    USED_STR,   // String for 'used'
+    USED_STR,// String for 'used'
     COMBAT_NEXT_ACTION,
     USE_ABILITY,
     USE_POTION,
@@ -276,8 +276,8 @@ state_t update_combat_mode(const input_t input, Character* player, Character* en
 void shutdown_combat_mode() {
     if (combat_mode_strings != NULL) {
         for (int i = 0; i < MAX_COMBAT_MODE_STRINGS; i++) {
-            if (i == NOT_ENOUGH_RES_INFO) continue; // this string always has a copy of a local string
-            if (i == PLAYER_ABILITY_USAGE_INFO) continue; // this string always has a copy of a local string
+            if (i == NOT_ENOUGH_RES_INFO) continue;      // this string always has a copy of a local string
+            if (i == PLAYER_ABILITY_USAGE_INFO) continue;// this string always has a copy of a local string
             if (combat_mode_strings[i] != NULL) free(combat_mode_strings[i]);
         }
         free(combat_mode_strings);

@@ -1,8 +1,8 @@
 #include "leveling.h"
 
 #include "../game_data/character/enemy_generator.h"
-#include "../game_data/character/goblin.h"
 #include "../game_data/character/enemy_id.h"
+#include "../game_data/character/goblin.h"
 #include "../logger/logger.h"
 
 void gain_exp(Character* player, const Character* enemy) {

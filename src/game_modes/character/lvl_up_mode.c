@@ -2,8 +2,8 @@
 
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
-#include "../../logger/logger.h"
 #include "../../io/output/specific/character_output.h"
+#include "../../logger/logger.h"
 
 #define LVLUP_Y_POS_TITLE 2
 #define LVLUP_Y_POS_PLAYER_HEAD 4

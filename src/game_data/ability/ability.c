@@ -275,14 +275,14 @@ void build_ability_str(void) {
 
         char buffer[128];
         snprintf(buffer, sizeof(buffer),
-            ABILITY_STR_FORMAT,
-            abil->local_name,
-            abil->effect_type == DAMAGE_CHAR ? temp_strs[8] : temp_strs[9],
-            temp_strs[11], abil->effect_rolls, abil->effect_dice,
-            temp_strs[12], eff_scaler_str,
-            temp_strs[10], temp_strs[11], abil->accuracy_rolls, abil->accuracy_dice,
-            temp_strs[12], acc_scaler_str,
-            temp_strs[13], abil->v_cost, cost_str);
+                 ABILITY_STR_FORMAT,
+                 abil->local_name,
+                 abil->effect_type == DAMAGE_CHAR ? temp_strs[8] : temp_strs[9],
+                 temp_strs[11], abil->effect_rolls, abil->effect_dice,
+                 temp_strs[12], eff_scaler_str,
+                 temp_strs[10], temp_strs[11], abil->accuracy_rolls, abil->accuracy_dice,
+                 temp_strs[12], acc_scaler_str,
+                 temp_strs[13], abil->v_cost, cost_str);
 
         abil->ability_str = strdup(buffer);
     }

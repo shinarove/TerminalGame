@@ -29,7 +29,7 @@ int drop_gear_c(Character* self, const gear_t* gear);
 int equip_gear_c(Character* self, const gear_t* gear);
 int unequip_gear_c(Character* self, gear_slot_t target_slot);
 gear_t* get_gear_at_c(const Character* self, int index);
-int is_gear_equipped_c (const Character* self, const gear_t* gear);
+int is_gear_equipped_c(const Character* self, const gear_t* gear);
 int add_ability_c(const Character* self, const ability_t* ability);
 int remove_ability_c(const Character* self, const ability_t* ability);
 ability_t* get_ability_at_c(const Character* self, int index);
@@ -40,25 +40,24 @@ static const struct {
     int id;
     ability_id_t basic_ability_id;// when no weapons are equipped, use these abilities
 } character_base_ability[] = {
-    {0, PUNCH},
-    {GOBLIN, CLAWS}};
+        {0, PUNCH},
+        {GOBLIN, CLAWS}};
 
 static const Character_VTable character_vtable = {
-    .reset_health = reset_health_c,
-    .reset_stamina = reset_stamina_c,
-    .reset_mana = reset_mana_c,
-    .xp_limit_reached = xp_limit_reached_c,
-    .lvl_up = lvl_up_c,
-    .pick_up_gear = pick_up_gear_c,
-    .drop_gear = drop_gear_c,
-    .equip_gear = equip_gear_c,
-    .unequip_gear = unequip_gear_c,
-    .get_gear_at = get_gear_at_c,
-    .is_gear_equipped = is_gear_equipped_c,
-    .add_ability = add_ability_c,
-    .remove_ability = remove_ability_c,
-    .get_ability_at = get_ability_at_c
-};
+        .reset_health = reset_health_c,
+        .reset_stamina = reset_stamina_c,
+        .reset_mana = reset_mana_c,
+        .xp_limit_reached = xp_limit_reached_c,
+        .lvl_up = lvl_up_c,
+        .pick_up_gear = pick_up_gear_c,
+        .drop_gear = drop_gear_c,
+        .equip_gear = equip_gear_c,
+        .unequip_gear = unequip_gear_c,
+        .get_gear_at = get_gear_at_c,
+        .is_gear_equipped = is_gear_equipped_c,
+        .add_ability = add_ability_c,
+        .remove_ability = remove_ability_c,
+        .get_ability_at = get_ability_at_c};
 
 Character* create_empty_character() {
     Character* character = malloc(sizeof(Character));
@@ -94,10 +93,10 @@ Character* create_empty_character() {
 
     character->ability_list = create_array_list(sizeof(ability_t*), 0);
     RETURN_WHEN_NULL_CLEAN(character->ability_list, NULL, destroy_character(character),
-        "Character", "Failed to allocate memory for character")
+                           "Character", "Failed to allocate memory for character")
     character->inventory = create_inventory(0);
     RETURN_WHEN_NULL_CLEAN(character->inventory, NULL, destroy_character(character),
-        "Character", "Failed to create inventory for character")
+                           "Character", "Failed to create inventory for character")
 
     character->vtable = &character_vtable;
     return character;
@@ -172,7 +171,7 @@ void lvl_up_c(Character* self, const attr_id_t attr_to_increase) {
     // add equipment bonuses
     if (self->inventory != NULL) {
         apply_bonus_stats(self, &self->inventory->total_resource_bonus,
-                            &self->inventory->total_attribute_bonus);
+                          &self->inventory->total_attribute_bonus);
     }
 
     self->level++;
@@ -186,7 +185,7 @@ void lvl_up_c(Character* self, const attr_id_t attr_to_increase) {
             self->base_attributes.strength++;
             self->max_attributes.strength++;
             self->current_attributes.strength++;
-            self->max_carry_weight++; // increase max carry weight by 1
+            self->max_carry_weight++;// increase max carry weight by 1
             break;
         case INTELLIGENCE:
             self->base_attributes.intelligence++;
@@ -217,7 +216,8 @@ int pick_up_gear_c(Character* self, const gear_t* gear) {
     RETURN_WHEN_NULL(gear, -1, "Character", "In `pick_up_gear` given gear is NULL")
     RETURN_WHEN_TRUE(self->current_carry_weight > self->max_carry_weight, -1, "Character",
                      "In `pick_up_gear` character's current carry weight is greater than max carry weight: "
-                     "%d > %d", self->current_carry_weight, self->max_carry_weight)
+                     "%d > %d",
+                     self->current_carry_weight, self->max_carry_weight)
     if (self->current_carry_weight == self->max_carry_weight) {
         // inventory is full, cannot pick up gear
         return 1;
@@ -262,11 +262,11 @@ int equip_gear_c(Character* self, const gear_t* gear) {
         return unequip_success;
     }
 
-    const gear_slot_t target_slot = gear->gear_type == TWO_HANDED ? MAIN_HAND_SLOT: gear->gear_type;
+    const gear_slot_t target_slot = gear->gear_type == TWO_HANDED ? MAIN_HAND_SLOT : gear->gear_type;
     const int equip_success = self->inventory->vtable->equip_gear(self->inventory, gear);
     if (equip_success == 0) {
         apply_bonus_stats(self, &self->inventory->total_resource_bonus,
-                            &self->inventory->total_attribute_bonus);
+                          &self->inventory->total_attribute_bonus);
 
         // add abilities connected to the gear
         for (int i = 0; i < gear->ability_count; i++) {
@@ -281,13 +281,13 @@ int unequip_gear_c(Character* self, const gear_slot_t target_slot) {
     RETURN_WHEN_TRUE(target_slot >= MAX_GEAR_SLOTS, -1, "Character",
                      "In `unequip_gear` given target slot is invalid: %d", target_slot)
 
-    if (self->inventory->equipped[target_slot] == NULL) return 1; // no gear to unequip in the target slot
+    if (self->inventory->equipped[target_slot] == NULL) return 1;// no gear to unequip in the target slot
     const gear_t* gear_to_unequip = self->inventory->equipped[target_slot];
 
     const int unequip_success = self->inventory->vtable->unequip_gear(self->inventory, target_slot);
     if (unequip_success == 0) {
         apply_bonus_stats(self, &self->inventory->total_resource_bonus,
-                            &self->inventory->total_attribute_bonus);
+                          &self->inventory->total_attribute_bonus);
 
         // remove abilities connected to the gear
         for (int i = 0; i < gear_to_unequip->ability_count; i++) {
@@ -297,8 +297,7 @@ int unequip_gear_c(Character* self, const gear_slot_t target_slot) {
 
         // check if there is still a main hand or off hand gear equipped
         if (target_slot == MAIN_HAND_SLOT || target_slot == OFF_HAND_SLOT) {
-            if (self->inventory->equipped[MAIN_HAND_SLOT] == NULL
-                && self->inventory->equipped[OFF_HAND_SLOT] == NULL) {
+            if (self->inventory->equipped[MAIN_HAND_SLOT] == NULL && self->inventory->equipped[OFF_HAND_SLOT] == NULL) {
                 // no weapons a equipped, so add the basic ability
                 const ability_id_t basic_ability_id = character_base_ability[self->id].basic_ability_id;
                 const ability_t* ability_to_add = &get_ability_table()->abilities[basic_ability_id];
@@ -307,7 +306,6 @@ int unequip_gear_c(Character* self, const gear_slot_t target_slot) {
         }
     }
     return unequip_success;
-
 }
 
 gear_t* get_gear_at_c(const Character* self, const int index) {
@@ -316,7 +314,7 @@ gear_t* get_gear_at_c(const Character* self, const int index) {
     return self->inventory->vtable->get_gear_at(self->inventory, index);
 }
 
-int is_gear_equipped_c (const Character* self, const gear_t* gear) {
+int is_gear_equipped_c(const Character* self, const gear_t* gear) {
     RETURN_WHEN_NULL(self, -1, "Character", "In `is_gear_equipped` given character is NULL")
     RETURN_WHEN_NULL(gear, -1, "Character", "In `is_gear_equipped` given gear is NULL")
 
@@ -349,7 +347,7 @@ ability_t* get_ability_at_c(const Character* self, const int index) {
     const void* ptr = self->ability_list->vtable->list->get(self->ability_list, index);
     RETURN_WHEN_NULL(ptr, NULL, "Character", "In `get_ability_at` given index is out of bounds: %d", index)
 
-    return *(ability_t**)ptr;
+    return *(ability_t**) ptr;
 }
 
 void apply_bonus_stats(Character* character, const resources_t* bonus_res, const attributes_t* bonus_att) {

@@ -4,10 +4,10 @@
 #include "../../game_data/map/map_revealer.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/output/common/common_output.h"
+#include "../../io/output/specific/character_output.h"
 #include "../../io/output/specific/map_output.h"
 #include "../../logger/logger.h"
 #include "map_event_handler.h"
-#include "../../io/output/specific/character_output.h"
 
 enum map_mode_index {
     GAME_TITLE,
@@ -75,8 +75,8 @@ state_t update_map_mode(const input_t input, map_t* map, Character* player) {
             clear_screen();
             next_state = MAIN_MENU;//open the main menu
             break;
-        case I: // open character screen
-        case C: // open character screen
+        case I:// open character screen
+        case C:// open character screen
             clear_screen();
             next_state = CHARACTER_MODE;
             break;

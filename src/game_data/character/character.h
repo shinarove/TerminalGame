@@ -1,11 +1,10 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include "../../cstd/collections/array_list.h"
 #include "../ability/ability.h"
 #include "../inventory/inventory.h"
 #include "stats.h"
-
-#include "../../cstd/collections/array_list.h"
 
 typedef struct Character Character;
 typedef struct Character_VTable Character_VTable;
@@ -19,7 +18,7 @@ struct Character {
     int unspent_attr_p;
     int unspent_res_p;
     int current_carry_weight;// the current weight the character is carrying
-    int max_carry_weight;// the maximum weight the character can carry
+    int max_carry_weight;    // the maximum weight the character can carry
 
     resources_t base_resources;     // base = character without gear
     resources_t max_resources;      // max = base + buffs from gear
@@ -48,7 +47,7 @@ struct Character_VTable {
      * @param gear Pointer to the gear to be picked up.
      * @return 0 on success, 1 on inventory is full, -1 on error.
      */
-    int (*pick_up_gear)(Character* self, const gear_t* gear); // TODO: change to pick_up_item, after potions are implemented
+    int (*pick_up_gear)(Character* self, const gear_t* gear);// TODO: change to pick_up_item, after potions are implemented
     /**
      * Drops a gear from the character's inventory.
      *
@@ -56,7 +55,7 @@ struct Character_VTable {
      * @param gear Pointer to the gear to be dropped.
      * @return 0 on success, 1 if the gear is not found, -1 on error.
      */
-    int (*drop_gear)(Character* self, const gear_t* gear); // TODO: change to drop_item, after potions are implemented
+    int (*drop_gear)(Character* self, const gear_t* gear);// TODO: change to drop_item, after potions are implemented
     /**
      * Equips a gear in the character's inventory, un-equipping any existing gear in the target slot.
      * If the gear is two-handed, it will unequip any gear in both the main and off-hand slots.

@@ -2,7 +2,6 @@
 #define INVENTORY_H
 
 #include "../../cstd/collections/array_list.h"
-
 #include "../item/gear.h"
 
 typedef struct Inventory Inventory;
@@ -24,9 +23,9 @@ struct Inventory {
     resources_t total_resource_bonus;  // the total resource bonus from all equipped gears
     attributes_t total_attribute_bonus;// the total attribute bonus from all equipped gears
 
-    ArrayList* gear_list; // the array list of gears, holds the gear pointers
+    ArrayList* gear_list;                  // the array list of gears, holds the gear pointers
     const gear_t* equipped[MAX_GEAR_SLOTS];// the equipped gears
-    const Inventory_VTable* vtable;  // the virtual table for inventory operations
+    const Inventory_VTable* vtable;        // the virtual table for inventory operations
 };
 
 struct Inventory_VTable {

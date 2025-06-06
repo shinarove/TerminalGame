@@ -2,9 +2,9 @@
 
 #include "../../../../termbox2/termbox2.h"
 #include "../../../logger/logger.h"
+#include "../../colors.h"
 #include "../../local/local_handler.h"
 #include "../../string_formats.h"
-#include "../../colors.h"
 
 #include <stdio.h>
 
@@ -79,7 +79,7 @@ void print_char_h(const int x, int y, const Character* character, const output_a
     // print name and level
     char* char_name = character->id == 0 ? character->name : get_local_string(character->name);
     tb_printf(x, y++, c_white, c_default, NAME_LVL_FORMAT_C,
-        char_name, co_strings[LEVEL_STR], character->level);
+              char_name, co_strings[LEVEL_STR], character->level);
     if (character->id != 0) free(char_name);
 
     // prepare offset for the resource strings
@@ -91,11 +91,11 @@ void print_char_h(const int x, int y, const Character* character, const output_a
     y++;
     if (args.arg_res == RES_CURR_MAX) {
         tb_printf(x + COLUMN1_OFFSET_H, y, c_white, c_default, "%d/%d  ",
-            character->current_resources.health, character->max_resources.health);
+                  character->current_resources.health, character->max_resources.health);
         tb_printf(x + COLUMN2_OFFSET_H, y, c_white, c_default, "| %d/%d  ",
-            character->current_resources.stamina, character->max_resources.stamina);
+                  character->current_resources.stamina, character->max_resources.stamina);
         tb_printf(x + COLUMN3_OFFSET_H, y, c_white, c_default, "| %d/%d  ",
-            character->current_resources.mana, character->max_resources.mana);
+                  character->current_resources.mana, character->max_resources.mana);
     } else {
         tb_printf(x + COLUMN1_OFFSET_H, y, c_white, c_default, "%d  ", character->base_resources.health);
         tb_printf(x + COLUMN2_OFFSET_H, y, c_white, c_default, "| %d  ", character->base_resources.stamina);
@@ -124,10 +124,10 @@ void print_char_h(const int x, int y, const Character* character, const output_a
     if (args.arg_attr == ATTR_MAX_BONUS) {
         if (character->inventory == NULL) {
             log_msg(WARNING, "Character Output",
-                "In `print_c_attr_base_bonus` character's inventory is not initialized");
+                    "In `print_c_attr_base_bonus` character's inventory is not initialized");
         } else {
             print_attr_h(x, y,
-                &character->base_attributes, &character->inventory->total_attribute_bonus);
+                         &character->base_attributes, &character->inventory->total_attribute_bonus);
         }
     }
 
@@ -144,7 +144,7 @@ void print_char_v(int x, int y, const Character* character, const output_args_c_
     // print name and level
     char* char_name = character->id == 0 ? character->name : get_local_string(character->name);
     tb_printf(x++, y++, c_white, c_default, NAME_LVL_FORMAT_C,
-        char_name, co_strings[LEVEL_STR], character->level);
+              char_name, co_strings[LEVEL_STR], character->level);
     if (character->id != 0) free(char_name);
 
     // prepare offset for the resource strings
@@ -156,11 +156,11 @@ void print_char_v(int x, int y, const Character* character, const output_args_c_
     int x_offset = args.arg_short == 0 ? COLUMN2_OFFSET_LV : COLUMN2_OFFSET_SV;
     if (args.arg_res == RES_CURR_MAX) {
         tb_printf(x + x_offset, y, c_white, c_default, "%d/%d ",
-            character->current_resources.health, character->max_resources.health);
+                  character->current_resources.health, character->max_resources.health);
         tb_printf(x + x_offset, y + 1, c_white, c_default, "%d/%d ",
-            character->current_resources.stamina, character->max_resources.stamina);
+                  character->current_resources.stamina, character->max_resources.stamina);
         tb_printf(x + x_offset, y + 2, c_white, c_default, "%d/%d ",
-            character->current_resources.mana, character->max_resources.mana);
+                  character->current_resources.mana, character->max_resources.mana);
     } else {
         tb_printf(x + x_offset, y, c_white, c_default, "%d ", character->base_resources.health);
         tb_printf(x + x_offset, y + 1, c_white, c_default, "%d ", character->base_resources.stamina);
@@ -189,10 +189,10 @@ void print_char_v(int x, int y, const Character* character, const output_args_c_
     if (args.arg_attr == ATTR_MAX_BONUS) {
         if (character->inventory == NULL) {
             log_msg(WARNING, "Character Output",
-                "In `print_c_attr_base_bonus` character's inventory is not initialized");
+                    "In `print_c_attr_base_bonus` character's inventory is not initialized");
         } else {
             print_attr_v(x + x_offset, y,
-                &character->base_attributes, &character->inventory->total_attribute_bonus);
+                         &character->base_attributes, &character->inventory->total_attribute_bonus);
         }
     }
 

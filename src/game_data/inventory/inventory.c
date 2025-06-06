@@ -11,13 +11,12 @@ gear_t* get_gear_at_i(const Inventory* self, int index);
 int is_gear_equipped_i(const Inventory* inventory, const gear_t* gear);
 
 static const Inventory_VTable vtable_Inventory = {
-    .add_gear = add_gear_i,
-    .remove_gear = remove_gear_i,
-    .equip_gear = equip_gear_i,
-    .unequip_gear = unequip_gear_i,
-    .get_gear_at = get_gear_at_i,
-    .is_gear_equipped = is_gear_equipped_i
-};
+        .add_gear = add_gear_i,
+        .remove_gear = remove_gear_i,
+        .equip_gear = equip_gear_i,
+        .unequip_gear = unequip_gear_i,
+        .get_gear_at = get_gear_at_i,
+        .is_gear_equipped = is_gear_equipped_i};
 
 Inventory* create_inventory(const unsigned int initial_capacity) {
     RETURN_WHEN_TRUE(initial_capacity < 0, NULL, "Inventory", "In `create_inventory` allocated_space is negative")
@@ -65,10 +64,12 @@ int remove_gear_i(const Inventory* inventory, const gear_t* gear) {
     const int rm_success = inventory->gear_list->vtable->list->remove(inventory->gear_list, &gear);
     if (rm_success == -1) {
         log_msg(WARNING, "Inventory", "In `remove_gear` an error occurred while"
-                                      "removing gear with id %d from the inventory", gear->id);
+                                      "removing gear with id %d from the inventory",
+                gear->id);
     } else if (rm_success == 1) {
         log_msg(INFO, "Inventory", "In `remove_gear` gear with id %d not found"
-                                      "in the inventory", gear->id);
+                                   "in the inventory",
+                gear->id);
     }
     return rm_success;
 }
@@ -80,12 +81,14 @@ int equip_gear_i(Inventory* inventory, const gear_t* gear) {
     const int found = inventory->gear_list->vtable->list->find(inventory->gear_list, &gear);
     if (found == -2) {
         log_msg(WARNING, "Inventory", "In `equip_gear` an error occurred while"
-                                      "finding gear with id %d in the inventory", gear->id);
+                                      "finding gear with id %d in the inventory",
+                gear->id);
         return -1;
     }
     if (found == -1) {
         log_msg(WARNING, "Inventory", "In `equip_gear` gear with id %d not found"
-                                      "in the inventory", gear->id);
+                                      "in the inventory",
+                gear->id);
         return 1;
     }
 
@@ -94,8 +97,7 @@ int equip_gear_i(Inventory* inventory, const gear_t* gear) {
     if (gear->gear_type == TWO_HANDED) {
         unequip_result = inventory->vtable->unequip_gear(inventory, MAIN_HAND);
         // unequip the off hand slot, only if the main hand slot had no error
-        unequip_result = unequip_result != -1 ?
-                         inventory->vtable->unequip_gear(inventory, OFF_HAND) : unequip_result;
+        unequip_result = unequip_result != -1 ? inventory->vtable->unequip_gear(inventory, OFF_HAND) : unequip_result;
     } else {
         unequip_result = inventory->vtable->unequip_gear(inventory, gear->gear_type);
     }
@@ -163,7 +165,7 @@ gear_t* get_gear_at_i(const Inventory* self, const int index) {
     void* ptr = self->gear_list->vtable->list->get(self->gear_list, index);
     RETURN_WHEN_NULL(ptr, NULL, "Inventory", "In `get_gear_at` gear at index %d not found", index)
 
-    return *(gear_t**)ptr;
+    return *(gear_t**) ptr;
 }
 
 int is_gear_equipped_i(const Inventory* inventory, const gear_t* gear) {
@@ -179,7 +181,7 @@ int is_gear_equipped_i(const Inventory* inventory, const gear_t* gear) {
             // two-handed gear is not equipped
         } else if (inventory->equipped[OFF_HAND_SLOT] == gear ||
                    inventory->equipped[MAIN_HAND_SLOT] == gear) {
-            is_equipped = 1; // two-handed gear is equipped
+            is_equipped = 1;// two-handed gear is equipped
         } else {
             log_msg(WARNING, "Inventory", "In `is_gear_equipped`"
                                           "two-handed gear is not equipped properly");
@@ -187,7 +189,7 @@ int is_gear_equipped_i(const Inventory* inventory, const gear_t* gear) {
         }
     } else {
         if (inventory->equipped[gear_type] == gear) {
-            is_equipped = 1; // gear is equipped
+            is_equipped = 1;// gear is equipped
         }
     }
 

@@ -2,8 +2,8 @@
 
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
-#include "../../logger/logger.h"
 #include "../../io/output/specific/character_output.h"
+#include "../../logger/logger.h"
 
 #include <stdlib.h>
 
@@ -94,28 +94,26 @@ int init_character_mode() {
 
     cm_ability_menu = (menu_t) {NULL, NULL, 0, 0, " ", NULL};
     cm_inv_manip_menu = (menu_t) {
-        NULL,
-        &cm_strings[EQUIP_GEAR_STR],
-        MAX_OPTIONS_INV_MANIP,
-        0,
-        NULL,
-        NULL
-    };
+            NULL,
+            &cm_strings[EQUIP_GEAR_STR],
+            MAX_OPTIONS_INV_MANIP,
+            0,
+            NULL,
+            NULL};
     cm_equip_manip_menu = (menu_t) {
-        NULL,
-        &cm_strings[SHOW_GEAR_DETAILS_STR],
-        MAX_OPTIONS_EQUIP_MANIP,
-        0,
-        NULL,
-        NULL
-    };
+            NULL,
+            &cm_strings[SHOW_GEAR_DETAILS_STR],
+            MAX_OPTIONS_EQUIP_MANIP,
+            0,
+            NULL,
+            NULL};
 
     // connecting the args to the menus
     cm_inv_menu.args = &cm_inv_menu_arg;
     cm_equip_menu.args = &cm_equip_menu_arg;
 
     // allocate memory for the equipment options
-    cm_equip_menu.options = (char**) malloc(sizeof(char*) * MAX_GEAR_SLOTS); // only until the both hand slot
+    cm_equip_menu.options = (char**) malloc(sizeof(char*) * MAX_GEAR_SLOTS);// only until the both hand slot
     RETURN_WHEN_NULL(cm_equip_menu.options, 1, "Character Mode", "Failed to allocate memory for equipment options.")
     for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
         cm_equip_menu.options[i] = NULL;
@@ -128,7 +126,7 @@ int init_character_mode() {
 
 state_t prepare_character_mode(const Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Mode", "In `prepare_character_mode` given player is NULL.")
-    cm_state = INVENTORY_MENU; // reset the state
+    cm_state = INVENTORY_MENU;// reset the state
 
     // reset the menus
     cm_inv_menu.selected_index = 0;
@@ -147,11 +145,11 @@ state_t prepare_character_mode(const Character* player) {
         for (int i = 0; i < cm_inv_menu.option_count; i++) {
             if (cm_inv_menu.options[i] != NULL) {
                 free(cm_inv_menu.options[i]);
-                cm_inv_menu.options[i] = NULL; // reset the option
+                cm_inv_menu.options[i] = NULL;// reset the option
             }
         }
         free(cm_inv_menu.options);
-        cm_inv_menu.options = NULL; // reset the options pointer
+        cm_inv_menu.options = NULL;// reset the options pointer
     }
     char* buffer[64];
     cm_inv_menu.options = malloc(sizeof(char*) * player->inventory->gear_list->size);
@@ -184,10 +182,10 @@ state_t prepare_character_mode(const Character* player) {
     for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
         if (player->inventory != NULL && player->inventory->equipped[i] != NULL) {
             snprintf(buffer, sizeof(buffer), "%s: %s",
-                cm_strings[HEAD_STR + i], player->inventory->equipped[i]->local_name);
+                     cm_strings[HEAD_STR + i], player->inventory->equipped[i]->local_name);
         } else {
             snprintf(buffer, sizeof(buffer), "%s: %s",
-                cm_strings[HEAD_STR + i], cm_strings[EMPTY_GEAR_SLOT]);
+                     cm_strings[HEAD_STR + i], cm_strings[EMPTY_GEAR_SLOT]);
         }
         cm_inv_menu.options[i] = strdup(buffer);
     }
@@ -213,12 +211,12 @@ state_t update_character_mode(const input_t input, Character* player) {
     // handle the prints
     if (cm_state == ABILITY_MENU) {
         print_text_f(CM_X_POS_COLUMN1, CM_Y_POS_CT_ABIL_OV, WHITE, DEFAULT, "%s     ",
-                cm_strings[CHANGE_TO_INVENTORY_OV]);
+                     cm_strings[CHANGE_TO_INVENTORY_OV]);
 
         abil_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN1, CM_Y_POS_BODY, &cm_ability_menu);
     } else {
         print_text_f(CM_X_POS_COLUMN1, CM_Y_POS_CT_ABIL_OV, WHITE, DEFAULT, "%s     ",
-                cm_strings[CHANGE_TO_ABILITY_OV]);
+                     cm_strings[CHANGE_TO_ABILITY_OV]);
         inv_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN1, CM_Y_POS_BODY, &cm_inv_menu);
         equip_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN2, CM_Y_POS_BODY, &cm_equip_menu);
 
@@ -243,7 +241,7 @@ state_t update_character_mode(const input_t input, Character* player) {
             } else {
                 // handle the inventory manipulation menu
                 switch (inv_manip_menu_res) {
-                    case 0: // equip gear was pressed
+                    case 0:// equip gear was pressed
                         const gear_t* gear_to_equip = player->vtable->get_gear_at(player, cm_inv_menu.selected_index);
                         // if the same item is already equipped, do nothing
                         if (player->vtable->is_gear_equipped(player, gear_to_equip) == 0) {
@@ -256,17 +254,17 @@ state_t update_character_mode(const input_t input, Character* player) {
                             }
                         }
                         break;
-                    case 1: // drop gear was pressed
-                    case 2: // show gear details was pressed
-                    case MAX_OPTIONS_INV_MANIP: // nothing was pressed, do nothing
+                    case 1:                    // drop gear was pressed
+                    case 2:                    // show gear details was pressed
+                    case MAX_OPTIONS_INV_MANIP:// nothing was pressed, do nothing
                         break;
-                    case -1: // esc was pressed
+                    case -1:// esc was pressed
                         cm_state = INVENTORY_MENU;
                         cm_inv_menu_arg.mode = ACTIVE;
                         clear_screen();
                         break;
                     case -2:
-                        res = EXIT_GAME; // exit game
+                        res = EXIT_GAME;// exit game
                         break;
                     default:
                         log_msg(WARNING, "Character Mode",
@@ -304,7 +302,7 @@ state_t update_character_mode(const input_t input, Character* player) {
             }
             break;
         case EXIT_CHARACTER_MODE:
-            res = MAP_MODE; // return to the map mode
+            res = MAP_MODE;// return to the map mode
             break;
     }
 
@@ -323,17 +321,17 @@ void shutdown_character_mode(void) {
 int update_inventory_menu(const input_t input, const int menu_result) {
     state_t res = CHARACTER_MODE;
     switch (input) {
-        case RIGHT: // change to the equipment menu
+        case RIGHT:// change to the equipment menu
             cm_state = EQUIPMENT_MENU;
             cm_equip_menu_arg.mode = ACTIVE;
             cm_inv_menu_arg.mode = INACTIVE_WOUT_SEL;
             break;
-        case C: // change to the ability overview
+        case C:// change to the ability overview
             cm_state = ABILITY_MENU;
             cm_ability_menu.selected_index = 0;
             clear_screen();
             break;
-        default: // handle the inventory menu as normal
+        default:// handle the inventory menu as normal
             if (menu_result == cm_inv_menu.option_count) {
                 // important edge case, when no gear is in the inventory
                 // ... do nothing

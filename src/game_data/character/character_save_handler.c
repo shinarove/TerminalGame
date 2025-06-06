@@ -38,35 +38,35 @@ int read_character_data(FILE* file, Character* character) {
     // read id, current_exp, needed_exp, level, has_map_key,
     // unspent_attr_p, unspent_res_p, max_carry_weight
     RETURN_WHEN_TRUE_CLEAN(fread(&character->id, sizeof(int), 8, file) != 8, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character data")
+                           destroy_character(character), "Save File Handler", "Failed to read character data")
 
     // read the resource structs and attributes structs as ints
     RETURN_WHEN_TRUE_CLEAN(fread(&character->base_resources, sizeof(int), 24, file) != 24, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character resources")
+                           destroy_character(character), "Save File Handler", "Failed to read character resources")
 
     // read the name length
     int name_length;
     RETURN_WHEN_TRUE_CLEAN(fread(&name_length, sizeof(int), 1, file) != 1, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character name length")
+                           destroy_character(character), "Save File Handler", "Failed to read character name length")
 
     // allocate memory for the name
     character->name = malloc(name_length);
     RETURN_WHEN_NULL_CLEAN(character->name, 1, destroy_character(character),
-        "Save File Handler", "Failed to allocate memory for character name");
+                           "Save File Handler", "Failed to allocate memory for character name");
     // read the name
     RETURN_WHEN_TRUE_CLEAN(fread(character->name, sizeof(char), name_length, file) != name_length, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character name");
+                           destroy_character(character), "Save File Handler", "Failed to read character name");
 
     // read the ability array data
     // read the ability count & allocated space
     int ability_count = 0;
     RETURN_WHEN_TRUE_CLEAN(fread(&ability_count, sizeof(int), 1, file) != 1, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character ability count")
+                           destroy_character(character), "Save File Handler", "Failed to read character ability count")
 
     // read the ability ids
     int ability_ids[ability_count];
     RETURN_WHEN_TRUE_CLEAN(fread(ability_ids, sizeof(int), ability_count, file) != ability_count, 1,
-        destroy_character(character), "Save File Handler", "Failed to read character ability ids");
+                           destroy_character(character), "Save File Handler", "Failed to read character ability ids");
     // iterate through the ability ids and add them to the character
     for (int i = 0; i < ability_count; i++) {
         // add the ability to the character
