@@ -47,7 +47,7 @@ struct Inventory_VTable {
      */
     int (*remove_gear)(const Inventory* self, const gear_t* gear);
     /**
-     * Equips a gear in the inventory, replacing any existing gear in the target slot.
+     * Equips a gear in the inventory, un-equipping any existing gear in the target slot.
      * If the gear is two-handed, it will unequip any gear in both the main and off-hand slots.
      *
      * @param self Pointer to the inventory instance.
@@ -61,9 +61,11 @@ struct Inventory_VTable {
      *
      * @param self Pointer to the inventory instance.
      * @param target_slot The gear slot from which the gear will be unequipped.
-     * @return 0 on success, 1 if no gear was equipped in the specified slot, -1 on error.
+     * @return 0 on success, 1 if no gear was unequipped in the specified slot, -1 on error.
      */
     int (*unequip_gear)(Inventory* self, gear_slot_t target_slot);
+
+    gear_t* (*get_gear_at)(const Inventory* self, int index);
     /**
      * Searches the inventory equipped slots, if the gear is equipped.
      *
