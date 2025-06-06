@@ -89,7 +89,7 @@ int init_character_mode() {
     cm_inv_menu = (menu_t) {NULL, NULL, 0, 0, " ", NULL};
     cm_inv_menu_arg = (menu_arg_t) {ACTIVE, BLACK, WHITE, WHITE, DEFAULT};
 
-    cm_equip_menu = (menu_t) {NULL, NULL, BOTH_HAND_SLOT, 0, " ", NULL};
+    cm_equip_menu = (menu_t) {NULL, NULL, MAX_GEAR_SLOTS, 0, " ", NULL};
     cm_equip_menu_arg = (menu_arg_t) {INACTIVE_WOUT_SEL, BLACK, WHITE, WHITE, DEFAULT};
 
     cm_ability_menu = (menu_t) {NULL, NULL, 0, 0, " ", NULL};
@@ -115,9 +115,9 @@ int init_character_mode() {
     cm_equip_menu.args = &cm_equip_menu_arg;
 
     // allocate memory for the equipment options
-    cm_equip_menu.options = (char**) malloc(sizeof(char*) * BOTH_HAND_SLOT); // only until the both hand slot
+    cm_equip_menu.options = (char**) malloc(sizeof(char*) * MAX_GEAR_SLOTS); // only until the both hand slot
     RETURN_WHEN_NULL(cm_equip_menu.options, 1, "Character Mode", "Failed to allocate memory for equipment options.")
-    for (int i = 0; i < BOTH_HAND_SLOT; i++) {
+    for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
         cm_equip_menu.options[i] = NULL;
     }
 
@@ -126,7 +126,7 @@ int init_character_mode() {
     return 0;
 }
 
-state_t prepare_character_mode(const character_t* player) {
+state_t prepare_character_mode(const Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Mode", "In `prepare_character_mode` given player is NULL.")
     cm_state = INVENTORY_MENU; // reset the state
 
@@ -154,15 +154,20 @@ state_t prepare_character_mode(const character_t* player) {
         cm_inv_menu.options = NULL; // reset the options pointer
     }
     char* buffer[64];
-    cm_inv_menu.options = malloc(sizeof(char*) * player->inventory->gear_count);
+    cm_inv_menu.options = malloc(sizeof(char*) * player->inventory->gear_list->size);
     if (player->inventory != NULL) {
-        cm_inv_menu.option_count = player->inventory->gear_count;
-        for (int i = 0; i < player->inventory->gear_count; i++) {
-            if (is_gear_equipped(player->inventory, player->inventory->gears[i]) == 1) {
+        cm_inv_menu.option_count = player->inventory->gear_list->size;
+        for (int i = 0; i < player->inventory->gear_list->size; i++) {
+            const gear_t* gear = player->vtable->get_gear_at(player, i);
+            const int is_equipped = player->vtable->is_gear_equipped(player, gear);
+            if (is_equipped == 1) {
                 // mark the gear as equipped
-                snprintf(buffer, sizeof(buffer), "*%s*", player->inventory->gears[i]->local_name);
+                snprintf(buffer, sizeof(buffer), "*%s*", gear->local_name);
+            } else if (is_equipped == 0) {
+                // gear is not equipped
+                snprintf(buffer, sizeof(buffer), "%s", gear->local_name);
             } else {
-                snprintf(buffer, sizeof(buffer), "%s", player->inventory->gears[i]->local_name);
+                // gear is not rightfully equipped or an error occurred
             }
             cm_inv_menu.options[i] = strdup(buffer);
         }
@@ -171,12 +176,12 @@ state_t prepare_character_mode(const character_t* player) {
     }
 
     // prepare the equipment menu
-    for (int i = 0; i < BOTH_HAND_SLOT; i++) {
+    for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
         if (cm_equip_menu.options[i] != NULL) {
             free(cm_equip_menu.options[i]);
         }
     }
-    for (int i = 0; i < BOTH_HAND_SLOT; i++) {
+    for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
         if (player->inventory != NULL && player->inventory->equipped[i] != NULL) {
             snprintf(buffer, sizeof(buffer), "%s: %s",
                 cm_strings[HEAD_STR + i], player->inventory->equipped[i]->local_name);
@@ -190,7 +195,7 @@ state_t prepare_character_mode(const character_t* player) {
     return CHARACTER_MODE;
 }
 
-state_t update_character_mode(const input_t input, character_t* player) {
+state_t update_character_mode(const input_t input, Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Mode", "In `update_character_mode` given player is NULL.")
 
     state_t res = CHARACTER_MODE;
@@ -239,27 +244,16 @@ state_t update_character_mode(const input_t input, character_t* player) {
                 // handle the inventory manipulation menu
                 switch (inv_manip_menu_res) {
                     case 0: // equip gear was pressed
-                        const gear_t* gear_to_equip = player->inventory->gears[cm_inv_menu.selected_index];
-                        if (is_gear_equipped(player->inventory, gear_to_equip) == 0) {
-                            // gear is not equipped
-                            gear_slot_t slot;
-                            if (gear_to_equip->gear_type < RING) {
-                                slot = (gear_slot_t) gear_to_equip->gear_type; // get the slot from the gear type
-                            } else if (gear_to_equip->gear_type == RING) {
-                                // check if a ring slot is free or not
-                                if (player->inventory->equipped[RING_LEFT_SLOT] == NULL) {
-                                    slot = RING_LEFT_SLOT;
-                                } else if (player->inventory->equipped[RING_RIGHT_SLOT] == NULL) {
-                                    slot = RING_RIGHT_SLOT;
-                                } else {
-                                    // both ring slots are occupied, so always equip the left ring slot
-                                    slot = RING_LEFT_SLOT;
-                                }
-                            } else {
-                                slot = (gear_slot_t) gear_to_equip->gear_type + 1;
+                        const gear_t* gear_to_equip = player->vtable->get_gear_at(player, cm_inv_menu.selected_index);
+                        // if the same item is already equipped, do nothing
+                        if (player->vtable->is_gear_equipped(player, gear_to_equip) == 0) {
+                            const int equip_success = player->vtable->equip_gear(player, gear_to_equip);
+                            if (equip_success != 0) {
+                                //something went wrong!!!
+                                log_msg(ERROR, "Character Mode",
+                                        "Failed to equip gear %s in `update_character_mode`.",
+                                        gear_to_equip->local_name);
                             }
-
-                            equip_gear_c(player, gear_to_equip->id, slot);
                         }
                         break;
                     case 1: // drop gear was pressed

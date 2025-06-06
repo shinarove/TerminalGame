@@ -25,6 +25,6 @@
  *          - The character pointer is null.
  *          - The character has an invalid luck value.
  */
-int roll_luck_dice(const character_t* character);
+int roll_luck_dice(const Character* character);
 
 #endif//LUCK_H

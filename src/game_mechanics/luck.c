@@ -3,10 +3,10 @@
 #include "../logger/logger.h"
 #include "dice/dice.h"
 
-int roll_luck_dice(const character_t* character) {
+int roll_luck_dice(const Character* character) {
     RETURN_WHEN_NULL(character, 0, "Luck", "In `roll_luck_dice` given character is NULL")
     int res = 0;
-    dice_t used_dice = D3;
+    dice_t used_dice;
 
     const int c_luck = character->current_attributes.luck;
     if (c_luck > 24) {

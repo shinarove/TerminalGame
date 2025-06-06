@@ -32,7 +32,7 @@ int init_lvl_up_mode(void);
  * @return The updated game state, typically remaining in LVL_UP_MODE
  *         unless a transition to another state is triggered.
  */
-state_t update_lvl_up_mode(input_t input, character_t* player);
+state_t update_lvl_up_mode(input_t input, Character* player);
 
 /**
  * Shuts down the Level-Up mode of the application.

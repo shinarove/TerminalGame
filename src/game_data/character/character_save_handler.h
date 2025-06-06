@@ -15,7 +15,7 @@
  * @return 0 if the operation succeeds, or 1 if either `file` or `character`
  *         is NULL or if an error occurs during writing.
  */
-int write_character_data(FILE* file, const character_t* character);
+int write_character_data(FILE* file, const Character* character);
 
 /**
  * Reads character data from a file. Abilities are expected to be stored by their IDs.
@@ -28,7 +28,7 @@ int write_character_data(FILE* file, const character_t* character);
  *         is NULL, if there is insufficient memory, or if an error
  *         occurs during reading.
  */
-int read_character_data(FILE* file, character_t* character);
+int read_character_data(FILE* file, Character* character);
 
 /**
  * Calculates a checksum for the provided character.
@@ -40,6 +40,6 @@ int read_character_data(FILE* file, character_t* character);
  *         of the character's data, or 0 if the `character`
  *         pointer is NULL.
  */
-long calculate_checksum_c(const character_t* character);
+long calculate_checksum_c(const Character* character);
 
 #endif//CHARACTER_SAVE_HANDLER_H

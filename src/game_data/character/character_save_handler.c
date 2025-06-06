@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-int write_character_data(FILE* file, const character_t* character) {
+int write_character_data(FILE* file, const Character* character) {
     RETURN_WHEN_NULL(file, 1, "Character Save Handler", "In `write_character_data` given file is NULL")
     RETURN_WHEN_NULL(character, 1, "Character Save Handler", "In `write_character_data` given character is NULL")
 
@@ -21,99 +21,71 @@ int write_character_data(FILE* file, const character_t* character) {
     fwrite(character->name, sizeof(char), name_length, file);
 
     // write the ability array data
-    // write the ability count & allocated space
-    fwrite(&character->abilities->ability_count, sizeof(int), 2, file);
+    // write the ability count
+    fwrite(&character->ability_list->size, sizeof(int), 1, file);
     // iterate through the ability array and write the ids
-    for (int i = 0; i < character->abilities->ability_count; i++) {
-        fwrite(&character->abilities->abilities[i]->id, sizeof(int), 1, file);
+    for (int i = 0; i < character->ability_list->size; i++) {
+        const ability_t* ability = character->vtable->get_ability_at(character, i);
+        fwrite(&ability->id, sizeof(int), 1, file);
     }
     return 0;
 }
 
-int read_character_data(FILE* file, character_t* character) {
+int read_character_data(FILE* file, Character* character) {
     RETURN_WHEN_NULL(file, 1, "Character Save Handler", "In `read_character_data` given file is NULL")
     RETURN_WHEN_NULL(character, 1, "Character Save Handler", "In `read_character_data` given character is NULL")
 
     // read id, current_exp, needed_exp, level, has_map_key,
     // unspent_attr_p, unspent_res_p, max_carry_weight
-    if (fread(&character->id, sizeof(int), 8, file) != 8) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character data");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(&character->id, sizeof(int), 8, file) != 8, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character data")
+
     // read the resource structs and attributes structs as ints
-    if (fread(&character->base_resources, sizeof(int), 24, file) != 24) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character resources");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(&character->base_resources, sizeof(int), 24, file) != 24, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character resources")
 
     // read the name length
     int name_length;
-    if (fread(&name_length, sizeof(int), 1, file) != 1) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character name length");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(&name_length, sizeof(int), 1, file) != 1, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character name length")
+
     // allocate memory for the name
     character->name = malloc(name_length);
-    if (character->name == NULL) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to allocate memory for character name");
-        return 1;
-    }
+    RETURN_WHEN_NULL_CLEAN(character->name, 1, destroy_character(character),
+        "Save File Handler", "Failed to allocate memory for character name");
     // read the name
-    if (fread(character->name, sizeof(char), name_length, file) != name_length) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character name");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(character->name, sizeof(char), name_length, file) != name_length, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character name");
 
     // read the ability array data
     // read the ability count & allocated space
     int ability_count = 0;
-    int allocated_space = 0;
-    if (fread(&ability_count, sizeof(int), 1, file) != 1) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character ability count");
-        return 1;
-    }
-    if (fread(&allocated_space, sizeof(int), 1, file) != 1) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character ability allocated space");
-        return 1;
-    }
-    // initialize the ability array
-    character->abilities = create_ability_array(allocated_space);
-    if (character->abilities == NULL) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to allocate memory for character ability array");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(&ability_count, sizeof(int), 1, file) != 1, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character ability count")
+
     // read the ability ids
     int ability_ids[ability_count];
-    if (fread(ability_ids, sizeof(int), ability_count, file) != ability_count) {
-        destroy_character(character);
-        log_msg(ERROR, "Save File Handler", "Failed to read character ability ids");
-        return 1;
-    }
+    RETURN_WHEN_TRUE_CLEAN(fread(ability_ids, sizeof(int), ability_count, file) != ability_count, 1,
+        destroy_character(character), "Save File Handler", "Failed to read character ability ids");
     // iterate through the ability ids and add them to the character
     for (int i = 0; i < ability_count; i++) {
         // add the ability to the character
-        if (add_ability_c(character, ability_ids[i]) != 0) {
+        const int add_success = character->vtable->add_ability(character, &get_ability_table()->abilities[i]);
+        if (add_success == 1) {
+            // ability already in the character's ability list
+        } else if (add_success != 0) {
             destroy_character(character);
-            log_msg(ERROR, "Save File Handler", "Failed to add ability to character");
+            log_msg(ERROR, "Save File Handler", "An error occurred when adding ability %d to character", ability_ids[i]);
             return 1;
         }
     }
 
-    // TODO: read the inventory data if needed
-    character->inventory = create_inventory(5);
+    // TODO: read the inventory data
 
     return 0;
 }
 
-long calculate_checksum_c(const character_t* character) {
+long calculate_checksum_c(const Character* character) {
     RETURN_WHEN_NULL(character, 0, "Character Save Handler",
                      "In `calculate_checksum_c` given character is NULL")
 
@@ -159,10 +131,10 @@ long calculate_checksum_c(const character_t* character) {
         checksum += character->name[i];
     }
     // add ability array data to checksum
-    checksum += character->abilities->ability_count;
-    checksum += character->abilities->allocated_space;
-    for (int i = 0; i < character->abilities->ability_count; i++) {
-        checksum += character->abilities->abilities[i]->id;
+    checksum += character->ability_list->size;
+    for (int i = 0; i < character->ability_list->size; i++) {
+        const ability_t* ability = character->vtable->get_ability_at(character, i);
+        checksum += ability->id;
     }
 
     return checksum;

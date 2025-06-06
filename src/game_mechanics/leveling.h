@@ -3,6 +3,6 @@
 
 #include "../game_data/character/character.h"
 
-void gain_exp(character_t* player, const character_t* enemy);
+void gain_exp(Character* player, const Character* enemy);
 
 #endif//LEVELING_H

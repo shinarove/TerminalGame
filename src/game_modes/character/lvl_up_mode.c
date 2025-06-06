@@ -54,7 +54,7 @@ int init_lvl_up_mode(void) {
     return 0;
 }
 
-state_t update_lvl_up_mode(const input_t input, character_t* player) {
+state_t update_lvl_up_mode(const input_t input, Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Level Up Mode", "In `update_lvl_up_mode` given player is NULL.")
 
     state_t res = LVL_UP_MODE;
@@ -67,27 +67,27 @@ state_t update_lvl_up_mode(const input_t input, character_t* player) {
     if (lvl_up_state == LVL_UP_SELECTION) {
         switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
             case STRENGTH:
-                lvl_up_c(player, STRENGTH);
+                player->vtable->lvl_up(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 clear_screen();
                 break;
             case INTELLIGENCE:
-                lvl_up_c(player, INTELLIGENCE);
+                player->vtable->lvl_up(player, INTELLIGENCE);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 clear_screen();
                 break;
             case AGILITY:
-                lvl_up_c(player, AGILITY);
+                player->vtable->lvl_up(player, AGILITY);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 clear_screen();
                 break;
             case CONSTITUTION:
-                lvl_up_c(player, CONSTITUTION);
+                player->vtable->lvl_up(player, CONSTITUTION);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 clear_screen();
                 break;
             case LUCK:
-                lvl_up_c(player, LUCK);
+                player->vtable->lvl_up(player, LUCK);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
                 clear_screen();
                 break;

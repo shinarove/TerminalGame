@@ -66,7 +66,7 @@ char* name_input_buffer = NULL;
 
 void update_cc_local(void);
 
-void update_stats(int bool_exp, int* updated_stats, int* unspent_points, int diff, character_t* player);
+void update_stats(int bool_exp, int* updated_stats, int* unspent_points, int diff);
 
 void update_spent_p_str(int unspent_points);
 
@@ -111,7 +111,7 @@ int init_character_creation(void) {
     return 0;
 }
 
-state_t update_character_creation(const input_t input, character_t* player) {
+state_t update_character_creation(const input_t input, Character* player) {
     RETURN_WHEN_NULL(player, EXIT_GAME, "Character Creation", "In `update_character_creation` given player is NULL.")
     state_t res = CHARACTER_CREATION;
 
@@ -166,27 +166,27 @@ state_t update_character_creation(const input_t input, character_t* player) {
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {
                 case 0:// decrease health by one
                     update_stats(player->base_resources.health > 1,
-                                 &player->base_resources.health, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.health, &player->unspent_res_p, -1);
                     break;
                 case 1:// increase health by one
                     update_stats(player->unspent_res_p > 0,
-                                 &player->base_resources.health, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.health, &player->unspent_res_p, 1);
                     break;
                 case 2:// decrease stamina by one
                     update_stats(player->base_resources.stamina > 1,
-                                 &player->base_resources.stamina, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.stamina, &player->unspent_res_p, -1);
                     break;
                 case 3:// increase stamina by one
                     update_stats(player->unspent_res_p > 0,
-                                 &player->base_resources.stamina, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.stamina, &player->unspent_res_p, 1);
                     break;
                 case 4:// decrease mana by one
                     update_stats(player->base_resources.mana > 1,
-                                 &player->base_resources.mana, &player->unspent_res_p, -1, player);
+                                 &player->base_resources.mana, &player->unspent_res_p, -1);
                     break;
                 case 5:// increase mana by one
                     update_stats(player->unspent_res_p > 0,
-                                 &player->base_resources.mana, &player->unspent_res_p, 1, player);
+                                 &player->base_resources.mana, &player->unspent_res_p, 1);
                     break;
                 case MAX_RESOURCES * 2:// nothing was pressed, do nothing
                 case -1:               // ESC was pressed, do nothing
@@ -229,43 +229,43 @@ state_t update_character_creation(const input_t input, character_t* player) {
             switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_attr_p_spinner)) {
                 case 0:// decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
-                                 &player->base_attributes.strength, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.strength, &player->unspent_attr_p, -1);
                     break;
                 case 1:// increase strength by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.strength, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.strength, &player->unspent_attr_p, 1);
                     break;
                 case 2:// decrease intelligence by one
                     update_stats(player->base_attributes.intelligence > 1,
-                                 &player->base_attributes.intelligence, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.intelligence, &player->unspent_attr_p, -1);
                     break;
                 case 3:// increase intelligence by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.intelligence, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.intelligence, &player->unspent_attr_p, 1);
                     break;
                 case 4:// decrease agility by one
                     update_stats(player->base_attributes.agility > 1,
-                                 &player->base_attributes.agility, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.agility, &player->unspent_attr_p, -1);
                     break;
                 case 5:// increase agility by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.agility, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.agility, &player->unspent_attr_p, 1);
                     break;
                 case 6:// decrease endurance by one
                     update_stats(player->base_attributes.constitution > 1,
-                                 &player->base_attributes.constitution, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.constitution, &player->unspent_attr_p, -1);
                     break;
                 case 7:// increase endurance by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.constitution, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.constitution, &player->unspent_attr_p, 1);
                     break;
                 case 8:// decrease luck by one
                     update_stats(player->base_attributes.luck > 1,
-                                 &player->base_attributes.luck, &player->unspent_attr_p, -1, player);
+                                 &player->base_attributes.luck, &player->unspent_attr_p, -1);
                     break;
                 case 9:// increase luck by one
                     update_stats(player->unspent_attr_p > 0,
-                                 &player->base_attributes.luck, &player->unspent_attr_p, 1, player);
+                                 &player->base_attributes.luck, &player->unspent_attr_p, 1);
                     break;
                 case MAX_ATTRIBUTES * 2:// nothing was pressed, do nothing
                 case -1:                // ESC was pressed, do nothing
@@ -309,7 +309,7 @@ state_t update_character_creation(const input_t input, character_t* player) {
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {
-                add_ability_c(player, PUNCH);// add the default ability
+                player->vtable->add_ability(player, &get_ability_table()->abilities[PUNCH]);// add the default ability
 
                 cc_state = PRE_CREATION;// reset the cc state
                 res = GENERATE_MAP;
@@ -361,15 +361,11 @@ void update_cc_local(void) {
     cc_mode_strings[CONFIRM_Y] = get_local_string("PRESS_Y.CONFIRM");
 }
 
-void update_stats(const int bool_exp, int* updated_stats, int* unspent_points, const int diff, character_t* player) {
+void update_stats(const int bool_exp, int* updated_stats, int* unspent_points, const int diff) {
     if (bool_exp) {
         *updated_stats += diff;
         *unspent_points -= diff;
         update_spent_p_str(*unspent_points);
-
-        // set the update flags
-        player->u_flag_res = 1;
-        player->u_flag_attr = 1;
     }
 }
 

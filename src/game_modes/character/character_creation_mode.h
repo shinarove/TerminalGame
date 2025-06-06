@@ -31,7 +31,7 @@ int init_character_creation(void);
  *         character creation process. Possible states include CHARACTER_CREATION
  *         or EXIT_GAME if the process should terminate.
  */
-state_t update_character_creation(input_t input, character_t* player);
+state_t update_character_creation(input_t input, Character* player);
 
 /**
  * Frees all allocated resources associated with the character creation mode.

@@ -2,9 +2,9 @@
 
 #include "../../logger/logger.h"
 
-void handle_fountain_event(const map_t* map, void (*reset_func)(character_t*), character_t* player);
+void handle_fountain_event(const map_t* map, void (*reset_func)(Character*), Character* player);
 
-state_t handle_map_event(map_t* map, character_t* player) {
+state_t handle_map_event(map_t* map, Character* player) {
     RETURN_WHEN_NULL(map, MAP_MODE, "Map Event Handler", "Map is NULL")
     RETURN_WHEN_NULL(player, MAP_MODE, "Map Event Handler", "Player is NULL")
 
@@ -31,13 +31,13 @@ state_t handle_map_event(map_t* map, character_t* player) {
             map->revealed_tiles[player_on_map_idx] = FLOOR;
             break;
         case LIFE_FOUNTAIN:
-            handle_fountain_event(map, reset_health_c, player);
+            handle_fountain_event(map, player->vtable->reset_health, player);
             break;
         case STAMINA_FOUNTAIN:
-            handle_fountain_event(map, reset_stamina_c, player);
+            handle_fountain_event(map, player->vtable->reset_stamina, player);
             break;
         case MANA_FOUNTAIN:
-            handle_fountain_event(map, reset_mana_c, player);
+            handle_fountain_event(map, player->vtable->reset_mana, player);
             break;
         case ENEMY:
             next_state = GENERATE_ENEMY;
@@ -51,7 +51,7 @@ state_t handle_map_event(map_t* map, character_t* player) {
     return next_state;
 }
 
-void handle_fountain_event(const map_t* map, void (*reset_func)(character_t*), character_t* player) {
+void handle_fountain_event(const map_t* map, void (*reset_func)(Character*), Character* player) {
     const int player_on_map_idx = map->player_pos.dx * map->height + map->player_pos.dy;
 
     reset_func(player);

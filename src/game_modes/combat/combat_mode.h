@@ -44,7 +44,7 @@ int init_combat_mode(void);
  * - Calls `update_combat_head` to finalize UI setup for combat.
  * - Uses macros like `RETURN_WHEN_NULL` and `RETURN_WHEN_TRUE` for input validation and error handling.
  */
-state_t prepare_combat_mode(const character_t* player, const character_t* enemy);
+state_t prepare_combat_mode(const Character* player, const Character* enemy);
 
 /**
  * Updates the combat mode based on user input and current game state.
@@ -62,7 +62,7 @@ state_t prepare_combat_mode(const character_t* player, const character_t* enemy)
  * @return The next game state, represented as a `state_t` enum, which determines how the game proceeds
  *         after this function is called. It typically returns `COMBAT_MODE` but can transition to other states.
  */
-state_t update_combat_mode(input_t input, character_t* player, character_t* enemy);
+state_t update_combat_mode(input_t input, Character* player, Character* enemy);
 
 /**
  * Shuts down and cleans up resources associated with combat mode.

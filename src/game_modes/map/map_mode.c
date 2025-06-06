@@ -32,7 +32,7 @@ int init_map_mode() {
     return 0;
 }
 
-state_t update_map_mode(const input_t input, map_t* map, character_t* player) {
+state_t update_map_mode(const input_t input, map_t* map, Character* player) {
     state_t next_state = MAP_MODE;
 
     const int player_on_map_idx = map->player_pos.dx * map->height + map->player_pos.dy;

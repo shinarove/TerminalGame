@@ -7,20 +7,20 @@
 
 #include <stdio.h>
 
-character_t* generate_goblin(int level) {
+Character* generate_goblin(int level) {
     level = (level < 1 ? 1 : level) > 20 ? 20 : level;//level can only be between 1 and 20
     char goblin_name[32];
     snprintf(goblin_name, sizeof(goblin_name), "GOBLIN.TYPE%d.NAME", level / 6);
 
-    character_t* goblin = create_base_character(GOBLIN, goblin_name);
+    Character* goblin = create_base_character(GOBLIN, goblin_name);
     RETURN_WHEN_NULL(goblin, NULL, "Enemy Generator", "Failed to allocate memory for goblin")
 
     //level up goblin
     for (int i = 1; i < level; i++) {
-        lvl_up_c(goblin, lvl_table_goblin[i]);
+        goblin->vtable->lvl_up(goblin, lvl_table_goblin[i]);
     }
 
-    add_ability_c(goblin, CLAWS);
+    goblin->vtable->add_ability(goblin, &get_ability_table()->abilities[CLAWS]);
 
     //TODO: add random items
 

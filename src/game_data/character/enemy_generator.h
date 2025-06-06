@@ -13,6 +13,6 @@
  * @param level The desired level of the goblin character. Values less than 1 are clamped to 1, and values greater than 20 are clamped to 20.
  * @return A pointer to the created goblin character, or NULL if the creation fails due to memory or other errors.
  */
-character_t* generate_goblin(int level);
+Character* generate_goblin(int level);
 
 #endif//ENEMY_GENERATOR_H

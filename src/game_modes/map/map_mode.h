@@ -30,7 +30,7 @@ int init_map_mode(void);
  *         another state such as the main menu, inventory, character screen, or
  *         exit game.
  */
-state_t update_map_mode(input_t input, map_t* map, character_t* player);
+state_t update_map_mode(input_t input, map_t* map, Character* player);
 
 /**
  * Shuts down the map mode by freeing allocated memory for all map mode strings and for

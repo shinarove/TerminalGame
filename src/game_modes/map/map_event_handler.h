@@ -19,6 +19,6 @@
  * @return The state_t value representing the resulting game state after handling the event.
  *         Typically, this remains as MAP_MODE unless modified within the function.
  */
-state_t handle_map_event(map_t* map, character_t* player);
+state_t handle_map_event(map_t* map, Character* player);
 
 #endif//MAP_EVENT_HANDLER_H

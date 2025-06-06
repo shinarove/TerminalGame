@@ -18,7 +18,7 @@
  *         if the user does not have sufficient health, stamina, or mana, respectively. Returns
  *         UNEXPECTED_ERROR if an invalid resource cost type is encountered.
  */
-usage_result_t consume_resource(character_t* user, const ability_t* ability);
+usage_result_t consume_resource(Character* user, const ability_t* ability);
 
 /**
  * Evaluates the accuracy of an ability when used by a character on a target.
@@ -36,7 +36,7 @@ usage_result_t consume_resource(character_t* user, const ability_t* ability);
  *         for a different target. Returns FAILED if the ability used on the user fails.
  *         Returns UNEXPECTED_ERROR in cases of invalid scaler values.
  */
-usage_result_t evaluate_accuracy(const character_t* user, const character_t* target, const ability_t* ability);
+usage_result_t evaluate_accuracy(const Character* user, const Character* target, const ability_t* ability);
 
 /**
  * Uses the specified ability on the target character, applying its effects.
@@ -53,7 +53,7 @@ usage_result_t evaluate_accuracy(const character_t* user, const character_t* tar
  *         SUCCESS if the ability was applied successfully, TARGET_DIED if the target was defeated,
  *         FAILED if the effect failed to execute, and UNEXPECTED_ERROR for an invalid effect type.
  */
-usage_result_t use_ability_on(const character_t* user, character_t* target, const ability_t* ability);
+usage_result_t use_ability_on(const Character* user, Character* target, const ability_t* ability);
 
 /**
  * Retrieves the scaler value from the given character based on the provided scaler character.
@@ -72,7 +72,7 @@ usage_result_t use_ability_on(const character_t* user, character_t* target, cons
  * @return The corresponding scaler value as an integer if the scaler character is valid. Returns -1 if
  *         an invalid scaler character is encountered.
  */
-int get_scaler_value(const character_t* user, char scaler_char);
+int get_scaler_value(const Character* user, char scaler_char);
 
 /**
  * Applies damage to a specified target's resource (health, stamina, or mana), reducing the resource
@@ -87,7 +87,7 @@ int get_scaler_value(const character_t* user, char scaler_char);
  *         - TARGET_DIED if the health resource was reduced to zero.
  *         - UNEXPECTED_ERROR if an invalid resource type was specified.
  */
-usage_result_t damage_target(character_t* target, char r_target, int damage);
+usage_result_t damage_target(Character* target, char r_target, int damage);
 
 /**
  * Heals the specified resource of the target character by the provided amount.
@@ -105,9 +105,9 @@ usage_result_t damage_target(character_t* target, char r_target, int damage);
  * @return A usage_result_t indicating the status of the operation. Returns SUCCESS if the resource was
  *         healed successfully. Returns UNEXPECTED_ERROR if an invalid resource target is provided.
  */
-usage_result_t heal_target(character_t* target, char r_target, int healing);
+usage_result_t heal_target(Character* target, char r_target, int healing);
 
-usage_result_t use_ability(character_t* user, character_t* target, const ability_t* ability) {
+usage_result_t use_ability(Character* user, Character* target, const ability_t* ability) {
     RETURN_WHEN_NULL(user, 1, "Ability Usage", "User is NULL")
     RETURN_WHEN_NULL(target, 1, "Ability Usage", "Target is NULL")
     RETURN_WHEN_NULL(ability, 1, "Ability Usage", "Ability is NULL")
@@ -138,7 +138,7 @@ usage_result_t use_ability(character_t* user, character_t* target, const ability
     return res;
 }
 
-usage_result_t consume_resource(character_t* user, const ability_t* ability) {
+usage_result_t consume_resource(Character* user, const ability_t* ability) {
     usage_result_t res = SUCCESS;
     switch (ability->r_cost) {
         case HEALTH_CHAR:
@@ -172,7 +172,7 @@ usage_result_t consume_resource(character_t* user, const ability_t* ability) {
     return res;
 }
 
-usage_result_t evaluate_accuracy(const character_t* user, const character_t* target, const ability_t* ability) {
+usage_result_t evaluate_accuracy(const Character* user, const Character* target, const ability_t* ability) {
     // define if the user is at an advantage: 1 for yes, 0 for no
     const int user_advantage = user->current_attributes.agility >= target->current_attributes.agility ? 1 : 0;
     // target only rolls once
@@ -204,7 +204,7 @@ usage_result_t evaluate_accuracy(const character_t* user, const character_t* tar
     return user_roll > target_roll ? SUCCESS : MISSED;
 }
 
-usage_result_t use_ability_on(const character_t* user, character_t* target, const ability_t* ability) {
+usage_result_t use_ability_on(const Character* user, Character* target, const ability_t* ability) {
     int roll_total = 0;
     for (int i = 0; i < ability->effect_rolls; i++) {
         roll_total += roll_dice(ability->effect_dice);
@@ -231,7 +231,7 @@ usage_result_t use_ability_on(const character_t* user, character_t* target, cons
     return res;
 }
 
-int get_scaler_value(const character_t* user, const char scaler_char) {
+int get_scaler_value(const Character* user, const char scaler_char) {
     switch (scaler_char) {
         case STRENGTH_CHAR:
             return user->current_attributes.strength;
@@ -250,7 +250,7 @@ int get_scaler_value(const character_t* user, const char scaler_char) {
     }
 }
 
-usage_result_t damage_target(character_t* target, const char r_target, const int damage) {
+usage_result_t damage_target(Character* target, const char r_target, const int damage) {
     usage_result_t res = SUCCESS;
     switch (r_target) {
         case HEALTH_CHAR:
@@ -271,12 +271,10 @@ usage_result_t damage_target(character_t* target, const char r_target, const int
                     "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
-    // update the resource flag
-    target->u_flag_res = 1;
     return res;
 }
 
-usage_result_t heal_target(character_t* target, const char r_target, const int healing) {
+usage_result_t heal_target(Character* target, const char r_target, const int healing) {
     switch (r_target) {
         case HEALTH_CHAR:
             target->current_resources.health = target->current_resources.health + healing > target->max_resources.health ? target->max_resources.health : target->current_resources.health + healing;
@@ -292,7 +290,5 @@ usage_result_t heal_target(character_t* target, const char r_target, const int h
                     "Invalid resource target: %c encountered in `use_ability_on`", r_target);
             return UNEXPECTED_ERROR;
     }
-    // update the resource flag
-    target->u_flag_res = 1;
     return SUCCESS;
 }

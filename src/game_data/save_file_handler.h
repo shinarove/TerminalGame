@@ -18,7 +18,7 @@ typedef struct {
     int max_floors;
     int active_map_index;
     map_t** maps;
-    character_t* player;
+    Character* player;
 } game_state_t;
 
 typedef struct {

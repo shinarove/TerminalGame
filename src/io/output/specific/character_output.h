@@ -44,9 +44,9 @@ int init_character_output(void);
  * (e.g., strength, intelligence, agility) in a horizontal format. The output is formatted
  * based on the provided arguments, such as showing short labels or including bonus attributes.
  */
-void print_char_h(int x, int y, character_t* character, output_args_c_t args);
+void print_char_h(int x, int y, const Character* character, output_args_c_t args);
 
-void print_char_v(int x, int y, character_t* character, output_args_c_t args);
+void print_char_v(int x, int y, const Character* character, output_args_c_t args);
 
 /**
  * Shuts down the character output subsystem, releasing all associated resources.

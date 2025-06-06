@@ -69,13 +69,9 @@ int init_character_output() {
     return 0;
 }
 
-void print_char_h(const int x, int y, character_t* character, const output_args_c_t args) {
+void print_char_h(const int x, int y, const Character* character, const output_args_c_t args) {
     RETURN_WHEN_NULL(co_strings, , "Character Output", "Module not initialized.")
     RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_res_attr_hori` given player is NULL.")
-
-    // reset the resource and attribute flags
-    character->u_flag_res = 0;
-    character->u_flag_attr = 0;
 
     const uintattr_t c_white = color_mapping[WHITE].value;
     const uintattr_t c_default = color_mapping[DEFAULT].value;
@@ -138,13 +134,9 @@ void print_char_h(const int x, int y, character_t* character, const output_args_
     tb_present();
 }
 
-void print_char_v(int x, int y, character_t* character, const output_args_c_t args) {
+void print_char_v(int x, int y, const Character* character, const output_args_c_t args) {
     RETURN_WHEN_NULL(co_strings, , "Character Output", "Module not initialized.")
     RETURN_WHEN_NULL(character, , "Character Output", "In `print_c_res_attr_hori` given player is NULL.")
-
-    // reset the resource and attribute flags
-    character->u_flag_res = 0;
-    character->u_flag_attr = 0;
 
     const uintattr_t c_white = color_mapping[WHITE].value;
     const uintattr_t c_default = color_mapping[DEFAULT].value;

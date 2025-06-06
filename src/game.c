@@ -42,7 +42,7 @@ void start_game_loop(memory_pool_t* used_pool) {
             .active_map_index = -1,//-1 means no map is active
             .maps = maps,
             .player = create_empty_character()};
-    character_t* enemy = NULL;
+    Character* enemy = NULL;
 
     while (running) {
         usleep((unsigned int) (1.0 / FRAMES_PER_SECONDS * 1000000.0));// wait for 1 frame
@@ -165,7 +165,7 @@ void start_game_loop(memory_pool_t* used_pool) {
                     destroy_character(enemy);
                     enemy = NULL;
 
-                    if (check_exp_c(game_state.player)) {
+                    if (game_state.player->vtable->xp_limit_reached(game_state.player)) {
                         current = LVL_UP_MODE;
                     }
                 }

@@ -34,6 +34,6 @@ typedef enum {
  *         - TARGET_DIED: The target died after using the ability, resulting in a special success state.
  *         - UNEXPECTED_ERROR: An unexpected error occurred during ability usage.
  */
-usage_result_t use_ability(character_t* user, character_t* target, const ability_t* ability);
+usage_result_t use_ability(Character* user, Character* target, const ability_t* ability);
 
 #endif//ABILITY_USAGE_H
