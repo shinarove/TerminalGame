@@ -339,7 +339,7 @@ int update_inventory_menu(const input_t input, const int menu_result) {
                 // a gear was selected in the inventory menu
                 cm_state = INV_MANIPULATION;
                 // set the inventory menu to inactive, but the selection should still be printed
-                cm_inv_menu_arg.mode = INACTIVE_W_SEL;
+                cm_inv_menu_arg.mode = INACTIVE_WITH_SEL;
                 cm_inv_manip_menu.selected_index = 0;
                 clear_screen();
             } else if (menu_result == -1) {

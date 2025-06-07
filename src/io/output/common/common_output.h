@@ -5,7 +5,7 @@
 
 typedef enum {
     ACTIVE,
-    INACTIVE_W_SEL,
+    INACTIVE_WITH_SEL,
     INACTIVE_WOUT_SEL,
 } menu_mode_t;
 
