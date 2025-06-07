@@ -104,7 +104,9 @@ Character* create_empty_character(const int id) {
 
     // add the basic abilities to the character
     const ability_t* base_ability = &get_ability_table()->abilities[character_base_ability[id].basic_ability_id];
-    character->vtable->add_ability(character, base_ability);
+    const int add_success = character->vtable->add_ability(character, base_ability);
+    RETURN_WHEN_TRUE_CLEAN(add_success == -1, NULL, destroy_character(character),
+                           "Character", "Failed to add base ability to character")
 
     return character;
 }

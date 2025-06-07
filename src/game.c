@@ -207,5 +207,4 @@ void start_game_loop(memory_pool_t* used_pool) {
         if (maps[i] != NULL) memory_pool_free(used_pool, maps[i]);
     }
     memory_pool_free(used_pool, maps);
-    memory_pool_free(used_pool, game_state.player);
 }
