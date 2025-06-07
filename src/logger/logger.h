@@ -21,7 +21,7 @@
     }
 
 #define RETURN_WHEN_NULL_CLEAN(ptr, ret, clean_func, modul, format, ...) \
-    if (ptr) {                                                           \
+    if (ptr == NULL) {                                                           \
         log_msg(ERROR, modul, format, ##__VA_ARGS__);                    \
         clean_func;                                                      \
         return ret;                                                      \

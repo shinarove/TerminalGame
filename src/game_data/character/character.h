@@ -2,7 +2,6 @@
 #define CHARACTER_H
 
 #include "../../cstd/collections/array_list.h"
-#include "../ability/ability.h"
 #include "../inventory/inventory.h"
 #include "stats.h"
 
@@ -31,7 +30,7 @@ struct Character {
     ArrayList* ability_list;
     Inventory* inventory;// the character's inventory
 
-    Character_VTable* vtable;
+    const Character_VTable* vtable;
 };
 
 struct Character_VTable {

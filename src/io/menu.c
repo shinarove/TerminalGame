@@ -6,11 +6,11 @@
 int handle_simple_menu(Menu* self, input_t input, int x, int y);
 int handle_spinner_menu(Menu* self, input_t input, int x, int y);
 
-static Menu_VTable simple_menu_vtable = {
+static const Menu_VTable simple_menu_vtable = {
     .handle_menu = handle_simple_menu
 };
 
-static Menu_VTable spinner_menu_vtable = {
+static const Menu_VTable spinner_menu_vtable = {
     .handle_menu = handle_spinner_menu
 };
 

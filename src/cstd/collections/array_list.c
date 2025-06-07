@@ -12,7 +12,7 @@ void array_list_clear(void* self);
 
 int array_list_reserve(ArrayList* self, int added_capacity);
 
-static List_VTable vtable_List = {
+static const List_VTable vtable_List = {
         .add = array_list_add,
         .remove = array_list_remove,
         .get = array_list_get,
@@ -20,7 +20,7 @@ static List_VTable vtable_List = {
         .size = array_list_size,
         .clear = array_list_clear};
 
-static ArrayList_VTable vtable_ArrayList = {
+static const ArrayList_VTable vtable_ArrayList = {
         .list = &vtable_List,
         .reserve = array_list_reserve};
 
@@ -32,8 +32,12 @@ ArrayList* create_array_list(const size_t element_size, const unsigned int initi
 
     self->allocated = element_size * initial_capacity;
 
-    if (initial_capacity != 0) {
+    if (initial_capacity > 0) {
         self->elements = malloc(self->allocated);
+        if (self->elements == NULL) {
+            free(self);
+            return NULL;// Error: memory allocation failed
+        }
         memset(self->elements, 0, self->allocated);// Initialize memory to zero
     } else {
         self->elements = NULL;

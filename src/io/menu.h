@@ -29,7 +29,7 @@ struct Menu {
     int selected_index;
     char* tailing_text;
     menu_arg_t args;
-    Menu_VTable* vtable;
+    const Menu_VTable* vtable;
 };
 
 struct Menu_VTable {

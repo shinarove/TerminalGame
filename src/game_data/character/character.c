@@ -2,6 +2,7 @@
 
 #include "../../logger/logger.h"
 #include "enemy_id.h"
+#include "../ability/ability.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -44,7 +45,7 @@ static const struct {
         {0, PUNCH},
         {GOBLIN, CLAWS}};
 
-static Character_VTable character_vtable = {
+static const Character_VTable character_vtable = {
         .reset_health = reset_health_c,
         .reset_stamina = reset_stamina_c,
         .reset_mana = reset_mana_c,
@@ -94,10 +95,10 @@ Character* create_empty_character() {
 
     character->ability_list = create_array_list(sizeof(ability_t*), 0);
     RETURN_WHEN_NULL_CLEAN(character->ability_list, NULL, destroy_character(character),
-                           "Character", "Failed to allocate memory for character")
+                           "Character", "Failed to allocate memory for character array list")
     character->inventory = create_inventory(0);
     RETURN_WHEN_NULL_CLEAN(character->inventory, NULL, destroy_character(character),
-                           "Character", "Failed to create inventory for character")
+                           "Character", "Failed to create inventory for character inventory")
 
     character->vtable = &character_vtable;
     return character;
