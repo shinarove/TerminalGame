@@ -2,20 +2,7 @@
 #define COMMON_OUTPUT_H
 
 #include "../../colors.h"
-
-typedef enum {
-    ACTIVE,
-    INACTIVE_WITH_SEL,
-    INACTIVE_WOUT_SEL,
-} menu_mode_t;
-
-typedef struct {
-    menu_mode_t mode;
-    color_t selected_fg;
-    color_t selected_bg;
-    color_t unselected_fg;
-    color_t unselected_bg;
-} menu_arg_t;
+#include "../../menu.h"
 
 typedef struct {
     char* title;
@@ -74,10 +61,10 @@ void print_text_f(int x, int y, color_t fg, color_t bg, const char* format, ...)
  *
  * @param x The x-coordinate on the screen where the menu should start.
  * @param y The y-coordinate on the screen where the menu should start.
- * @param menu A pointer to a `menu_t` structure containing the menu details,
+ * @param simple_menu A pointer to a `menu_t` structure containing the menu details,
  *             including its title, options, selected index, and rendering arguments.
  */
-void print_simple_menu(int x, int y, const menu_t* menu);
+void print_simple_menu(int x, int y, const Menu* simple_menu);
 
 /**
  * Renders a spinner menu on the terminal at the specified position.
@@ -89,6 +76,6 @@ void print_simple_menu(int x, int y, const menu_t* menu);
  * @param spinner_menu A pointer to the spinner menu data structure containing menu details, symbols, and other configurations.
  * @note The function does not validate the terminal's rendering capability and assumes that the provided coordinates and spinner menu data are valid and properly initialized.
  */
-void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu);
+void print_spinner_menu(int x, int y, const Menu* spinner_menu);
 
 #endif//COMMON_OUTPUT_H

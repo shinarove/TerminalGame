@@ -12,17 +12,6 @@
  */
 void check_xy(int* x, int* y);
 
-/**
- * Extracts the menu arguments. If the passed argument is null, a default menu
- * configuration with specific colors and inactive state is returned.
- *
- * @param args Pointer to a `menu_arg_t` structure containing the menu arguments.
- *             If null, default menu arguments will be used.
- * @return A `menu_arg_t` structure representing the extracted menu arguments or
- *         default values if the input is null.
- */
-menu_arg_t extract_menu_args(const menu_arg_t* args);
-
 void clear_screen() {
     tb_clear();
 }
@@ -54,68 +43,73 @@ void print_text_f(int x, int y, const color_t fg, const color_t bg, const char* 
     tb_present();
 }
 
-void print_simple_menu(int x, int y, const menu_t* menu) {
-    RETURN_WHEN_NULL(menu, , "Common Output", "In `print_simple_menu` menu is NULL");
+void print_simple_menu(int x, int y, const Menu* simple_menu) {
+    RETURN_WHEN_NULL(simple_menu, , "Common Output", "In `print_simple_menu` menu is NULL")
+    RETURN_WHEN_TRUE(simple_menu->args.max_option_length < 0, , "Common Output",
+                     "In `print_simple_menu` max_option_length is negative")
     check_xy(&x, &y);
 
-    const menu_arg_t args = extract_menu_args(menu->args);
-    const uintattr_t uns_fg = color_mapping[args.unselected_fg].value;
-    const uintattr_t uns_bg = color_mapping[args.unselected_bg].value;
-    const uintattr_t sel_fg = color_mapping[args.selected_fg].value;
-    const uintattr_t sel_bg = color_mapping[args.selected_bg].value;
+    const uintattr_t uns_fg = color_mapping[simple_menu->args.unselected_fg].value;
+    const uintattr_t uns_bg = color_mapping[simple_menu->args.unselected_bg].value;
+    const uintattr_t sel_fg = color_mapping[simple_menu->args.selected_fg].value;
+    const uintattr_t sel_bg = color_mapping[simple_menu->args.selected_bg].value;
 
     //print title
-    tb_printf(x, y++, uns_fg, uns_bg, "%s", menu->title);
+    tb_printf(x, y++, uns_fg, uns_bg, "%s", simple_menu->title);
 
-    for (int i = 0; i < menu->option_count; i++) {
+    for (int i = 0; i < simple_menu->option_count; i++) {
         // if (menu->options[i] == NULL) continue;
 
-        if (i == menu->selected_index && args.mode != INACTIVE_WOUT_SEL) {
-            tb_printf(x, y++, sel_fg, sel_bg, "> %s", menu->options[i]);
+        if (i == simple_menu->selected_index &&
+            simple_menu->args.mode != INACTIVE_WOUT_SEL) {
+            tb_printf(x, y++, sel_fg, sel_bg, "> %s", simple_menu->options[i]);
         } else {
-            tb_printf(x, y++, uns_fg, uns_bg, "  %s", menu->options[i]);
+            tb_printf(x, y++, uns_fg, uns_bg, "  %s", simple_menu->options[i]);
         }
     }
 
-    tb_printf(x, y + 2, uns_fg, uns_bg, "%s", menu->tailing_text);
+    tb_printf(x, y + 2, uns_fg, uns_bg, "%s", simple_menu->tailing_text);
     tb_present();
 }
 
-void print_spinner_menu(int x, int y, const spinner_menu_t* spinner_menu) {
+void print_spinner_menu(int x, int y, const Menu* spinner_menu) {
     RETURN_WHEN_NULL(spinner_menu, , "Common Output", "In `print_spinner_menu` menu is NULL")
-    RETURN_WHEN_NULL(spinner_menu->menu, , "Common Output", "In `print_spinner_menu` additional_info is NULL")
-    RETURN_WHEN_TRUE(spinner_menu->max_option_length < 0, , "Common Output",
+    RETURN_WHEN_TRUE(spinner_menu->args.max_option_length < 0, , "Common Output",
                      "In `print_spinner_menu` max_option_length is negative")
     check_xy(&x, &y);
 
-    const menu_arg_t args = extract_menu_args(spinner_menu->menu->args);
-    const uintattr_t uns_fg = color_mapping[args.unselected_fg].value;
-    const uintattr_t uns_bg = color_mapping[args.unselected_bg].value;
-    const uintattr_t sel_fg = color_mapping[args.selected_fg].value;
-    const uintattr_t sel_bg = color_mapping[args.selected_bg].value;
+    const menu_mode_t mode = spinner_menu->args.mode;
+    const uintattr_t uns_fg = color_mapping[spinner_menu->args.unselected_fg].value;
+    const uintattr_t uns_bg = color_mapping[spinner_menu->args.unselected_bg].value;
+    const uintattr_t sel_fg = color_mapping[spinner_menu->args.selected_fg].value;
+    const uintattr_t sel_bg = color_mapping[spinner_menu->args.selected_bg].value;
 
-    const int spinner_x_pos = x + spinner_menu->max_option_length + 1;
+    const int spinner_x_pos = x + spinner_menu->args.max_option_length + 1;
     //print title
-    tb_printf(x, y++, uns_fg, uns_bg, "%s", spinner_menu->menu->title);
+    tb_printf(x, y++, uns_fg, uns_bg, "%s", spinner_menu->title);
 
-    for (int i = 0; i < spinner_menu->menu->option_count; i++) {
-        tb_printf(x, y, uns_fg, uns_bg, "%s", spinner_menu->menu->options[i]);
-        if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 0 && args.mode) {
+    for (int i = 0; i < spinner_menu->option_count; i++) {
+        tb_printf(x, y, uns_fg, uns_bg, "%s", spinner_menu->options[i]);
+        if (i == spinner_menu->selected_index / 2 &&
+            spinner_menu->selected_index % 2 == 0 &&
+            mode != INACTIVE_WOUT_SEL) {
             // the left symbol is marked
-            tb_printf(spinner_x_pos, y, sel_fg, sel_bg, "%c", spinner_menu->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, "%c", spinner_menu->right_symbol);
-        } else if (i == spinner_menu->menu->selected_index / 2 && spinner_menu->menu->selected_index % 2 == 1 && args.mode) {
+            tb_printf(spinner_x_pos, y, sel_fg, sel_bg, "<");
+            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, ">");
+        } else if (i == spinner_menu->selected_index / 2 &&
+            spinner_menu->selected_index % 2 == 1 &&
+            mode != INACTIVE_WOUT_SEL) {
             // the right symbol is marked
-            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "%c", spinner_menu->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, sel_fg, sel_bg, "%c", spinner_menu->right_symbol);
+            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "<");
+            tb_printf(spinner_x_pos + 2, y, sel_fg, sel_bg, ">");
         } else {
-            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "%c", spinner_menu->left_symbol);
-            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, "%c", spinner_menu->right_symbol);
+            tb_printf(spinner_x_pos, y, uns_fg, uns_bg, "<");
+            tb_printf(spinner_x_pos + 2, y, uns_fg, uns_bg, ">");
         }
         y += 1;
     }
 
-    tb_printf(x, y + 2, uns_fg, uns_bg, "%s", spinner_menu->menu->tailing_text);
+    tb_printf(x, y + 2, uns_fg, uns_bg, "%s", spinner_menu->tailing_text);
     tb_present();
 }
 
@@ -125,12 +119,4 @@ void check_xy(int* x, int* y) {
         *x = 0;
         *y = 0;
     }
-}
-
-menu_arg_t extract_menu_args(const menu_arg_t* args) {
-    const menu_arg_t default_args = {ACTIVE, BLACK, WHITE, WHITE, DEFAULT};
-    if (args == NULL) {
-        return default_args;
-    }
-    return *args;
 }
