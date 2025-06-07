@@ -31,7 +31,7 @@ char** main_menu_strings = NULL;
 
 main_menu_state_t main_menu_state = MENU_VIEW;
 
-menu_t main_menu;
+Menu* main_menu = NULL;
 
 void update_main_menu_local(void);
 
@@ -44,12 +44,7 @@ int init_main_menu() {
         main_menu_strings[i] = NULL;
     }
 
-    main_menu.title = " ";
-    main_menu.options = &main_menu_strings[OPTION_CONTINUE];// only the first option address is needed
-    main_menu.option_count = MAX_MAIN_MENU_OPTIONS;
-    main_menu.selected_index = 0;
-    main_menu.tailing_text = " ";
-    main_menu.args = NULL;
+    main_menu = init_simple_menu(" ", &main_menu_strings[OPTION_CONTINUE], MAX_MAIN_MENU_OPTIONS, " ");
 
     update_main_menu_local();
     observe_local(update_main_menu_local);
@@ -64,10 +59,10 @@ state_t update_main_menu(const input_t input) {
         case MENU_VIEW:
             print_text(5, 2, RED, DEFAULT, main_menu_strings[GAME_TITLE]);
 
-            switch (handle_simple_menu(input, 5, 4, &main_menu)) {
+            switch (main_menu->vtable->handle_menu(main_menu, input, 5, 4)) {
                 case 0:// continue was selected
                     next_state = MAP_MODE;
-                    main_menu.selected_index = 0;
+                    main_menu->selected_index = 0;
                     clear_screen();
                     break;
                 case 1:// restart the game
@@ -76,12 +71,12 @@ state_t update_main_menu(const input_t input) {
                     break;
                 case 2:// save game
                     next_state = SAVE_GAME;
-                    main_menu.selected_index = 0;
+                    main_menu->selected_index = 0;
                     clear_screen();
                     break;
                 case 3:// load game
                     next_state = LOAD_GAME;
-                    main_menu.selected_index = 0;
+                    main_menu->selected_index = 0;
                     clear_screen();
                     break;
                 case 4:// change language
@@ -95,7 +90,7 @@ state_t update_main_menu(const input_t input) {
                     break;
                 case -1:// Esc was pressed, return to map mode
                     next_state = MAP_MODE;
-                    main_menu.selected_index = 0;
+                    main_menu->selected_index = 0;
                     clear_screen();
                     break;
                 case -2:
@@ -114,7 +109,7 @@ state_t update_main_menu(const input_t input) {
             switch (input) {
                 case ENTER:
                     next_state = RESTART_GAME;
-                    main_menu.selected_index = 0;
+                    main_menu->selected_index = 0;
                     main_menu_state = MENU_VIEW;
                     clear_screen();
                     break;
@@ -134,15 +129,19 @@ state_t update_main_menu(const input_t input) {
 }
 
 void shutdown_main_menu() {
-    if (main_menu_strings == NULL) return;
-
-    for (int i = 0; i < MAX_MAIN_MENU_STRINGS; i++) {
-        if (main_menu_strings[i] != NULL) {
-            //only free the strings that were allocated
-            free(main_menu_strings[i]);
+    if (main_menu_strings != NULL) {
+        for (int i = 0; i < MAX_MAIN_MENU_STRINGS; i++) {
+            if (main_menu_strings[i] != NULL) {
+                //only free the strings that were allocated
+                free(main_menu_strings[i]);
+            }
         }
+        free(main_menu_strings);
+        main_menu_strings = NULL;
     }
-    free(main_menu_strings);
+
+    destroy_menu(main_menu);
+    main_menu = NULL;
 }
 
 void update_main_menu_local() {

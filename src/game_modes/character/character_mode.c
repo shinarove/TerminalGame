@@ -59,18 +59,18 @@ enum cm_index {
 
 char** cm_strings = NULL;
 
-menu_t cm_inv_menu;
+Menu* cm_inv_menu = NULL;
 menu_arg_t cm_inv_menu_arg;
 
-menu_t cm_equip_menu;
+Menu* cm_equip_menu;
 menu_arg_t cm_equip_menu_arg;
 
-menu_t cm_ability_menu;
+Menu* cm_ability_menu = NULL;
 
 // manipulation menu for the inventory
-menu_t cm_inv_manip_menu;
+Menu* cm_inv_manip_menu = NULL;
 // manipulation menu for the equipped gear
-menu_t cm_equip_manip_menu;
+Menu* cm_equip_manip_menu = NULL;
 
 char_mode_state_t cm_state = INVENTORY_MENU;
 
@@ -86,37 +86,23 @@ int init_character_mode() {
         cm_strings[i] = NULL;
     }
 
-    cm_inv_menu = (menu_t) {NULL, NULL, 0, 0, " ", NULL};
-    cm_inv_menu_arg = (menu_arg_t) {ACTIVE, BLACK, WHITE, WHITE, DEFAULT};
+    cm_inv_menu = init_simple_menu(NULL, NULL, 0, " ");
 
-    cm_equip_menu = (menu_t) {NULL, NULL, MAX_GEAR_SLOTS, 0, " ", NULL};
-    cm_equip_menu_arg = (menu_arg_t) {INACTIVE_WOUT_SEL, BLACK, WHITE, WHITE, DEFAULT};
+    cm_equip_menu = init_simple_menu(NULL, NULL, MAX_GEAR_SLOTS, " ");
+    cm_equip_menu->args.mode = INACTIVE_WOUT_SEL;
 
-    cm_ability_menu = (menu_t) {NULL, NULL, 0, 0, " ", NULL};
-    cm_inv_manip_menu = (menu_t) {
-            NULL,
-            &cm_strings[EQUIP_GEAR_STR],
-            MAX_OPTIONS_INV_MANIP,
-            0,
-            NULL,
-            NULL};
-    cm_equip_manip_menu = (menu_t) {
-            NULL,
-            &cm_strings[SHOW_GEAR_DETAILS_STR],
-            MAX_OPTIONS_EQUIP_MANIP,
-            0,
-            NULL,
-            NULL};
+    cm_ability_menu = init_simple_menu(NULL, NULL, 0, " ");
+    cm_ability_menu->args.mode = INACTIVE_WOUT_SEL;
 
-    // connecting the args to the menus
-    cm_inv_menu.args = &cm_inv_menu_arg;
-    cm_equip_menu.args = &cm_equip_menu_arg;
+    cm_inv_manip_menu = init_simple_menu(NULL, &cm_strings[EQUIP_GEAR_STR], MAX_OPTIONS_INV_MANIP, NULL);
+
+    cm_equip_manip_menu = init_simple_menu(NULL, &cm_strings[SHOW_GEAR_DETAILS_STR], MAX_OPTIONS_EQUIP_MANIP, NULL);
 
     // allocate memory for the equipment options
-    cm_equip_menu.options = (char**) malloc(sizeof(char*) * MAX_GEAR_SLOTS);// only until the both hand slot
-    RETURN_WHEN_NULL(cm_equip_menu.options, 1, "Character Mode", "Failed to allocate memory for equipment options.")
+    cm_equip_menu->options = (char**) malloc(sizeof(char*) * MAX_GEAR_SLOTS);// only until the both hand slot
+    RETURN_WHEN_NULL(cm_equip_menu->options, 1, "Character Mode", "Failed to allocate memory for equipment options.")
     for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
-        cm_equip_menu.options[i] = NULL;
+        cm_equip_menu->options[i] = NULL;
     }
 
     update_character_mode_local();
@@ -129,32 +115,32 @@ state_t prepare_character_mode(const Character* player) {
     cm_state = INVENTORY_MENU;// reset the state
 
     // reset the menus
-    cm_inv_menu.selected_index = 0;
-    cm_inv_menu.args->mode = ACTIVE;
+    cm_inv_menu->selected_index = 0;
+    cm_inv_menu->args.mode = ACTIVE;
 
-    cm_equip_menu.selected_index = 0;
-    cm_equip_menu.args->mode = INACTIVE_WOUT_SEL;
+    cm_equip_menu->selected_index = 0;
+    cm_equip_menu->args.mode = INACTIVE_WOUT_SEL;
 
-    cm_ability_menu.selected_index = 0;
-    cm_ability_menu.args->mode = INACTIVE_WOUT_SEL;
+    cm_ability_menu->selected_index = 0;
+    cm_ability_menu->args.mode = INACTIVE_WOUT_SEL;
 
-    cm_ability_menu.selected_index = 0;
+    cm_ability_menu->selected_index = 0;
 
     // prepare the inventory menu
-    if (cm_inv_menu.options != NULL) {
-        for (int i = 0; i < cm_inv_menu.option_count; i++) {
-            if (cm_inv_menu.options[i] != NULL) {
-                free(cm_inv_menu.options[i]);
-                cm_inv_menu.options[i] = NULL;// reset the option
+    if (cm_inv_menu->options != NULL) {
+        for (int i = 0; i < cm_inv_menu->option_count; i++) {
+            if (cm_inv_menu->options[i] != NULL) {
+                free(cm_inv_menu->options[i]);
+                cm_inv_menu->options[i] = NULL;// reset the option
             }
         }
-        free(cm_inv_menu.options);
-        cm_inv_menu.options = NULL;// reset the options pointer
+        free(cm_inv_menu->options);
+        cm_inv_menu->options = NULL;// reset the options pointer
     }
     char* buffer[64];
-    cm_inv_menu.options = malloc(sizeof(char*) * player->inventory->gear_list->size);
+    cm_inv_menu->options = malloc(sizeof(char*) * player->inventory->gear_list->size);
     if (player->inventory != NULL) {
-        cm_inv_menu.option_count = player->inventory->gear_list->size;
+        cm_inv_menu->option_count = player->inventory->gear_list->size;
         for (int i = 0; i < player->inventory->gear_list->size; i++) {
             const gear_t* gear = player->vtable->get_gear_at(player, i);
             const int is_equipped = player->vtable->is_gear_equipped(player, gear);
@@ -167,16 +153,17 @@ state_t prepare_character_mode(const Character* player) {
             } else {
                 // gear is not rightfully equipped or an error occurred
             }
-            cm_inv_menu.options[i] = strdup(buffer);
+            cm_inv_menu->options[i] = strdup(buffer);
         }
     } else {
-        cm_inv_menu.option_count = 0;
+        cm_inv_menu->option_count = 0;
     }
 
     // prepare the equipment menu
     for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
-        if (cm_equip_menu.options[i] != NULL) {
-            free(cm_equip_menu.options[i]);
+        if (cm_equip_menu->options[i] != NULL) {
+            free(cm_equip_menu->options[i]);
+            cm_equip_menu->options[i] = NULL; // reset the option
         }
     }
     for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
@@ -187,7 +174,7 @@ state_t prepare_character_mode(const Character* player) {
             snprintf(buffer, sizeof(buffer), "%s: %s",
                      cm_strings[HEAD_STR + i], cm_strings[EMPTY_GEAR_SLOT]);
         }
-        cm_inv_menu.options[i] = strdup(buffer);
+        cm_inv_menu->options[i] = strdup(buffer);
     }
 
     return CHARACTER_MODE;
@@ -202,29 +189,29 @@ state_t update_character_mode(const input_t input, Character* player) {
     const output_args_c_t lvl_up_args = {0, RES_CURR_MAX, ATTR_MAX_BONUS};
     print_char_h(CM_X_POS_COLUMN1, CM_Y_POS_PLAYER_HEAD, player, lvl_up_args);
 
-    int inv_menu_res = cm_inv_menu.option_count;
+    int inv_menu_res = cm_inv_menu->option_count;
     int inv_manip_menu_res = MAX_OPTIONS_INV_MANIP;
-    int equip_menu_res = cm_equip_menu.option_count;
-    int equip_manip_menu_res = cm_equip_manip_menu.option_count;
-    int abil_menu_res = cm_ability_menu.option_count;
+    int equip_menu_res = cm_equip_menu->option_count;
+    int equip_manip_menu_res = cm_equip_manip_menu->option_count;
+    int abil_menu_res = cm_ability_menu->option_count;
 
     // handle the prints
     if (cm_state == ABILITY_MENU) {
         print_text_f(CM_X_POS_COLUMN1, CM_Y_POS_CT_ABIL_OV, WHITE, DEFAULT, "%s     ",
                      cm_strings[CHANGE_TO_INVENTORY_OV]);
 
-        abil_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN1, CM_Y_POS_BODY, &cm_ability_menu);
+        abil_menu_res = cm_ability_menu->vtable->handle_menu(cm_ability_menu, input, CM_X_POS_COLUMN1, CM_Y_POS_BODY);
     } else {
         print_text_f(CM_X_POS_COLUMN1, CM_Y_POS_CT_ABIL_OV, WHITE, DEFAULT, "%s     ",
                      cm_strings[CHANGE_TO_ABILITY_OV]);
-        inv_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN1, CM_Y_POS_BODY, &cm_inv_menu);
-        equip_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN2, CM_Y_POS_BODY, &cm_equip_menu);
+        inv_menu_res = cm_inv_menu->vtable->handle_menu(cm_inv_menu, input, CM_X_POS_COLUMN1, CM_Y_POS_BODY);
+        equip_menu_res = cm_equip_menu->vtable->handle_menu(cm_equip_menu, input, CM_X_POS_COLUMN2, CM_Y_POS_BODY);
 
         // additional menus for the inventory and equipment manipulation
         if (cm_state == INV_MANIPULATION) {
-            inv_manip_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN3, CM_Y_POS_BODY, &cm_inv_manip_menu);
+            inv_manip_menu_res = cm_inv_manip_menu->vtable->handle_menu(cm_inv_manip_menu, input, CM_X_POS_COLUMN3, CM_Y_POS_BODY);
         } else if (cm_state == EQUIP_MANIPULATION) {
-            equip_manip_menu_res = handle_simple_menu(input, CM_X_POS_COLUMN3, CM_Y_POS_BODY, &cm_equip_manip_menu);
+            equip_manip_menu_res = cm_equip_manip_menu->vtable->handle_menu(cm_equip_manip_menu, input, CM_X_POS_COLUMN3, CM_Y_POS_BODY);
         }
     }
 
@@ -236,13 +223,13 @@ state_t update_character_mode(const input_t input, Character* player) {
         case INV_MANIPULATION:
             if (input == C) {
                 cm_state = ABILITY_MENU;
-                cm_ability_menu.selected_index = 0;
+                cm_ability_menu->selected_index = 0;
                 clear_screen();
             } else {
                 // handle the inventory manipulation menu
                 switch (inv_manip_menu_res) {
                     case 0:// equip gear was pressed
-                        const gear_t* gear_to_equip = player->vtable->get_gear_at(player, cm_inv_menu.selected_index);
+                        const gear_t* gear_to_equip = player->vtable->get_gear_at(player, cm_inv_menu->selected_index);
                         // if the same item is already equipped, do nothing
                         if (player->vtable->is_gear_equipped(player, gear_to_equip) == 0) {
                             const int equip_success = player->vtable->equip_gear(player, gear_to_equip);
@@ -291,8 +278,8 @@ state_t update_character_mode(const input_t input, Character* player) {
             switch (input) {
                 case C:
                     cm_state = INVENTORY_MENU;
-                    cm_inv_menu.selected_index = 0;
-                    cm_equip_menu.selected_index = 0;
+                    cm_inv_menu->selected_index = 0;
+                    cm_equip_menu->selected_index = 0;
                     cm_inv_menu_arg.mode = ACTIVE;
                     cm_equip_menu_arg.mode = INACTIVE_WOUT_SEL;
                     clear_screen();
@@ -310,12 +297,40 @@ state_t update_character_mode(const input_t input, Character* player) {
 }
 
 void shutdown_character_mode(void) {
-    for (int i = 0; i < MAX_CHAR_MODE_STRINGS; i++) {
-        if (cm_strings[i] != NULL) {
-            free(cm_strings[i]);
+    if (cm_strings != NULL) {
+        for (int i = 0; i < MAX_CHAR_MODE_STRINGS; i++) {
+            if (cm_strings[i] != NULL) {
+                free(cm_strings[i]);
+            }
+        }
+        free(cm_strings);
+        cm_strings = NULL;
+    }
+
+    if (cm_equip_menu != NULL) {
+        if (cm_equip_menu->options != NULL) {
+            for (int i = 0; i < MAX_GEAR_SLOTS; i++) {
+                if (cm_equip_menu->options[i] != NULL) {
+                    free(cm_equip_menu->options[i]);
+                }
+            }
+            free(cm_equip_menu->options);
+            cm_equip_menu->options = NULL;
         }
     }
-    free(cm_strings);
+
+    destroy_menu(cm_equip_menu);
+    cm_equip_menu = NULL;
+
+    destroy_menu(cm_inv_menu);
+    destroy_menu(cm_ability_menu);
+    destroy_menu(cm_inv_manip_menu);
+    destroy_menu(cm_equip_manip_menu);
+
+    cm_inv_menu = NULL;
+    cm_ability_menu = NULL;
+    cm_inv_manip_menu = NULL;
+    cm_equip_manip_menu = NULL;
 }
 
 int update_inventory_menu(const input_t input, const int menu_result) {
@@ -328,19 +343,19 @@ int update_inventory_menu(const input_t input, const int menu_result) {
             break;
         case C:// change to the ability overview
             cm_state = ABILITY_MENU;
-            cm_ability_menu.selected_index = 0;
+            cm_ability_menu->selected_index = 0;
             clear_screen();
             break;
         default:// handle the inventory menu as normal
-            if (menu_result == cm_inv_menu.option_count) {
+            if (menu_result == cm_inv_menu->option_count) {
                 // important edge case, when no gear is in the inventory
                 // ... do nothing
-            } else if (menu_result >= 0 && menu_result < cm_inv_menu.option_count) {
+            } else if (menu_result >= 0 && menu_result < cm_inv_menu->option_count) {
                 // a gear was selected in the inventory menu
                 cm_state = INV_MANIPULATION;
                 // set the inventory menu to inactive, but the selection should still be printed
                 cm_inv_menu_arg.mode = INACTIVE_WITH_SEL;
-                cm_inv_manip_menu.selected_index = 0;
+                cm_inv_manip_menu->selected_index = 0;
                 clear_screen();
             } else if (menu_result == -1) {
                 // esc was pressed, exiting character mode
@@ -366,15 +381,15 @@ void update_character_mode_local(void) {
     cm_strings[CHANGE_TO_INVENTORY_OV] = get_local_string("CM.CHANGE_TO.OVERVIEW.INVENTORY");
 
     cm_strings[INVENTORY_TITLE] = get_local_string("INVENTORY");
-    cm_inv_menu.title = cm_strings[INVENTORY_TITLE];
+    cm_inv_menu->title = cm_strings[INVENTORY_TITLE];
     cm_strings[EQUIPMENT_TITLE] = get_local_string("EQUIPPED");
-    cm_equip_menu.title = cm_strings[EQUIPMENT_TITLE];
+    cm_equip_menu->title = cm_strings[EQUIPMENT_TITLE];
     cm_strings[MANIP_TITLE] = get_local_string("CM.MANIP.TITLE");
-    cm_inv_manip_menu.title = cm_strings[MANIP_TITLE];
-    cm_equip_manip_menu.title = cm_strings[MANIP_TITLE];
+    cm_inv_manip_menu->title = cm_strings[MANIP_TITLE];
+    cm_equip_manip_menu->title = cm_strings[MANIP_TITLE];
     cm_strings[PRESS_ESC_CANCEL] = get_local_string("PRESS_ESC.CANCEL");
-    cm_inv_manip_menu.tailing_text = cm_strings[PRESS_ESC_CANCEL];
-    cm_equip_manip_menu.tailing_text = cm_strings[PRESS_ESC_CANCEL];
+    cm_inv_manip_menu->tailing_text = cm_strings[PRESS_ESC_CANCEL];
+    cm_equip_manip_menu->tailing_text = cm_strings[PRESS_ESC_CANCEL];
 
     cm_strings[EMPTY_GEAR_SLOT] = get_local_string("CM.INVENTORY.SLOT.EMPTY");
     cm_strings[HEAD_STR] = get_local_string("HEAD");

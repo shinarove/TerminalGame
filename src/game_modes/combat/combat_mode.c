@@ -39,7 +39,7 @@ typedef enum {
     EXIT_COMBAT_MODE// enemy or player died
 } combat_mode_state_t;
 
-enum combat_mode_index {
+enum combat_mode_str_idx {
     //strings that are updated via local
     USED_STR,// String for 'used'
     COMBAT_NEXT_ACTION,
@@ -74,9 +74,9 @@ enum combat_mode_index {
 
 char** combat_mode_strings = NULL;
 
-menu_t combat_mode_main_menu;
-menu_t combat_mode_ability_menu;
-menu_t combat_mode_potion_menu;
+Menu* combat_mode_main_menu = NULL;
+Menu* combat_mode_ability_menu = NULL;
+Menu* combat_mode_potion_menu = NULL;
 
 combat_mode_state_t combat_state = CHOOSE_ABILITY_POTION;
 state_t exit_combat_mode_with = MAP_MODE;
@@ -95,16 +95,9 @@ int init_combat_mode() {
         combat_mode_strings[i] = NULL;
     }
 
-    combat_mode_main_menu.options = &combat_mode_strings[USE_ABILITY];
-    combat_mode_main_menu.option_count = MAX_COMBAT_MAIN_OPTIONS;
-    combat_mode_main_menu.selected_index = 0;
-    combat_mode_main_menu.tailing_text = " ";
-    combat_mode_main_menu.args = NULL;
-
-    combat_mode_ability_menu.options = NULL;
-    combat_mode_ability_menu.args = NULL;
-    combat_mode_potion_menu.options = NULL;
-    combat_mode_potion_menu.args = NULL;
+    combat_mode_main_menu = init_simple_menu(NULL, &combat_mode_strings[USE_ABILITY], MAX_COMBAT_MAIN_OPTIONS, " ");
+    combat_mode_ability_menu = init_simple_menu(NULL, NULL, 0, NULL);
+    combat_mode_potion_menu = init_simple_menu(NULL, NULL, 0, NULL);
 
     update_combat_mode_local();
     observe_local(update_combat_mode_local);
@@ -122,9 +115,9 @@ state_t prepare_combat_mode(const Character* player, const Character* enemy) {
         }
     }
     // reset the selected index in the menus
-    combat_mode_main_menu.selected_index = 0;
-    combat_mode_ability_menu.selected_index = 0;
-    combat_mode_potion_menu.selected_index = 0;
+    combat_mode_main_menu->selected_index = 0;
+    combat_mode_ability_menu->selected_index = 0;
+    combat_mode_potion_menu->selected_index = 0;
 
     combat_state = CHOOSE_ABILITY_POTION;
 
@@ -132,24 +125,23 @@ state_t prepare_combat_mode(const Character* player, const Character* enemy) {
     combat_mode_strings[ENEMY_NAME] = get_local_string(enemy->name);
 
     // prepare the ability menu
-
     const int ability_count = player->ability_list->size;
-    if (combat_mode_ability_menu.options != NULL) free(combat_mode_ability_menu.options);
+    if (combat_mode_ability_menu->options != NULL) free(combat_mode_ability_menu->options);
     RETURN_WHEN_TRUE(ability_count == 0, EXIT_GAME, "Combat Mode", "In `prepare_combat_mode` player has no abilities.")
     char** ability_names = malloc(sizeof(char*) * ability_count);
-    combat_mode_ability_menu.options = ability_names;
+    combat_mode_ability_menu->options = ability_names;
     for (int i = 0; i < ability_count; i++) {
         const ability_t* ability = player->vtable->get_ability_at(player, i);
         ability_names[i] = ability->ability_str;
     }
-    combat_mode_ability_menu.option_count = player->ability_list->size;
-    combat_mode_ability_menu.selected_index = 0;
+    combat_mode_ability_menu->option_count = player->ability_list->size;
+    combat_mode_ability_menu->selected_index = 0;
 
     // prepare the potion menu
-    if (combat_mode_potion_menu.options != NULL) free(combat_mode_potion_menu.options);
-    combat_mode_potion_menu.options = NULL;
-    combat_mode_potion_menu.selected_index = 0;
-    combat_mode_potion_menu.option_count = 0;
+    if (combat_mode_potion_menu->options != NULL) free(combat_mode_potion_menu->options);
+    combat_mode_potion_menu->options = NULL;
+    combat_mode_potion_menu->selected_index = 0;
+    combat_mode_potion_menu->option_count = 0;
 
     return COMBAT_MODE;
 }
@@ -167,7 +159,7 @@ state_t update_combat_mode(const input_t input, Character* player, Character* en
     state_t res = COMBAT_MODE;
     switch (combat_state) {
         case CHOOSE_ABILITY_POTION:
-            const int idx_main = handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_main_menu);
+            const int idx_main = combat_mode_main_menu->vtable->handle_menu(combat_mode_main_menu, input, 5, Y_COMBAT_MENU);
             switch (idx_main) {
                 case 0:
                     combat_state = ABILITY_SELECTION;
@@ -189,32 +181,32 @@ state_t update_combat_mode(const input_t input, Character* player, Character* en
             }
             break;
         case ABILITY_SELECTION:
-            const int idx_abil = handle_simple_menu(input, 5, Y_COMBAT_MENU, &combat_mode_ability_menu);
+            const int idx_abil = combat_mode_ability_menu->vtable->handle_menu(combat_mode_ability_menu, input, 5, Y_COMBAT_MENU);
             switch (idx_abil) {
                 case -1:// ESC was pressed
                     combat_state = CHOOSE_ABILITY_POTION;
-                    combat_mode_ability_menu.selected_index = 0;
+                    combat_mode_ability_menu->selected_index = 0;
                     clear_screen();
                     break;
                 case -2:
                     res = EXIT_GAME;// Ctrl + C was pressed
                     break;
                 default:
-                    if (idx_abil >= 0 && idx_abil < combat_mode_ability_menu.option_count) {
+                    if (idx_abil >= 0 && idx_abil < combat_mode_ability_menu->option_count) {
                         // a valid ability was selected
                         const ability_t* ability = player->vtable->get_ability_at(player, idx_abil);
                         RETURN_WHEN_NULL(ability, EXIT_GAME, "Combat Mode",
                                          "In `update_combat_mode` a valid ability index %d was selected, but the returned ability is NULL", idx_abil)
                         const usage_result_t result = use_ability(player, enemy, ability);
                         res = evaluate_player_ability_usage(result, player, enemy);
-                    } else if (idx_abil != combat_mode_ability_menu.option_count) {
+                    } else if (idx_abil != combat_mode_ability_menu->option_count) {
                         log_msg(WARNING, "Combat Mode", "Invalid option returned in handle_menu: %d", idx_abil);
                     }
                     break;
             }
             break;
         case CHECK_POTION_INV:
-            if (combat_mode_potion_menu.option_count == 0) {
+            if (combat_mode_potion_menu->option_count == 0) {
                 print_text(5, Y_COMBAT_MENU, WHITE, DEFAULT, combat_mode_strings[EMPTY_POTION_BAG]);
                 print_text(5, Y_COMBAT_FOOTER, WHITE, DEFAULT, combat_mode_strings[SUBMENU_RETURN_TEXT]);
                 if (input == ESCAPE) {
@@ -281,9 +273,17 @@ void shutdown_combat_mode() {
             if (combat_mode_strings[i] != NULL) free(combat_mode_strings[i]);
         }
         free(combat_mode_strings);
+        combat_mode_strings = NULL;
     }
-    if (combat_mode_ability_menu.options != NULL) free(combat_mode_ability_menu.options);
-    if (combat_mode_potion_menu.options != NULL) free(combat_mode_potion_menu.options);
+    if (combat_mode_ability_menu->options != NULL) free(combat_mode_ability_menu->options);
+    if (combat_mode_potion_menu->options != NULL) free(combat_mode_potion_menu->options);
+
+    destroy_menu(combat_mode_main_menu);
+    destroy_menu(combat_mode_ability_menu);
+    destroy_menu(combat_mode_potion_menu);
+    combat_mode_main_menu = NULL;
+    combat_mode_ability_menu = NULL;
+    combat_mode_potion_menu = NULL;
 }
 
 void update_combat_mode_local(void) {
@@ -297,20 +297,20 @@ void update_combat_mode_local(void) {
     combat_mode_strings[USED_STR] = get_local_string("USED.LOWERCASE");
 
     combat_mode_strings[COMBAT_NEXT_ACTION] = get_local_string("COMBAT.NEXT_ACTION");
-    combat_mode_main_menu.title = combat_mode_strings[COMBAT_NEXT_ACTION];
+    combat_mode_main_menu->title = combat_mode_strings[COMBAT_NEXT_ACTION];
     combat_mode_strings[USE_ABILITY] = get_local_string("COMBAT.USE_ABILITY");
     combat_mode_strings[USE_POTION] = get_local_string("COMBAT.USE_POTION");
 
     combat_mode_strings[USE_WHICH_ABILITY] = get_local_string("COMBAT.ABILITY.WHICH");
-    combat_mode_ability_menu.title = combat_mode_strings[USE_WHICH_ABILITY];
+    combat_mode_ability_menu->title = combat_mode_strings[USE_WHICH_ABILITY];
     combat_mode_strings[USE_WHICH_POTION] = get_local_string("COMBAT.POTION.WHICH");
-    combat_mode_potion_menu.title = combat_mode_strings[USE_WHICH_POTION];
+    combat_mode_potion_menu->title = combat_mode_strings[USE_WHICH_POTION];
 
     combat_mode_strings[EMPTY_POTION_BAG] = get_local_string("COMBAT.POTION.EMPTY");
 
     combat_mode_strings[SUBMENU_RETURN_TEXT] = get_local_string("PRESS_ESC.RETURN");
-    combat_mode_ability_menu.tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
-    combat_mode_potion_menu.tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
+    combat_mode_ability_menu->tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
+    combat_mode_potion_menu->tailing_text = combat_mode_strings[SUBMENU_RETURN_TEXT];
 
     combat_mode_strings[CONTINUE_TEXT] = get_local_string("PRESS_ENTER.CONTINUE");
     combat_mode_strings[VICTORY_TEXT_PART1] = get_local_string("COMBAT.PLAYER.VICTORY1");

@@ -29,7 +29,7 @@ typedef enum {
     WAIT_AFTER_CREATION
 } cc_mode_state_t;
 
-enum cc_mode_index {
+enum cc_mode_str_idx {
     // strings that are updated via local
     INTRODUCTION_TEXT,
     UNPENT_POINTS_TEXT,
@@ -56,11 +56,8 @@ char** cc_mode_strings = NULL;
 
 cc_mode_state_t cc_state = PRE_CREATION;
 
-menu_t spend_res_p_menu;
-menu_t spend_attr_p_menu;
-spinner_menu_t spend_res_p_spinner;
-spinner_menu_t spend_attr_p_spinner;
-menu_arg_t cc_menu_args;
+Menu* spend_res_p_spinner = NULL;
+Menu* spend_attr_p_spinner = NULL;
 
 char* name_input_buffer = NULL;
 
@@ -77,34 +74,13 @@ int init_character_creation(void) {
     for (int i = 0; i < MAX_CC_STRINGS; i++) {
         cc_mode_strings[i] = NULL;
     }
-    // initialize the menu: resources
-    spend_res_p_menu.options = &cc_mode_strings[HEALTH_STR];
-    spend_res_p_menu.option_count = MAX_RESOURCES;
-    spend_res_p_menu.selected_index = 0;
-    spend_res_p_menu.tailing_text = " ";
-    spend_res_p_menu.args = &cc_menu_args;
-    // initialize the menu: attributes
-    spend_attr_p_menu.options = &cc_mode_strings[STRENGTH_STR];
-    spend_attr_p_menu.option_count = MAX_ATTRIBUTES;
-    spend_attr_p_menu.selected_index = 0;
-    spend_attr_p_menu.tailing_text = " ";
-    spend_attr_p_menu.args = &cc_menu_args;
     // initialize the spinner menu: resources
-    spend_res_p_spinner.menu = &spend_res_p_menu;
-    spend_res_p_spinner.left_symbol = '<';
-    spend_res_p_spinner.right_symbol = '>';
-    spend_res_p_spinner.max_option_length = MAX_OPTION_LENGTH;
+    spend_res_p_spinner = init_spinner_menu(NULL, &cc_mode_strings[HEALTH_STR], MAX_RESOURCES,  " ");
+    spend_res_p_spinner->args.max_option_length = MAX_OPTION_LENGTH;
+
     // initialize the spinner menu: attributes
-    spend_attr_p_spinner.menu = &spend_attr_p_menu;
-    spend_attr_p_spinner.left_symbol = '<';
-    spend_attr_p_spinner.right_symbol = '>';
-    spend_attr_p_spinner.max_option_length = MAX_OPTION_LENGTH;
-    // initialize the menu args
-    cc_menu_args.mode = ACTIVE;
-    cc_menu_args.unselected_fg = WHITE;
-    cc_menu_args.unselected_bg = DEFAULT;
-    cc_menu_args.selected_fg = BLACK;
-    cc_menu_args.selected_bg = WHITE;
+    spend_attr_p_spinner = init_spinner_menu(NULL, &cc_mode_strings[STRENGTH_STR], MAX_ATTRIBUTES, " ");
+    spend_attr_p_spinner->args.max_option_length = MAX_OPTION_LENGTH;
 
     update_cc_local();
     observe_local(update_cc_local);
@@ -163,7 +139,7 @@ state_t update_character_creation(const input_t input, Character* player) {
 
             break;
         case RESSOURCE_DISTRIBUTION:
-            switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_res_p_spinner)) {
+            switch (spend_res_p_spinner->vtable->handle_menu(spend_res_p_spinner, input, 5, CC_Y_POS_BODY)) {
                 case 0:// decrease health by one
                     update_stats(player->base_resources.health > 1,
                                  &player->base_resources.health, &player->unspent_res_p, -1);
@@ -198,7 +174,7 @@ state_t update_character_creation(const input_t input, Character* player) {
                 default:
                     log_msg(ERROR, "Character Creation",
                             "Invalid option returned in `update_character_creation`: %d",
-                            spend_res_p_menu.selected_index);
+                            spend_res_p_spinner->selected_index);
                     break;
             }
 
@@ -206,8 +182,8 @@ state_t update_character_creation(const input_t input, Character* player) {
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_res_p == 0) {
-                if (spend_res_p_menu.tailing_text[0] == ' ') {
-                    spend_res_p_menu.tailing_text = cc_mode_strings[CONFIRM_Y];
+                if (spend_res_p_spinner->tailing_text[0] == ' ') {
+                    spend_res_p_spinner->tailing_text = cc_mode_strings[CONFIRM_Y];
                 }
 
                 if (input == Y) {
@@ -217,16 +193,16 @@ state_t update_character_creation(const input_t input, Character* player) {
 
                     cc_state = ATTRIBUTE_DISTRIBUTION;
                     update_spent_p_str(player->unspent_attr_p);
-                    spend_res_p_menu.selected_index = 0;
+                    spend_res_p_spinner->selected_index = 0;
                     clear_screen();
                 }
-            } else if (spend_res_p_menu.tailing_text[0] != ' ') {
+            } else if (spend_res_p_spinner->tailing_text[0] != ' ') {
                 clear_line(CC_Y_POS_BODY + 6, 5, CLEAR_X_END);// clear the line with the confirmation text
-                spend_res_p_menu.tailing_text = " ";
+                spend_res_p_spinner->tailing_text = " ";
             }
             break;
         case ATTRIBUTE_DISTRIBUTION:
-            switch (handle_spinner_menu(input, 5, CC_Y_POS_BODY, &spend_attr_p_spinner)) {
+            switch (spend_attr_p_spinner->vtable->handle_menu(spend_attr_p_spinner, input, 5, CC_Y_POS_BODY)) {
                 case 0:// decrease strength by one
                     update_stats(player->base_attributes.strength > 1,
                                  &player->base_attributes.strength, &player->unspent_attr_p, -1);
@@ -277,7 +253,7 @@ state_t update_character_creation(const input_t input, Character* player) {
                 default:
                     log_msg(ERROR, "Character Creation",
                             "Invalid option returned in `update_character_creation`: %d",
-                            spend_attr_p_menu.selected_index);
+                            spend_attr_p_spinner->selected_index);
                     break;
             }
 
@@ -285,8 +261,8 @@ state_t update_character_creation(const input_t input, Character* player) {
             print_text(5, CC_Y_POS_UNSPENT_P, WHITE, DEFAULT, cc_mode_strings[UNSPENT_POINTS_FULL]);
 
             if (player->unspent_attr_p == 0) {
-                if (spend_attr_p_menu.tailing_text[0] == ' ') {
-                    spend_attr_p_menu.tailing_text = cc_mode_strings[CONFIRM_Y];
+                if (spend_attr_p_spinner->tailing_text[0] == ' ') {
+                    spend_attr_p_spinner->tailing_text = cc_mode_strings[CONFIRM_Y];
                 }
 
                 if (input == Y) {
@@ -295,12 +271,12 @@ state_t update_character_creation(const input_t input, Character* player) {
                     player->current_attributes = player->base_attributes;
 
                     cc_state = WAIT_AFTER_CREATION;
-                    spend_attr_p_menu.selected_index = 0;
+                    spend_attr_p_spinner->selected_index = 0;
                     clear_screen();
                 }
-            } else if (spend_attr_p_menu.tailing_text[0] != ' ') {
+            } else if (spend_attr_p_spinner->tailing_text[0] != ' ') {
                 clear_line(CC_Y_POS_BODY + 8, 5, CLEAR_X_END);// clear the line with the confirmation text
-                spend_attr_p_menu.tailing_text = " ";
+                spend_attr_p_spinner->tailing_text = " ";
             }
 
             break;
@@ -327,7 +303,13 @@ void shutdown_character_creation(void) {
             if (cc_mode_strings[i] != NULL) free(cc_mode_strings[i]);
         }
         free(cc_mode_strings);
+        cc_mode_strings = NULL;
     }
+
+    destroy_menu(spend_res_p_spinner);
+    destroy_menu(spend_attr_p_spinner);
+    spend_res_p_spinner = NULL;
+    spend_attr_p_spinner = NULL;
 }
 
 
@@ -342,9 +324,9 @@ void update_cc_local(void) {
     cc_mode_strings[INTRODUCTION_TEXT] = get_local_string("CC.INTRODUCTION");
     cc_mode_strings[UNPENT_POINTS_TEXT] = get_local_string("CC.POINTS.UNSPENT");
     cc_mode_strings[SPEND_RES_P_TEXT] = get_local_string("CC.RESOURCES.SPEND.TEXT");
-    spend_res_p_menu.title = cc_mode_strings[SPEND_RES_P_TEXT];
+    spend_attr_p_spinner->title = cc_mode_strings[SPEND_RES_P_TEXT];
     cc_mode_strings[SPEND_ATTR_P_TEXT] = get_local_string("CC.ATTRIBUTES.SPEND.TEXT");
-    spend_attr_p_menu.title = cc_mode_strings[SPEND_ATTR_P_TEXT];
+    spend_attr_p_spinner->title = cc_mode_strings[SPEND_ATTR_P_TEXT];
 
     cc_mode_strings[STRENGTH_STR] = get_local_string("STRENGTH");
     cc_mode_strings[INTELLIGENCE_STR] = get_local_string("INTELLIGENCE");

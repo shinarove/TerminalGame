@@ -19,7 +19,7 @@ enum title_screen_index {
 
 char** title_screen_strings = NULL;
 
-menu_t title_screen_menu;
+Menu* title_screen_menu = NULL;
 
 void update_title_screen_local(void);
 
@@ -32,12 +32,7 @@ int init_title_screen() {
         title_screen_strings[i] = NULL;
     }
 
-    title_screen_menu.title = " ";
-    title_screen_menu.options = &title_screen_strings[OPTION_NEW_GAME];// only the first option address is needed
-    title_screen_menu.option_count = MAX_TISC_OPTION;
-    title_screen_menu.selected_index = 0;
-    title_screen_menu.tailing_text = " ";
-    title_screen_menu.args = NULL;
+    title_screen_menu = init_simple_menu(" ", &title_screen_strings[OPTION_NEW_GAME], MAX_TISC_OPTION, " ");
 
     update_title_screen_local();
     observe_local(update_title_screen_local);
@@ -51,7 +46,7 @@ state_t update_title_screen(const input_t input) {
     // clear_screen();
     print_text(5, 2, color_mapping[RED].value, color_mapping[DEFAULT].key, title_screen_strings[GAME_TITEL]);
 
-    switch (handle_simple_menu(input, 5, 4, &title_screen_menu)) {
+    switch (title_screen_menu->vtable->handle_menu(title_screen_menu, input, 5, 4)) {
         case 0:// New game was selected
             next_state = CHARACTER_CREATION;
             clear_screen();
@@ -83,15 +78,19 @@ state_t update_title_screen(const input_t input) {
 }
 
 void shutdown_title_screen() {
-    if (title_screen_strings == NULL) return;
-
-    for (int i = 0; i < MAX_TITLE_SCREEN_STRINGS; i++) {
-        if (title_screen_strings[i] != NULL) {
-            //only free the strings that were allocated
-            free(title_screen_strings[i]);
+    if (title_screen_strings != NULL) {
+        for (int i = 0; i < MAX_TITLE_SCREEN_STRINGS; i++) {
+            if (title_screen_strings[i] != NULL) {
+                //only free the strings that were allocated
+                free(title_screen_strings[i]);
+            }
         }
+        free(title_screen_strings);
+        title_screen_strings = NULL;
     }
-    free(title_screen_strings);
+
+    destroy_menu(title_screen_menu);
+    title_screen_menu = NULL;
 }
 
 void update_title_screen_local() {

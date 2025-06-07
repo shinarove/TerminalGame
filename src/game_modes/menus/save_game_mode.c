@@ -40,7 +40,7 @@ char** save_game_mode_strings = NULL;
 
 game_state_t* game_state_to_save = NULL;
 
-menu_t save_game_menu;
+Menu* save_game_menu = NULL;
 
 // 1 for an empty slot / 0 for not empty
 int empty_save_slot_s[MAX_SAVE_SLOTS] = {1, 1, 1, 1, 1};
@@ -60,10 +60,7 @@ int init_save_game_mode(void) {
         save_game_mode_strings[i] = NULL;
     }
 
-    save_game_menu.selected_index = 0;
-    save_game_menu.options = &save_game_mode_strings[SAVE_SLOT_1_FULL];
-    save_game_menu.option_count = MAX_SAVE_SLOTS;
-    save_game_menu.args = NULL;
+    save_game_menu = init_simple_menu(NULL, &save_game_mode_strings[CHOOSE_SAVE_SLOT], MAX_SAVE_SLOTS, NULL);
 
     update_save_game_local();
     observe_local(update_save_game_local);
@@ -73,7 +70,7 @@ int init_save_game_mode(void) {
 state_t prepare_save_game_mode(game_state_t* game_state) {
     state_t res = SAVE_GAME;
     sg_state = SELECT_SLOT;
-    save_game_menu.selected_index = 0;
+    save_game_menu->selected_index = 0;
     slot_to_save = 0;
 
     // prepare slot strings with save slot infos
@@ -111,7 +108,7 @@ state_t update_save_game_mode(const input_t input) {
 
     switch (sg_state) {
         case CHOOSE_SAVE_SLOT:
-            switch (handle_simple_menu(input, 5, 2, &save_game_menu)) {
+            switch (save_game_menu->vtable->handle_menu(save_game_menu, input, 5, 2)) {
                 case 0:
                     save_helper(SLOT_1, game_state_to_save);
                     break;
@@ -196,7 +193,11 @@ void shutdown_save_game_mode(void) {
             if (save_game_mode_strings[i] != NULL) free(save_game_mode_strings[i]);
         }
         free(save_game_mode_strings);
+        save_game_mode_strings = NULL;
     }
+
+    destroy_menu(save_game_menu);
+    save_game_menu = NULL;
 }
 
 void update_save_game_local(void) {
@@ -207,7 +208,7 @@ void update_save_game_local(void) {
     }
 
     save_game_mode_strings[CHOOSE_SAVE_SLOT] = get_local_string("SAVE_GAME.CHOOSE.SLOT");
-    save_game_menu.title = save_game_mode_strings[CHOOSE_SAVE_SLOT];
+    save_game_menu->title = save_game_mode_strings[CHOOSE_SAVE_SLOT];
     save_game_mode_strings[SAVE_SLOT_1] = get_local_string("SAVE.SLOT.1");
     save_game_mode_strings[SAVE_SLOT_2] = get_local_string("SAVE.SLOT.2");
     save_game_mode_strings[SAVE_SLOT_3] = get_local_string("SAVE.SLOT.3");
@@ -219,7 +220,7 @@ void update_save_game_local(void) {
     save_game_mode_strings[FAILURE_TEXT] = get_local_string("SAVE_GAME.SAVE.FAILURE");
 
     save_game_mode_strings[RETURN_TEXT] = get_local_string("PRESS_ESC.RETURN");
-    save_game_menu.tailing_text = save_game_mode_strings[RETURN_TEXT];
+    save_game_menu->tailing_text = save_game_mode_strings[RETURN_TEXT];
     save_game_mode_strings[CONFIRM_TEXT] = get_local_string("PRESS_ENTER.CONFIRM");
     save_game_mode_strings[CONTINUE_TEXT] = get_local_string("PRESS_ENTER.CONTINUE");
 }

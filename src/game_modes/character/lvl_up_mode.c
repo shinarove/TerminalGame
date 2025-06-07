@@ -14,7 +14,7 @@ typedef enum {
     WAIT_AFTER_LVL_UP
 } lvl_up_mode_state_t;
 
-enum lvl_up_mode_index {
+enum lvl_up_mode_str_idx {
     // strings that are updated via local
     LEVEL_UP_TITLE,
     CHOOSE_ATTRIBUTE_TEXT,
@@ -29,7 +29,7 @@ enum lvl_up_mode_index {
 
 char** lvl_up_mode_strings = NULL;
 
-menu_t lvl_up_menu;
+Menu* lvl_up_menu = NULL;
 
 lvl_up_mode_state_t lvl_up_state = LVL_UP_SELECTION;
 
@@ -43,11 +43,7 @@ int init_lvl_up_mode(void) {
         lvl_up_mode_strings[i] = NULL;
     }
 
-    lvl_up_menu.options = &lvl_up_mode_strings[STRENGTH_STR];
-    lvl_up_menu.option_count = MAX_ATTRIBUTES;
-    lvl_up_menu.selected_index = 0;
-    lvl_up_menu.tailing_text = " ";
-    lvl_up_menu.args = NULL;
+    lvl_up_menu = init_simple_menu(NULL, &lvl_up_mode_strings[STRENGTH_STR], MAX_ATTRIBUTES, " ");
 
     update_lvl_up_mode_local();
     observe_local(update_lvl_up_mode_local);
@@ -65,7 +61,7 @@ state_t update_lvl_up_mode(const input_t input, Character* player) {
     print_char_h(5, LVLUP_Y_POS_PLAYER_HEAD, player, lvl_up_args);
 
     if (lvl_up_state == LVL_UP_SELECTION) {
-        switch (handle_simple_menu(input, 5, LVLUP_Y_POS_BODY, &lvl_up_menu)) {
+        switch (lvl_up_menu->vtable->handle_menu(lvl_up_menu, input, 5, LVLUP_Y_POS_BODY)) {
             case STRENGTH:
                 player->vtable->lvl_up(player, STRENGTH);
                 lvl_up_state = WAIT_AFTER_LVL_UP;
@@ -105,7 +101,7 @@ state_t update_lvl_up_mode(const input_t input, Character* player) {
 
         if (input == ENTER) {
             // reset the menu selected index
-            lvl_up_menu.selected_index = 0;
+            lvl_up_menu->selected_index = 0;
             lvl_up_state = LVL_UP_SELECTION;
 
             res = MAP_MODE;
@@ -123,6 +119,9 @@ void shutdown_lvl_up_mode(void) {
         }
         free(lvl_up_mode_strings);
     }
+
+    destroy_menu(lvl_up_menu);
+    lvl_up_menu = NULL;
 }
 
 void update_lvl_up_mode_local(void) {
@@ -135,7 +134,7 @@ void update_lvl_up_mode_local(void) {
 
     lvl_up_mode_strings[LEVEL_UP_TITLE] = get_local_string("LVL_UP.TITLE");
     lvl_up_mode_strings[CHOOSE_ATTRIBUTE_TEXT] = get_local_string("LVL_UP.MENU.TITLE");
-    lvl_up_menu.title = lvl_up_mode_strings[CHOOSE_ATTRIBUTE_TEXT];
+    lvl_up_menu->title = lvl_up_mode_strings[CHOOSE_ATTRIBUTE_TEXT];
 
     lvl_up_mode_strings[STRENGTH_STR] = get_local_string("STRENGTH");
     lvl_up_mode_strings[INTELLIGENCE_STR] = get_local_string("INTELLIGENCE");

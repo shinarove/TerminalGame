@@ -13,7 +13,7 @@ typedef enum {
     SHOW_FAILURE
 } load_game_state_t;
 
-enum load_game_index {
+enum load_game_str_idx {
     // strings that are updated via local
     CHOOSE_SAVE_SLOT,
     SAVE_SLOT_1,
@@ -42,7 +42,7 @@ char** load_game_mode_strings = NULL;
 memory_pool_t* pool_to_load_in = NULL;
 game_state_t* game_state_to_load = NULL;
 
-menu_t load_game_menu;
+Menu* load_game_menu = NULL;
 
 // 1 for an empty slot / 0 for not empty
 int empty_save_slot_l[MAX_SAVE_SLOTS] = {1, 1, 1, 1, 1};
@@ -64,10 +64,7 @@ int init_load_game_mode() {
         load_game_mode_strings[i] = NULL;
     }
 
-    load_game_menu.selected_index = 0;
-    load_game_menu.options = &load_game_mode_strings[SAVE_SLOT_A_FULL];
-    load_game_menu.option_count = 0;// default to 0
-    load_game_menu.args = NULL;
+    load_game_menu = init_simple_menu(NULL, &load_game_mode_strings[CHOOSE_SAVE_SLOT], 0, NULL);
 
     update_load_game_local();
     observe_local(update_load_game_local);
@@ -81,7 +78,7 @@ state_t prepare_load_game_mode(memory_pool_t* pool, game_state_t* game_state) {
 
     lg_state = SELECT_SLOT;
     state_t res = LOAD_GAME;
-    load_game_menu.selected_index = 0;
+    load_game_menu->selected_index = 0;
     slot_to_load = 0;
 
     // prepare slot strings with save slot infos
@@ -106,7 +103,7 @@ state_t prepare_load_game_mode(memory_pool_t* pool, game_state_t* game_state) {
                 empty_save_slot_l[i] = 1;
             }
         }
-        load_game_menu.option_count = active_slot_count;
+        load_game_menu->option_count = active_slot_count;
         if (active_slot_count == 0) {
             // no save files found
             lg_state = SHOW_NO_SAVES;
@@ -130,8 +127,8 @@ state_t update_load_game_mode(const input_t input, const state_t called_from) {
 
     switch (lg_state) {
         case CHOOSE_SAVE_SLOT:
-            const int selected_index = handle_simple_menu(input, 5, 2, &load_game_menu);
-            if (selected_index >= 0 && selected_index < load_game_menu.option_count) {
+            const int selected_index = load_game_menu->vtable->handle_menu(load_game_menu, input, 5, 2);
+            if (selected_index >= 0 && selected_index < load_game_menu->option_count) {
                 // valid save slot selected
                 int real_index = -1;
                 int skipped = 0;
@@ -214,7 +211,11 @@ void shutdown_load_game_mode(void) {
             }
         }
         free(load_game_mode_strings);
+        load_game_mode_strings = NULL;
     }
+
+    destroy_menu(load_game_menu);
+    load_game_menu = NULL;
 }
 
 void update_load_game_local(void) {
@@ -225,7 +226,7 @@ void update_load_game_local(void) {
     }
 
     load_game_mode_strings[CHOOSE_SAVE_SLOT] = get_local_string("LOAD_GAME.CHOOSE.SLOT");
-    load_game_menu.title = load_game_mode_strings[CHOOSE_SAVE_SLOT];
+    load_game_menu->title = load_game_mode_strings[CHOOSE_SAVE_SLOT];
     load_game_mode_strings[SAVE_SLOT_1] = get_local_string("SAVE.SLOT.1");
     load_game_mode_strings[SAVE_SLOT_2] = get_local_string("SAVE.SLOT.2");
     load_game_mode_strings[SAVE_SLOT_3] = get_local_string("SAVE.SLOT.3");
@@ -238,7 +239,7 @@ void update_load_game_local(void) {
     load_game_mode_strings[FAILURE_TEXT] = get_local_string("LOAD_GAME.LOAD.FAILURE");
 
     load_game_mode_strings[RETURN_TEXT] = get_local_string("PRESS_ESC.RETURN");
-    load_game_menu.tailing_text = load_game_mode_strings[RETURN_TEXT];
+    load_game_menu->tailing_text = load_game_mode_strings[RETURN_TEXT];
     load_game_mode_strings[CONTINUE_TEXT] = get_local_string("PRESS_ENTER.CONTINUE");
     load_game_mode_strings[CONFIRM_TEXT] = get_local_string("PRESS_ENTER.CONFIRM");
 }
@@ -247,12 +248,6 @@ int check_game_state(const game_state_t* game_state) {
     RETURN_WHEN_NULL(game_state, 1, "Load Game Mode", "Game state is NULL.");
     RETURN_WHEN_NULL(game_state->maps, 1, "Load Game Mode", "Game state maps are NULL.");
     RETURN_WHEN_NULL(game_state->player, 1, "Load Game Mode", "Game state player is NULL.");
-
-    // if (game_state->player != NULL) {
-    //     log_msg(WARNING, "Load Game Mode",
-    //         "Game state player is not NULL, the player pointer will be overwritten "
-    //         "with a new allocated pointer.");
-    // }
     return 0;
 }
 
