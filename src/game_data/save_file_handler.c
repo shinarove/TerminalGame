@@ -144,7 +144,7 @@ int save_game_state(const save_slot_t save_slot, const game_state_t* game_state)
 }
 
 int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game_state_t* game_state) {
-    RETURN_WHEN_TRUE(save_slot < 0 || save_slot >= MAX_SAVE_SLOTS, 1,
+    RETURN_WHEN_TRUE(save_slot >= MAX_SAVE_SLOTS, 1,
                      "Save File Handler", "In `save_game_state` given save slot %d is invalid", save_slot)
 
     char save_name[32];
@@ -229,9 +229,9 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
     // read the checksum
     long file_checksum;
     if (fread(&file_checksum, sizeof(long), 1, file) != 1) {
-        memory_pool_free(pool, game_state->player);
+        destroy_character(game_state->player);
+        game_state->player = NULL;
         free_map_resources(pool, game_state->maps, game_state->max_floors);
-        free(game_state->player->name);
         fclose(file);
         log_msg(ERROR, "Save File Handler", "Failed to read checksum");
         return 1;

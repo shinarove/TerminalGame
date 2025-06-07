@@ -13,11 +13,11 @@ struct ArrayList {
     int size;           // number of elements in the list
     size_t element_size;// size of a single element
     size_t allocated;   // the allocated space in memory in bytes
-    const ArrayList_VTable* vtable;
+    ArrayList_VTable* vtable;
 };
 
 struct ArrayList_VTable {
-    const List_VTable* list;
+    List_VTable* list;
     /**
      * Reserves additional capacity in the array list.
      * @param self Pointer to the ArrayList instance.

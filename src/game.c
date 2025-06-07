@@ -42,6 +42,11 @@ void start_game_loop(memory_pool_t* used_pool) {
             .active_map_index = -1,//-1 means no map is active
             .maps = maps,
             .player = create_empty_character()};
+
+    if (game_state.player == NULL) {
+        log_msg(ERROR, "Game", "Failed to create empty character");
+        running = false;
+    }
     Character* enemy = NULL;
 
     while (running) {

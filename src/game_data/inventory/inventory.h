@@ -24,8 +24,8 @@ struct Inventory {
     attributes_t total_attribute_bonus;// the total attribute bonus from all equipped gears
 
     ArrayList* gear_list;                  // the array list of gears, holds the gear pointers
-    const gear_t* equipped[MAX_GEAR_SLOTS];// the equipped gears
-    const Inventory_VTable* vtable;        // the virtual table for inventory operations
+    gear_t* equipped[MAX_GEAR_SLOTS];// the equipped gears
+    Inventory_VTable* vtable;        // the virtual table for inventory operations
 };
 
 struct Inventory_VTable {

@@ -4,6 +4,7 @@
 #include "enemy_id.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #define DEFAULT_LVL 1
 #define DEFAULT_CURRENT_EXP 0
@@ -43,7 +44,7 @@ static const struct {
         {0, PUNCH},
         {GOBLIN, CLAWS}};
 
-static const Character_VTable character_vtable = {
+static Character_VTable character_vtable = {
         .reset_health = reset_health_c,
         .reset_stamina = reset_stamina_c,
         .reset_mana = reset_mana_c,

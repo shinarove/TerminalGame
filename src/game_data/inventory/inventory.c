@@ -10,7 +10,7 @@ int unequip_gear_i(Inventory* inventory, gear_slot_t target_slot);
 gear_t* get_gear_at_i(const Inventory* self, int index);
 int is_gear_equipped_i(const Inventory* inventory, const gear_t* gear);
 
-static const Inventory_VTable vtable_Inventory = {
+static Inventory_VTable vtable_Inventory = {
         .add_gear = add_gear_i,
         .remove_gear = remove_gear_i,
         .equip_gear = equip_gear_i,
@@ -108,10 +108,10 @@ int equip_gear_i(Inventory* inventory, const gear_t* gear) {
 
     // either nothing was unequipped or the unequip was successful
     if (gear->gear_type == TWO_HANDED) {
-        inventory->equipped[MAIN_HAND_SLOT] = gear;
-        inventory->equipped[OFF_HAND_SLOT] = gear;
+        inventory->equipped[MAIN_HAND_SLOT] = (gear_t*) gear;
+        inventory->equipped[OFF_HAND_SLOT] = (gear_t*) gear;
     } else {
-        inventory->equipped[gear->gear_type] = gear;
+        inventory->equipped[gear->gear_type] = (gear_t*) gear;
     }
 
     // add ressource & attribute bonuses in total

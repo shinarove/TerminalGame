@@ -31,7 +31,7 @@ struct Character {
     ArrayList* ability_list;
     Inventory* inventory;// the character's inventory
 
-    const Character_VTable* vtable;
+    Character_VTable* vtable;
 };
 
 struct Character_VTable {

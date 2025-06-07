@@ -12,7 +12,7 @@ void array_list_clear(void* self);
 
 int array_list_reserve(ArrayList* self, int added_capacity);
 
-static const List_VTable vtable_List = {
+static List_VTable vtable_List = {
         .add = array_list_add,
         .remove = array_list_remove,
         .get = array_list_get,
@@ -20,7 +20,7 @@ static const List_VTable vtable_List = {
         .size = array_list_size,
         .clear = array_list_clear};
 
-static const ArrayList_VTable vtable_ArrayList = {
+static ArrayList_VTable vtable_ArrayList = {
         .list = &vtable_List,
         .reserve = array_list_reserve};
 
