@@ -213,7 +213,7 @@ int load_game_state(const save_slot_t save_slot, const memory_pool_t* pool, game
                 "Player is not NULL, the player pointer will be overwritten with a new allocated pointer.");
     }
     // malloc player
-    game_state->player = create_empty_character();
+    game_state->player = create_empty_character(0);
     if (game_state->player == NULL) {
         free_map_resources(pool, game_state->maps, game_state->max_floors);
         fclose(file);

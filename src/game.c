@@ -41,7 +41,7 @@ void start_game_loop(memory_pool_t* used_pool) {
             .max_floors = 0,       // on which floor the player is 1 - 5, 0 - no floor
             .active_map_index = -1,//-1 means no map is active
             .maps = maps,
-            .player = create_empty_character()};
+            .player = create_empty_character(0)};
 
     if (game_state.player == NULL) {
         log_msg(ERROR, "Game", "Failed to create empty character");
@@ -104,7 +104,7 @@ void start_game_loop(memory_pool_t* used_pool) {
             case RESTART_GAME:
                 // destroy current player & creating empty character
                 destroy_character(game_state.player);
-                game_state.player = create_empty_character();
+                game_state.player = create_empty_character(0);
 
                 // free all the previously created maps
                 for (int i = 0; i < game_state.max_floors; i++) {
@@ -125,7 +125,7 @@ void start_game_loop(memory_pool_t* used_pool) {
                     log_msg(WARNING, "Game", "Loading failed, resetting game state to default values.");
                     game_state.max_floors = 0;
                     game_state.active_map_index = -1;
-                    game_state.player = create_empty_character();
+                    game_state.player = create_empty_character(0);
                     // maps already set to NULL, after the loading attempt
                 }
                 break;

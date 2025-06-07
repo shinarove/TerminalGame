@@ -121,10 +121,11 @@ struct Character_VTable {
 /**
  * Creates an empty character with default values.
  *
+ * @param id The unique identifier for the character.
  * @return A pointer to the newly created character structure,
  *         or NULL if an error occurs during creation.
  */
-Character* create_empty_character(void);
+Character* create_empty_character(int id);
 
 /**
  * Creates a base character id,  name and default values.

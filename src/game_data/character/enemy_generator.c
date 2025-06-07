@@ -20,8 +20,6 @@ Character* generate_goblin(int level) {
         goblin->vtable->lvl_up(goblin, lvl_table_goblin[i]);
     }
 
-    goblin->vtable->add_ability(goblin, &get_ability_table()->abilities[CLAWS]);
-
     //TODO: add random items
 
     return goblin;

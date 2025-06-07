@@ -61,7 +61,7 @@ static const Character_VTable character_vtable = {
         .remove_ability = remove_ability_c,
         .get_ability_at = get_ability_at_c};
 
-Character* create_empty_character() {
+Character* create_empty_character(const int id) {
     Character* character = malloc(sizeof(Character));
     RETURN_WHEN_NULL(character, NULL, "Character", "Failed to allocate memory for character")
 
@@ -69,7 +69,7 @@ Character* create_empty_character() {
     character->ability_list = NULL;
     character->inventory = NULL;
 
-    character->id = 0;
+    character->id = id;
     character->current_exp = DEFAULT_CURRENT_EXP;
     character->needed_exp = needed_exp_table[DEFAULT_LVL];
     character->level = DEFAULT_LVL;
@@ -101,16 +101,20 @@ Character* create_empty_character() {
                            "Character", "Failed to create inventory for character inventory")
 
     character->vtable = &character_vtable;
+
+    // add the basic abilities to the character
+    const ability_t* base_ability = &get_ability_table()->abilities[character_base_ability[id].basic_ability_id];
+    character->vtable->add_ability(character, base_ability);
+
     return character;
 }
 
 Character* create_base_character(const int id, const char* name) {
     RETURN_WHEN_NULL(name, NULL, "Character", "In `create_base_character` given name is NULL")
 
-    Character* character = create_empty_character();
+    Character* character = create_empty_character(id);
     if (character == NULL) return NULL;
 
-    character->id = id;
     character->name = strdup(name);
 
     return character;

@@ -3,6 +3,7 @@
 #include "../../game_data/save_file_handler.h"
 #include "../../io/local/local_handler.h"
 #include "../../io/menu.h"
+#include "../../io/output/common/common_output.h"
 #include "../../logger/logger.h"
 
 typedef enum {
