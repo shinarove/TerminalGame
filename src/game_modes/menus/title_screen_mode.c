@@ -70,7 +70,8 @@ state_t update_title_screen(const input_t input) {
         case MAX_TISC_OPTION://does nothing
             break;
         default:
-            log_msg(WARNING, "Title Screen Mode", "Invalid option returned in handle_menu: %d", title_screen_menu.selected_index);
+            log_msg(WARNING, "Title Screen Mode", "Invalid option returned in handle_menu: %d",
+                title_screen_menu->selected_index);
             break;
     }
 

@@ -4,22 +4,6 @@
 #include "../../colors.h"
 #include "../../menu.h"
 
-typedef struct {
-    char* title;
-    char** options;
-    int option_count;
-    int selected_index;
-    char* tailing_text;
-    menu_arg_t* args;
-} menu_t;
-
-typedef struct {
-    menu_t* menu;
-    char left_symbol;     // symbol to the left of the spinner
-    char right_symbol;    // symbol to the right of the spinner
-    int max_option_length;// maximum length of the options
-} spinner_menu_t;
-
 /**
  * Clears the terminal screen by invoking the termbox clear functionality.
  * @note Use this function with caution, preferably before a context switch occurs.

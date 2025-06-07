@@ -2,7 +2,7 @@
 #define MENU_H
 
 #include "input/input_handler.h"
-#include "output/common/common_output.h"
+#include "colors.h"
 
 typedef struct Menu Menu;
 typedef struct Menu_VTable Menu_VTable;

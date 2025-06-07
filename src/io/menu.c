@@ -1,5 +1,6 @@
 #include "menu.h"
 
+#include "output/common/common_output.h"
 #include "../logger/logger.h"
 
 int handle_simple_menu(Menu* self, input_t input, int x, int y);
