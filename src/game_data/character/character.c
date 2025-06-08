@@ -334,8 +334,10 @@ int add_ability_c(const Character* self, const ability_t* ability) {
     RETURN_WHEN_NULL(ability, -1, "Character", "In `add_ability` given ability is NULL")
 
     // check if the ability is already in the array
-    if (self->ability_list->vtable->list->find(self, &ability) >= 0) {
+    if (self->ability_list->vtable->list->find(self, &ability) == -1) {
         // ability is already in the array list
+        log_msg(INFO, "Character", "In `add_ability` ability %s is already in the character's ability list",
+                ability->local_name);
         return 1;
     }
 

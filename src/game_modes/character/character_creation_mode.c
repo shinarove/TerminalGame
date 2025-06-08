@@ -286,8 +286,6 @@ state_t update_character_creation(const input_t input, Character* player) {
             print_text(5, CC_Y_POS_BODY, WHITE, DEFAULT, cc_mode_strings[CONTINUE_ENTER]);
 
             if (input == ENTER) {
-                player->vtable->add_ability(player, &get_ability_table()->abilities[PUNCH]);// add the default ability
-
                 cc_state = PRE_CREATION;// reset the cc state
                 res = GENERATE_MAP;
                 clear_screen();
